@@ -1,5 +1,5 @@
 
-#include "../include/messages/Message.hpp"
+#include "../include/messages/Message.h"
 
 int Message::getData()
 {
