@@ -1,11 +1,9 @@
 set(TARGET "socket")
 project(${TARGET})
 
-set(SRCDIR "src")
 set(INCLUDEDIR "include")
 
-set(SRC_FILES Socket.cpp) # add source files here (relative to SRCDIR)
-list(TRANSFORM SRC_FILES PREPEND ${SRCDIR}/)
+set(SRC_FILES src/Socket.cpp) # add source files here
 
 add_library(${TARGET} STATIC ${SRC_FILES})
 target_include_directories(${TARGET} PUBLIC ${PROJECT_SOURCE_DIR}/${INCLUDEDIR})

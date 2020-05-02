@@ -1,6 +1,6 @@
 set(TARGET "mynfs")
 
-cmake_minimum_required(VERSION 3.12)
+cmake_minimum_required(VERSION 3.0.2)
 project(${TARGET})
 
 # add shared libraries here
