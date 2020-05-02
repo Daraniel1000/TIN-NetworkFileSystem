@@ -30,3 +30,13 @@
 *.exe
 *.out
 *.app
+
+.idea/
+
+cmake*/
+
+server/bin/
+
+client/bin/
+
+mynfslib/lib/
