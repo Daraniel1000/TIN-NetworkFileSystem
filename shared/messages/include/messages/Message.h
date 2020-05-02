@@ -1,14 +1,14 @@
-
 #ifndef MYNFS_MESSAGE_H
 #define MYNFS_MESSAGE_H
 
+#include "PlainData.h"
 
 class Message
 {
-    int data;
 public:
-    Message(int data) : data(data) {}
-    int getData();
+    virtual ~Message() = default;
+
+    virtual PlainData serialize() = 0;
 };
 
 

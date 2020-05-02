@@ -1,13 +1,19 @@
-
 #ifndef MYNFS_SOCKET_H
 #define MYNFS_SOCKET_H
 
-#include "messages/Message.h"
+#include <addresses/Port.h>
+#include <addresses/IpAddress.h>
+#include <messages/Message.h>
 
 class Socket
 {
 public:
-    int getDataFromMessage(Message m);
+    Socket(Port port);
+
+    void send(IpAddress address, Port port, const Message& message);
+    PlainData receive(IpAddress address);
+
+    void close();
 };
 
 

@@ -3,6 +3,6 @@
 
 int main()
 {
-    std::cout << "Hello World!" << mynfs_open();
+    std::cout << "Hello World!" << mynfs_open("XD", "XD", 0);
     return 0;
 }

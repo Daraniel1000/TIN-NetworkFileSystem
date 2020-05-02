@@ -1,6 +1,21 @@
 #include "socket/Socket.h"
 
-int Socket::getDataFromMessage(Message m)
+Socket::Socket(Port port)
 {
-    return m.getData();
+
+}
+
+void Socket::send(IpAddress address, Port port, const Message& message)
+{
+
+}
+
+PlainData Socket::receive(IpAddress address)
+{
+    return PlainData();
+}
+
+void Socket::close()
+{
+
 }
