@@ -1,6 +1,6 @@
 #include <iostream>
-#include "messages/Message.h"
-#include "socket/Socket.h"
+#include "messages/Message.hpp"
+#include "socket/Socket.hpp"
 
 int main()
 {

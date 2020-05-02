@@ -1,5 +1,5 @@
 #include <iostream>
-#include "mynfslib.h"
+#include "mynfslib.hpp"
 
 int main()
 {

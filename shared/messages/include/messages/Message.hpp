@@ -1,6 +1,6 @@
 
-#ifndef MYNFS_MESSAGE_H
-#define MYNFS_MESSAGE_H
+#ifndef MYNFS_MESSAGE_HPP
+#define MYNFS_MESSAGE_HPP
 
 
 class Message
@@ -12,4 +12,4 @@ public:
 };
 
 
-#endif //MYNFS_MESSAGE_H
+#endif //MYNFS_MESSAGE_HPP
