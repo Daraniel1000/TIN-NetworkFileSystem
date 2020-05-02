@@ -1,4 +1,4 @@
-#include "../include/socket/Socket.h"
+#include "socket/Socket.h"
 
 int Socket::getDataFromMessage(Message m)
 {
