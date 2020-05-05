@@ -1,6 +1,8 @@
-#include <messages/ConfirmMessage.h>
-#include <messages/DataMessage.h>
-#include <messages/RequestMessage.h>
+#include <session/messages/ConfirmMessage.h>
+#include <session/messages/DataMessage.h>
+#include <session/messages/RequestMessage.h>
+#include <application/mynfs/replies/OpenReply.h>
+#include <application/mynfs/requests/OpenRequest.h>
 #include "ClientEndpoint.h"
 
 ClientEndpoint::ClientEndpoint(Port port) : socket(port) {}
@@ -10,13 +12,16 @@ ClientEndpoint::~ClientEndpoint()
     this->socket.close();
 }
 
-DataMessage ClientEndpoint::send(IpAddress serverAddress, Port port, const Request& request)
+template<class Req, class Rep>
+Rep ClientEndpoint::send(IpAddress serverAddress, Port port, const Req &request)
 {
-    socket.send(serverAddress, port, RequestMessage(request.getType()));
-    ConfirmMessage requestConfirm(socket.receive(serverAddress));
-    socket.send(serverAddress, port, DataMessage(request.getData()));
-    DataMessage replyData(socket.receive(serverAddress));
-    socket.send(serverAddress, port, ConfirmMessage());
+    socket.send(serverAddress, port, RequestMessage(request.getType()).serialize());
+    ConfirmMessage requestConfirm(socket.receive());
+    socket.send(serverAddress, port, DataMessage(request.getData()).serialize());
+    DataMessage replyData(socket.receive());
+    socket.send(serverAddress, port, ConfirmMessage().serialize());
 
-    return replyData;
+    return Rep(replyData.getData());
 }
+
+template OpenReply ClientEndpoint::send<OpenRequest, OpenReply>(IpAddress, Port, const OpenRequest&);

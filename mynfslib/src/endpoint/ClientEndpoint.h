@@ -1,11 +1,11 @@
 #ifndef MYNFS_CLIENTENDPOINT_H
 #define MYNFS_CLIENTENDPOINT_H
 
-#include <socket/Socket.h>
+#include <transport/socket/Socket.h>
 #include <addresses/IpAddress.h>
 #include <addresses/Port.h>
 #include <addresses/EphemeralPort.h>
-#include <protocol/requests/Request.h>
+#include <application/mynfs/requests/Request.h>
 
 class ClientEndpoint
 {
@@ -15,7 +15,8 @@ public:
     ClientEndpoint(Port port = EphemeralPort());
     ~ClientEndpoint();
 
-    DataMessage send(IpAddress serverAddress, Port port, const Request& request);
+    template<class Req, class Rep>
+    Rep send(IpAddress serverAddress, Port port, const Req& request);
 };
 
 

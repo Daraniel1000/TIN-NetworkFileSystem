@@ -1,4 +1,4 @@
-#include "../include/addresses/IpAddress.h"
+#include "addresses/IpAddress.h"
 
 IpAddress::IpAddress(char *addressString)
 {

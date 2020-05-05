@@ -6,9 +6,9 @@ project(${TARGET})
 
 # add shared libraries here
 add_subdirectory(shared/addresses)
-add_subdirectory(shared/messages)
-add_subdirectory(shared/protocol)
-add_subdirectory(shared/socket)
+add_subdirectory(shared/session)
+add_subdirectory(shared/application)
+add_subdirectory(shared/transport)
 add_subdirectory(mynfslib)
 add_subdirectory(server)
 add_subdirectory(client)
