@@ -18,9 +18,9 @@ Rep ClientEndpoint::send(NetworkAddress recipient, const Req &request)
     socket.send(recipient, RequestMessage().serialize());
     NetworkAddress source;
     ConfirmMessage requestConfirm(socket.receive(source));
-    socket.send(recipient, DataMessage(request.getType(), request.getData()).serialize());
+    socket.send(source, DataMessage(request.getType(), request.getData()).serialize());
     DataMessage replyData(socket.receive(source));
-    socket.send(recipient, ConfirmMessage().serialize());
+    socket.send(source, ConfirmMessage().serialize());
 
     return Rep(replyData.getData());
 }
