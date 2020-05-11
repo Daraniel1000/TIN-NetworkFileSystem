@@ -15,6 +15,11 @@ PlainData Socket::receive()
     return PlainData();
 }
 
+void Socket::signal()
+{
+
+}
+
 void Socket::close()
 {
 

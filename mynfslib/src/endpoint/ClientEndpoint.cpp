@@ -15,9 +15,9 @@ ClientEndpoint::~ClientEndpoint()
 template<class Req, class Rep>
 Rep ClientEndpoint::send(IpAddress serverAddress, Port port, const Req &request)
 {
-    socket.send(serverAddress, port, RequestMessage(request.getType()).serialize());
+    socket.send(serverAddress, port, RequestMessage().serialize());
     ConfirmMessage requestConfirm(socket.receive());
-    socket.send(serverAddress, port, DataMessage(request.getData()).serialize());
+    socket.send(serverAddress, port, DataMessage(request.getType(), request.getData()).serialize());
     DataMessage replyData(socket.receive());
     socket.send(serverAddress, port, ConfirmMessage().serialize());
 

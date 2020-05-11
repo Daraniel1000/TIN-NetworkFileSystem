@@ -6,12 +6,9 @@
 
 class RequestMessage : public Message
 {
-    int8_t type;
 public:
-    RequestMessage(int8_t type);
+    RequestMessage() = default;
     RequestMessage(PlainData data);
-
-    int8_t getType() const;
 
     PlainData serialize() override;
 };

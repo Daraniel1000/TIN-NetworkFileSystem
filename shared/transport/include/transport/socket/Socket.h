@@ -13,6 +13,7 @@ public:
     void send(IpAddress address, Port port, const PlainData& message);
     PlainData receive();
 
+    void signal();
     void close();
 };
 

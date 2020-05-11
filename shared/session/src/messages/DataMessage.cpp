@@ -1,6 +1,6 @@
 #include "session/messages/DataMessage.h"
 
-DataMessage::DataMessage(DomainData data)
+DataMessage::DataMessage(int8_t type, DomainData data)
 {
 
 }
@@ -8,6 +8,11 @@ DataMessage::DataMessage(DomainData data)
 DataMessage::DataMessage(PlainData data)
 {
 
+}
+
+int8_t DataMessage::getType()
+{
+    return this->type;
 }
 
 DomainData DataMessage::getData()
