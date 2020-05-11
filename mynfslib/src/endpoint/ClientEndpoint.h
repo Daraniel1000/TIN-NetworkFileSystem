@@ -2,10 +2,10 @@
 #define MYNFS_CLIENTENDPOINT_H
 
 #include <transport/socket/Socket.h>
-#include <addresses/IpAddress.h>
 #include <addresses/Port.h>
 #include <addresses/EphemeralPort.h>
 #include <application/mynfs/requests/Request.h>
+#include <addresses/NetworkAddress.h>
 
 class ClientEndpoint
 {
@@ -16,7 +16,7 @@ public:
     ~ClientEndpoint();
 
     template<class Req, class Rep>
-    Rep send(IpAddress serverAddress, Port port, const Req& request);
+    Rep send(NetworkAddress recipient, const Req& request);
 };
 
 

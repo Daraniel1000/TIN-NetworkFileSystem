@@ -9,8 +9,7 @@ int16_t mynfs_open(char *host, char *path, uint8_t oflag)
 
     OpenReply readReply = clientEndpoint.send<OpenRequest, OpenReply>
                                         (
-                                            IpAddress(host),
-                                            Port(),
+                                            NetworkAddress(IpAddress(host), Port()),
                                             OpenRequest(path, oflag)
                                         );
 

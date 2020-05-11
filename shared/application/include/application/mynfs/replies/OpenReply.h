@@ -10,11 +10,13 @@ class OpenReply : public Reply
 {
     int16_t descriptor;
 public:
+    OpenReply(int16_t descriptor);
     OpenReply(DomainData data);
 
     int16_t getDescriptor();
 
     int8_t getError() override;
+    DomainData getData() const override;
 };
 
 

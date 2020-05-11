@@ -13,15 +13,16 @@ ClientEndpoint::~ClientEndpoint()
 }
 
 template<class Req, class Rep>
-Rep ClientEndpoint::send(IpAddress serverAddress, Port port, const Req &request)
+Rep ClientEndpoint::send(NetworkAddress recipient, const Req &request)
 {
-    socket.send(serverAddress, port, RequestMessage().serialize());
-    ConfirmMessage requestConfirm(socket.receive());
-    socket.send(serverAddress, port, DataMessage(request.getType(), request.getData()).serialize());
-    DataMessage replyData(socket.receive());
-    socket.send(serverAddress, port, ConfirmMessage().serialize());
+    socket.send(recipient, RequestMessage().serialize());
+    NetworkAddress source;
+    ConfirmMessage requestConfirm(socket.receive(source));
+    socket.send(recipient, DataMessage(request.getType(), request.getData()).serialize());
+    DataMessage replyData(socket.receive(source));
+    socket.send(recipient, ConfirmMessage().serialize());
 
     return Rep(replyData.getData());
 }
 
-template OpenReply ClientEndpoint::send<OpenRequest, OpenReply>(IpAddress, Port, const OpenRequest&);
+template OpenReply ClientEndpoint::send<OpenRequest, OpenReply>(NetworkAddress, const OpenRequest&);

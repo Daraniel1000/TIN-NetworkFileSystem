@@ -4,7 +4,9 @@
 
 class IpAddress
 {
+    int address = 0;
 public:
+    IpAddress() = default;
     IpAddress(char *addressString);
 };
 

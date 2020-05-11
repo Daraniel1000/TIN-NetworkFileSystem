@@ -2,7 +2,7 @@
 #define MYNFS_SOCKET_H
 
 #include <addresses/Port.h>
-#include <addresses/IpAddress.h>
+#include <addresses/NetworkAddress.h>
 #include "transport/PlainData.h"
 
 class Socket
@@ -10,8 +10,8 @@ class Socket
 public:
     Socket(Port port);
 
-    void send(IpAddress address, Port port, const PlainData& message);
-    PlainData receive();
+    void send(NetworkAddress recipient, const PlainData& message);
+    PlainData receive(NetworkAddress& source);
 
     void signal();
     void close();

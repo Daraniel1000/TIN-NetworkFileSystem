@@ -4,7 +4,10 @@
 
 class Port
 {
+    int port = 0;
 
+public:
+    Port() = default;
 };
 
 

@@ -5,12 +5,12 @@ Socket::Socket(Port port)
 
 }
 
-void Socket::send(IpAddress address, Port port, const PlainData& message)
+void Socket::send(NetworkAddress recipient, const PlainData& message)
 {
 
 }
 
-PlainData Socket::receive()
+PlainData Socket::receive(NetworkAddress& source)
 {
     return PlainData();
 }
