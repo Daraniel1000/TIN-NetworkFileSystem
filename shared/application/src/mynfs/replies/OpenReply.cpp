@@ -1,12 +1,12 @@
 #include "application/mynfs/replies/OpenReply.h"
 
-OpenReply::OpenReply(int16_t descriptor)
+OpenReply::OpenReply(int16_t descriptor, int8_t error) : Reply(error)
 {
 
 }
 
 
-OpenReply::OpenReply(DomainData data)
+OpenReply::OpenReply(DomainData data, int8_t error) : Reply(error)
 {
 
 }

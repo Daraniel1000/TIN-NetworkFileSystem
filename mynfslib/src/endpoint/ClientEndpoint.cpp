@@ -22,7 +22,7 @@ Rep ClientEndpoint::send(NetworkAddress recipient, const Req &request)
     DataMessage replyData(socket.receive(source));
     socket.send(source, ConfirmMessage().serialize());
 
-    return Rep(replyData.getData());
+    return Rep(replyData.getData(), replyData.getError());
 }
 
 template OpenReply ClientEndpoint::send<OpenRequest, OpenReply>(NetworkAddress, const OpenRequest&);

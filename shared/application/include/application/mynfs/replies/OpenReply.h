@@ -10,8 +10,8 @@ class OpenReply : public Reply
 {
     int16_t descriptor;
 public:
-    OpenReply(int16_t descriptor);
-    OpenReply(DomainData data);
+    OpenReply(int16_t descriptor, int8_t error = 0);
+    OpenReply(DomainData data, int8_t error);
 
     int16_t getDescriptor();
 

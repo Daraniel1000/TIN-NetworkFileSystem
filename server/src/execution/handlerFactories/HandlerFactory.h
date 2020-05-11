@@ -9,7 +9,7 @@ class HandlerFactory
 public:
     virtual ~HandlerFactory() = default;
 
-    virtual std::unique_ptr<Handler> create(DomainData requestData, DomainData& replyData) const = 0;
+    virtual std::unique_ptr<Handler> create(DomainData requestData, DomainData& replyData, int8_t& replyError) const = 0;
 };
 
 

@@ -7,7 +7,7 @@
 class OpenHandler : public Handler
 {
 public:
-    OpenHandler(DomainData requestData, DomainData& replyData);
+    OpenHandler(DomainData requestData, DomainData& replyData, int8_t& replyError);
     void handle() override;
 };
 

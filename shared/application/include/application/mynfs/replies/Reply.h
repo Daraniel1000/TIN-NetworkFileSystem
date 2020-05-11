@@ -6,7 +6,9 @@
 
 class Reply
 {
+    int8_t error;
 public:
+    Reply(int8_t error) : error(error) {}
     virtual ~Reply() = default;
 
     virtual int8_t getError() = 0;
