@@ -8,6 +8,9 @@ class Message
 public:
     virtual ~Message() = default;
 
+    /**
+     * Transform message object to plain bytes
+     */
     virtual PlainData serialize() = 0;
 };
 

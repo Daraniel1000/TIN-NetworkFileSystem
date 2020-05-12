@@ -4,7 +4,12 @@
 
 class PlainData
 {
-
+/**
+ * TODO:
+ * some vector of bytes inside
+ * operations of adding, MAYBE deleting
+ * getting const reference to vector
+ */
 };
 
 

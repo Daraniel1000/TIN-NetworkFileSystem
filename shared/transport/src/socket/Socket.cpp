@@ -5,6 +5,11 @@ Socket::Socket(Port port)
 
 }
 
+Socket::~Socket()
+{
+
+}
+
 void Socket::send(NetworkAddress recipient, const PlainData& message)
 {
 
@@ -16,11 +21,6 @@ PlainData Socket::receive(NetworkAddress& source)
 }
 
 void Socket::signal()
-{
-
-}
-
-void Socket::close()
 {
 
 }

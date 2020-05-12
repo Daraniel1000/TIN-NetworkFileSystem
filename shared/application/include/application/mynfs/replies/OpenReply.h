@@ -10,7 +10,17 @@ class OpenReply : public Reply
 {
     int16_t descriptor;
 public:
+    /**
+     * Create open reply from arguments (sending side)
+     * @param descriptor descriptor of opened file
+     */
     OpenReply(int16_t descriptor, int8_t error = 0);
+
+    /**
+     * Deserialize reply (receiving side)
+     * @param data reply data
+     * @param error reply error
+     */
     OpenReply(DomainData data, int8_t error);
 
     int16_t getDescriptor();

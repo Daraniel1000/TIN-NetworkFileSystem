@@ -13,6 +13,9 @@ class HandlerFactoryPool
 public:
     HandlerFactoryPool();
 
+    /**
+     * Get handler factory of given type
+     */
     const HandlerFactory& getHandlerFactory(int8_t type) const;
 };
 

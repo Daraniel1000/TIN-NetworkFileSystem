@@ -7,7 +7,14 @@
 class RequestMessage : public Message
 {
 public:
+    /**
+     * Create message (sending side)
+     */
     RequestMessage() = default;
+
+    /**
+     * Deserialize message (receiving side)
+     */
     RequestMessage(PlainData data);
 
     PlainData serialize() override;
