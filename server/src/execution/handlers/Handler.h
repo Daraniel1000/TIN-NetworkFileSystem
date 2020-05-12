@@ -34,6 +34,8 @@ public:
      * cv.notify_all();
      */
     virtual void handle() = 0;
+
+    void fail();
 };
 
 
