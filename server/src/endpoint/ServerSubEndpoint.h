@@ -11,7 +11,7 @@ class ServerSubEndpoint
     Socket socket;
     NetworkAddress clientAddress;
     const HandlerFactoryPool& handlerFactoryPool;
-    std::queue<Handler*>& messageQueue;
+    std::queue<Handler*>& messageQueue;     //TODO zaimplementować safe queue
 public:
     /**
      * Create server subendpoint (for further communication with the client)

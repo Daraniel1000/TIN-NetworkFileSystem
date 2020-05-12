@@ -12,7 +12,7 @@ class ServerEndpoint
     Socket socket;
     HandlerFactoryPool handlerFactoryPool;
     std::queue<Handler*> messageQueue;      //queue of pointers, subendpoint keeps ownership of handler for mutex
-public:
+public:                                     //TODO zaimplementować safe queue
     /**
      * Create server at given port
      */

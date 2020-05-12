@@ -1,6 +1,6 @@
 #include "Handler.h"
 
-Handler::fail()
+void Handler::fail()
 {
     //TODO ustawia data
     std::lock_guard<std::mutex> lk(m);
