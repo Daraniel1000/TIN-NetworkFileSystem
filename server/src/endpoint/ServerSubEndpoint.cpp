@@ -1,12 +1,13 @@
 #include <session/messages/ConfirmMessage.h>
 #include <session/messages/DataMessage.h>
+#include <mutex>
 #include "ServerSubEndpoint.h"
 
 ServerSubEndpoint::ServerSubEndpoint(Socket socket, NetworkAddress clientAddress,
-                                     const HandlerFactoryPool &handlerFactoryPool) : socket(socket),
-                                                                                     clientAddress(clientAddress),
-                                                                                     handlerFactoryPool(
-                                                                                             handlerFactoryPool)
+                                     const HandlerFactoryPool &handlerFactoryPool,
+                                     std::queue<Handler*>& queueRef) : socket(socket), clientAddress(clientAddress),
+                                                                handlerFactoryPool(handlerFactoryPool),
+                                                                messageQueue(queueRef)
 {
 
 }
@@ -20,10 +21,13 @@ void ServerSubEndpoint::run()
 
     DomainData replyData;
     int8_t replyError = 0;
+    std::mutex requestFinished;
     auto handler = handlerFactory.create(requestDataMessage.getData(), replyData, replyError);
 
     //add handler to queue and wait for handling
-    handler->handle();
+    messageQueue.push(handler.get());
+    std::unique_lock<std::mutex> lk(handler->m);
+    handler->cv.wait(lk);   //wait_for żeby ustawić timeout wykonania
 
     DataMessage replyDataMessage(requestDataMessage.getType(), replyData, replyError);
 

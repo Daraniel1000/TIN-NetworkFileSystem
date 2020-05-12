@@ -3,6 +3,7 @@
 
 
 #include <transport/socket/Socket.h>
+#include <queue>
 #include "../execution/HandlerFactoryPool.h"
 
 class ServerSubEndpoint
@@ -10,6 +11,7 @@ class ServerSubEndpoint
     Socket socket;
     NetworkAddress clientAddress;
     const HandlerFactoryPool& handlerFactoryPool;
+    std::queue<Handler*>& messageQueue;
 public:
     /**
      * Create server subendpoint (for further communication with the client)
@@ -17,7 +19,8 @@ public:
      * @param clientAddress address of the client (from first request)
      * @param handlerFactoryPool handler factory passed from main server
      */
-    ServerSubEndpoint(Socket socket, NetworkAddress clientAddress, const HandlerFactoryPool& handlerFactoryPool);
+    ServerSubEndpoint(Socket socket, NetworkAddress clientAddress, const HandlerFactoryPool& handlerFactoryPool,
+            std::queue<Handler*>& queueRef);
 
     /**
      * Run subendpoint

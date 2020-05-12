@@ -4,6 +4,7 @@
 
 #include <cstdint>
 #include <session/DomainData.h>
+#include <condition_variable>
 
 class Handler
 {
@@ -11,6 +12,8 @@ class Handler
     DomainData &replyData;
     int8_t &replyError;
 public:
+    std::mutex m;
+    std::condition_variable cv;
     /**
      * Construct handler
      * @param requestData data of request
@@ -26,6 +29,9 @@ public:
 
     /**
      * Main handler function, operate on request and fill reply (or error) according to handler logic
+     * must end with:
+     * std::lock_guard<std::mutex> lk(m);
+     * cv.notify_all();
      */
     virtual void handle() = 0;
 };
