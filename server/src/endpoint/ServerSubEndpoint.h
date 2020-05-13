@@ -5,13 +5,14 @@
 #include <transport/socket/Socket.h>
 #include <queue>
 #include "../execution/HandlerFactoryPool.h"
+#include "../SafeQueue.h"
 
 class ServerSubEndpoint
 {
     Socket socket;
     NetworkAddress clientAddress;
     const HandlerFactoryPool& handlerFactoryPool;
-    std::queue<Handler*>& messageQueue;     //TODO zaimplementować safe queue
+    SafeQueue<Handler*>& messageQueue;
 public:
     /**
      * Create server subendpoint (for further communication with the client)
@@ -20,7 +21,7 @@ public:
      * @param handlerFactoryPool handler factory passed from main server
      */
     ServerSubEndpoint(Socket socket, NetworkAddress clientAddress, const HandlerFactoryPool& handlerFactoryPool,
-            std::queue<Handler*>& queueRef);
+            SafeQueue<Handler*>& queueRef);
 
     /**
      * Run subendpoint

@@ -3,13 +3,14 @@
 
 #include <queue>
 #include "../handlers/Handler.h"
+#include "../../SafeQueue.h"
 
 class Executor {
-    std::queue<Handler*>& messageQueue;     //TODO zaimplementować safe queue
+    SafeQueue<Handler*>& messageQueue;
 public:
     std::mutex serverStop;
 
-    Executor(std::queue<Handler*>& q): messageQueue(q) {}
+    Executor(SafeQueue<Handler*>& q): messageQueue(q) {}
 
     void run();
 

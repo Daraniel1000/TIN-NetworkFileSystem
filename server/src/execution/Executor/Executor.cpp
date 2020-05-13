@@ -2,14 +2,15 @@
 
 void Executor::run()
 {
-    while(!this->serverStop.try_lock())
+    while(!serverStop.try_lock())
     {
-        messageQueue.front()->handle();
-        messageQueue.pop();
+        messageQueue.frontSafe()->handle();
+        messageQueue.popSafe();
     }
-    while(!messageQueue.empty())
+    while(!messageQueue.emptySafe())
     {
-        messageQueue.front()->fail();
-        messageQueue.pop();
+        messageQueue.frontSafe()->fail();
+        messageQueue.popSafe();
     }
+    serverStop.unlock();
 }

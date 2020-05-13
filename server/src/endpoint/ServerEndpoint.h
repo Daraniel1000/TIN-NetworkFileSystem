@@ -6,13 +6,14 @@
 #include <addresses/Port.h>
 #include <queue>
 #include "../execution/HandlerFactoryPool.h"
+#include "../SafeQueue.h"
 
 class ServerEndpoint
 {
     Socket socket;
     HandlerFactoryPool handlerFactoryPool;
-    std::queue<Handler*> messageQueue;      //queue of pointers, subendpoint keeps ownership of handler for mutex
-public:                                     //TODO zaimplementować safe queue
+    SafeQueue<Handler*> messageQueue;      //queue of pointers, subendpoint keeps ownership of handler for mutex
+public:
     /**
      * Create server at given port
      */

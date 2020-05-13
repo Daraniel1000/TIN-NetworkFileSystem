@@ -5,7 +5,7 @@
 
 ServerSubEndpoint::ServerSubEndpoint(Socket socket, NetworkAddress clientAddress,
                                      const HandlerFactoryPool &handlerFactoryPool,
-                                     std::queue<Handler*>& queueRef) : socket(socket), clientAddress(clientAddress),
+                                     SafeQueue<Handler*>& queueRef) : socket(socket), clientAddress(clientAddress),
                                                                 handlerFactoryPool(handlerFactoryPool),
                                                                 messageQueue(queueRef)
 {
@@ -25,7 +25,7 @@ void ServerSubEndpoint::run()
     auto handler = handlerFactory.create(requestDataMessage.getData(), replyData, replyError);
 
     //add handler to queue and wait for handling
-    messageQueue.push(handler.get());
+    messageQueue.pushSafe(handler.get());
     std::unique_lock<std::mutex> lk(handler->m);
     handler->cv.wait(lk);   //wait_for żeby ustawić timeout wykonania
 
