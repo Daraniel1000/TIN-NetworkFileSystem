@@ -1,0 +1,2 @@
+add_executable(application_tests SampleTest.cpp)
+target_link_libraries(application_tests unit_tests application)

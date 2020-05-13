@@ -1,0 +1,2 @@
+add_executable(server_tests SampleTest.cpp)
+target_link_libraries(server_tests unit_tests)

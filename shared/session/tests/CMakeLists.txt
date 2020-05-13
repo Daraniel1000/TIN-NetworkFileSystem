@@ -1,0 +1,2 @@
+add_executable(session_tests SampleTest.cpp)
+target_link_libraries(session_tests unit_tests session)

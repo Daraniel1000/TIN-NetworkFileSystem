@@ -14,7 +14,7 @@ const Port &NetworkAddress::getPort() const
 
 void NetworkAddress::setAddress(IpAddress newAddress)
 {
-    this->ipAddress = newAddress
+    this->ipAddress = newAddress;
 }
 
 void NetworkAddress::setPort(Port newPort)

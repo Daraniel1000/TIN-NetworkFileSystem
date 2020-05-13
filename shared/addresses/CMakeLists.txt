@@ -7,3 +7,5 @@ set(SRC_FILES src/IpAddress.cpp src/Port.cpp src/NetworkAddress.cpp) # add sourc
 
 add_library(${TARGET} STATIC ${SRC_FILES})
 target_include_directories(${TARGET} PUBLIC ${PROJECT_SOURCE_DIR}/${INCLUDEDIR})
+
+add_subdirectory(tests)

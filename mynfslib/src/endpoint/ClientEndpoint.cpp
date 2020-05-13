@@ -7,11 +7,6 @@
 
 ClientEndpoint::ClientEndpoint(Port port) : socket(port) {}
 
-ClientEndpoint::~ClientEndpoint()
-{
-    this->socket.close();
-}
-
 template<class Req, class Rep>
 Rep ClientEndpoint::send(NetworkAddress recipient, const Req &request)
 {

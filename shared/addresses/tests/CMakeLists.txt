@@ -1,0 +1,2 @@
+add_executable(addresses_tests SampleTest.cpp)
+target_link_libraries(addresses_tests unit_tests addresses)

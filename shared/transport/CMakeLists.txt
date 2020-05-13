@@ -9,3 +9,5 @@ set(SRC_FILES src/socket/UDPSocket.cpp
 add_library(${TARGET} STATIC ${SRC_FILES})
 target_include_directories(${TARGET} PUBLIC ${PROJECT_SOURCE_DIR}/${INCLUDEDIR})
 target_link_libraries(${TARGET} PUBLIC addresses)
+
+add_subdirectory(tests)

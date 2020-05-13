@@ -8,3 +8,5 @@ set(SRC_FILES src/messages/RequestMessage.cpp src/messages/ConfirmMessage.cpp sr
 add_library(${TARGET} STATIC ${SRC_FILES})
 target_include_directories(${TARGET} PUBLIC ${PROJECT_SOURCE_DIR}/${INCLUDEDIR})
 target_link_libraries(${TARGET} PUBLIC transport)
+
+add_subdirectory(tests)

@@ -17,7 +17,6 @@ public:
      * @param port port to operate on (defualts to ephemeral port)
      */
     ClientEndpoint(Port port = EphemeralPort());
-    ~ClientEndpoint();
 
     /**
      * Send request to recipient and get reply

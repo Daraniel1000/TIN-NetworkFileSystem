@@ -11,3 +11,5 @@ find_package(Threads)
 
 add_executable(${TARGET} ${SRC_FILES})
 target_link_libraries(${TARGET} PUBLIC application session transport addresses Threads::Threads) # add shared libraries here (relative to shared)
+
+add_subdirectory(tests)

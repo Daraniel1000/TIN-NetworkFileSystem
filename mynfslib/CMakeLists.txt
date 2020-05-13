@@ -11,3 +11,5 @@ set(CMAKE_ARCHIVE_OUTPUT_DIRECTORY ${PROJECT_SOURCE_DIR}/${LIBDIR})
 add_library(${TARGET} STATIC ${SRC_FILES})
 target_include_directories(${TARGET} PUBLIC ${PROJECT_SOURCE_DIR}/${INCLUDEDIR})
 target_link_libraries(${TARGET} PUBLIC application session transport addresses)
+
+add_subdirectory(tests)
