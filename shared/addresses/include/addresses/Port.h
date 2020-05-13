@@ -2,9 +2,11 @@
 #define MYNFS_PORT_H
 
 
+#include <cstdint>
+
 class Port
 {
-    int port = 0;
+    uint16_t port = 0;
 
 public:
     /**
@@ -12,12 +14,16 @@ public:
      */
     Port() = default;
 
-    Port(int port);
+    Port(uint16_t port);
 
     /**
      * TODO:
      * getters but i don't know the exact form of them yet
      */
+
+    uint16_t toNetworkOrder() const;
+
+    uint16_t toHostOrder() const;
 };
 
 

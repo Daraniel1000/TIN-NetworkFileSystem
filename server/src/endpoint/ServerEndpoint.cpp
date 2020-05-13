@@ -18,7 +18,7 @@ void ServerEndpoint::run()
     RequestMessage request(socket.receive(source));
 
     //run new thread here and go back to receiving on socket
-    ServerSubEndpoint subEndpoint(Socket(EphemeralPort()), source, this->handlerFactoryPool, this->messageQueue);
+    ServerSubEndpoint subEndpoint(UDPSocket(EphemeralPort()), source, this->handlerFactoryPool, this->messageQueue);
     std::thread thread(&ServerSubEndpoint::run, &subEndpoint);  //TODO wrzucić to jeszcze w jakiś wektor czy coś jak to ma być w pętli
 
     executor.serverStop.unlock();

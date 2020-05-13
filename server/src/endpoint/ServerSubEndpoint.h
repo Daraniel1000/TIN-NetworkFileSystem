@@ -2,14 +2,14 @@
 #define MYNFS_SERVERSUBENDPOINT_H
 
 
-#include <transport/socket/Socket.h>
+#include <transport/socket/UDPSocket.h>
 #include <queue>
 #include "../execution/HandlerFactoryPool.h"
 #include "../SafeQueue.h"
 
 class ServerSubEndpoint
 {
-    Socket socket;
+    UDPSocket socket;
     NetworkAddress clientAddress;
     const HandlerFactoryPool& handlerFactoryPool;
     SafeQueue<Handler*>& messageQueue;
@@ -20,7 +20,7 @@ public:
      * @param clientAddress address of the client (from first request)
      * @param handlerFactoryPool handler factory passed from main server
      */
-    ServerSubEndpoint(Socket socket, NetworkAddress clientAddress, const HandlerFactoryPool& handlerFactoryPool,
+    ServerSubEndpoint(UDPSocket socket, NetworkAddress clientAddress, const HandlerFactoryPool& handlerFactoryPool,
             SafeQueue<Handler*>& queueRef);
 
     /**

@@ -3,7 +3,7 @@
 #include <mutex>
 #include "ServerSubEndpoint.h"
 
-ServerSubEndpoint::ServerSubEndpoint(Socket socket, NetworkAddress clientAddress,
+ServerSubEndpoint::ServerSubEndpoint(UDPSocket socket, NetworkAddress clientAddress,
                                      const HandlerFactoryPool &handlerFactoryPool,
                                      SafeQueue<Handler*>& queueRef) : socket(socket), clientAddress(clientAddress),
                                                                 handlerFactoryPool(handlerFactoryPool),

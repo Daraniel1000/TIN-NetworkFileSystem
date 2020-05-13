@@ -2,7 +2,7 @@
 #define MYNFS_SERVERENDPOINT_H
 
 
-#include <transport/socket/Socket.h>
+#include <transport/socket/UDPSocket.h>
 #include <addresses/Port.h>
 #include <queue>
 #include "../execution/HandlerFactoryPool.h"
@@ -10,7 +10,7 @@
 
 class ServerEndpoint
 {
-    Socket socket;
+    UDPSocket socket;
     HandlerFactoryPool handlerFactoryPool;
     SafeQueue<Handler*> messageQueue;      //queue of pointers, subendpoint keeps ownership of handler for mutex
 public:

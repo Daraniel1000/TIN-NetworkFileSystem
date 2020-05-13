@@ -3,7 +3,7 @@ project(${TARGET})
 
 set(INCLUDEDIR "include")
 
-set(SRC_FILES src/socket/Socket.cpp
+set(SRC_FILES src/socket/UDPSocket.cpp
               src/PlainData.cpp) # add source files here
 
 add_library(${TARGET} STATIC ${SRC_FILES})

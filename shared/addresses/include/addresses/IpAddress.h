@@ -2,14 +2,18 @@
 #define MYNFS_IPADDRESS_H
 
 
+#include <cstdint>
+
 class IpAddress
 {
-    int address = 0;
+    uint32_t address;
 public:
     /**
      * Empty default constructor for creating default empty objects
      */
     IpAddress() = default;
+
+    IpAddress(uint32_t address);
 
     /**
      * Construct IpAddress from string
@@ -23,6 +27,10 @@ public:
      * TODO:
      * getters but i don't know the exact form of them yet
      */
+
+    uint32_t toNetworkOrder() const;
+
+    uint32_t toHostOrder() const;
 };
 
 

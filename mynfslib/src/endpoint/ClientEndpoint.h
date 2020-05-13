@@ -1,7 +1,7 @@
 #ifndef MYNFS_CLIENTENDPOINT_H
 #define MYNFS_CLIENTENDPOINT_H
 
-#include <transport/socket/Socket.h>
+#include <transport/socket/UDPSocket.h>
 #include <addresses/Port.h>
 #include <addresses/EphemeralPort.h>
 #include <application/mynfs/requests/Request.h>
@@ -9,7 +9,7 @@
 
 class ClientEndpoint
 {
-    Socket socket;
+    UDPSocket socket;
 
 public:
     /**

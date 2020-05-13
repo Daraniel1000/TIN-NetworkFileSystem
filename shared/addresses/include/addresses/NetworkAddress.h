@@ -2,6 +2,8 @@
 #define MYNFS_NETWORKADDRESS_H
 
 
+#include <netinet/in.h>
+#include <string>
 #include "IpAddress.h"
 #include "Port.h"
 
@@ -12,13 +14,16 @@ class NetworkAddress
 
 public:
     NetworkAddress() = default;
-    NetworkAddress(IpAddress ipAddress, Port port) : ipAddress(ipAddress), port(port)  {}
+    NetworkAddress(IpAddress ipAddress, Port port);
 
-    const IpAddress& getAddress() { return this->ipAddress; }
-    const Port& getPort() { return this->port; }
+    const IpAddress& getAddress() const;
+    const Port& getPort() const;
 
-    void setAddress(IpAddress newAddress) { this->ipAddress = newAddress; }
-    void setPort(Port newPort) { this->port = newPort; }
+    void setAddress(IpAddress newAddress);
+    void setPort(Port newPort);
+
+    sockaddr_in toStruct() const;
+    std::string toString() const;
 };
 
 
