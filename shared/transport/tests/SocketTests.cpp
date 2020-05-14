@@ -1,11 +1,8 @@
-#define CATCH_CONFIG_MAIN
-
 #include <catch.hpp>
 #include <fff.h>
 
 #include "transport/socket/UDPSocket.h"
 
-DEFINE_FFF_GLOBALS;
 FAKE_VALUE_FUNC(int, select, int, fd_set*, fd_set*, fd_set*, struct timeval *);
 FAKE_VALUE_FUNC(ssize_t, recvfrom, int, void*, size_t, int, struct sockaddr *, socklen_t*);
 

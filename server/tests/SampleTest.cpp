@@ -1,9 +1,6 @@
-#define CATCH_CONFIG_MAIN
-
 #include <catch.hpp>
 #include <fff.h>
 
-DEFINE_FFF_GLOBALS;
 FAKE_VALUE_FUNC(int, close, int);
 
 int close_custom_fake(int fd)

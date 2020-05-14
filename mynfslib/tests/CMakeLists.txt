@@ -1,2 +1,2 @@
-add_executable(mynfslib_tests SampleTest.cpp)
+add_executable(mynfslib_tests TestsMain.cpp SampleTest.cpp)
 target_link_libraries(mynfslib_tests unit_tests)
