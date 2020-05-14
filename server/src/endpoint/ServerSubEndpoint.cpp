@@ -20,7 +20,7 @@ void ServerSubEndpoint::run()
     const HandlerFactory &handlerFactory = handlerFactoryPool.getHandlerFactory(0/*requestDataMessage.getType()*/);
 
     DomainData replyData;
-    int8_t replyError = 0;
+    PlainError replyError;
     std::mutex requestFinished;
     auto handler = handlerFactory.create(requestDataMessage.getData(), replyData, replyError);
 

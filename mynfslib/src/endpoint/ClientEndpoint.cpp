@@ -11,7 +11,7 @@ template<class Req, class Rep>
 Rep ClientEndpoint::send(NetworkAddress recipient, const Req &request)
 {
     socket.send(recipient, RequestMessage().serialize());
-    NetworkAddress source;
+    NetworkAddress source{};
     ConfirmMessage requestConfirm(socket.receive(source));
     socket.send(source, DataMessage(request.getType(), request.getData()).serialize());
     DataMessage replyData(socket.receive(source));

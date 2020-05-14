@@ -15,7 +15,7 @@ public:
     /**
      * Deserialize message (receiving side)
      */
-    RequestMessage(PlainData data);
+    explicit RequestMessage(PlainData data);
 
     PlainData serialize() override;
 };

@@ -4,11 +4,12 @@
 #include <cstdint>
 #include "Message.h"
 #include "session/DomainData.h"
+#include "session/PlainError.h"
 
 class DataMessage : public Message
 {
     int8_t type;
-    int8_t error;
+    PlainError error;
     DomainData data;
 public:
     /**
@@ -19,12 +20,12 @@ public:
      *
      * If error is nonzero other arguments can be anything as they should be ignored by receiving side
      */
-    DataMessage(int8_t type, DomainData data, int8_t error = 0);
+    DataMessage(int8_t type, DomainData data, PlainError error = PlainError());
 
     /**
      * Deserialize message (receiving side)
      */
-    DataMessage(PlainData data);
+    explicit DataMessage(PlainData data);
 
     /**
      * Get type of request this message is bound to
@@ -35,7 +36,7 @@ public:
      * Get message error
      * If there is some error on server side, it will be available for the client here
      */
-    int8_t getError();
+    PlainError getError();
 
     /**
      * Get message plain domain data (not serialization, only data getter)

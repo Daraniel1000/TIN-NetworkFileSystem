@@ -1,12 +1,10 @@
 #include "application/mynfs/replies/OpenReply.h"
 
-OpenReply::OpenReply(int16_t descriptor, int8_t error) : Reply(error)
-{
+#include <utility>
 
-}
+OpenReply::OpenReply(int16_t descriptor, OpenReplyError error) : descriptor(descriptor), error(std::move(error)) {}
 
-
-OpenReply::OpenReply(DomainData data, int8_t error) : Reply(error)
+OpenReply::OpenReply(DomainData data, PlainError error)
 {
 
 }
@@ -16,9 +14,9 @@ int16_t OpenReply::getDescriptor()
     return this->descriptor;
 }
 
-int8_t OpenReply::getError()
+const MyNFSError &OpenReply::getError()
 {
-    return 0;
+    return this->error;
 }
 
 DomainData OpenReply::getData() const

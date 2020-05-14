@@ -3,21 +3,22 @@
 
 #include <cstdint>
 #include "Message.h"
+#include "session/PlainError.h"
 
 class ConfirmMessage : public Message
 {
-    int8_t error;
+    PlainError error;
 public:
     /**
      * Create message from arguments (sending side)
      * @param error if some error happened while handling request, pass it here
      */
-    ConfirmMessage(int8_t error = 0);
+    explicit ConfirmMessage(PlainError error = PlainError(0));
 
     /**
      * Deserialize message (receiving side)
      */
-    ConfirmMessage(PlainData data);
+    explicit ConfirmMessage(PlainData data);
 
     PlainData serialize() override;
 };

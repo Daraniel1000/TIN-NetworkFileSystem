@@ -21,7 +21,7 @@ public:
     /**
      * Deserialize request (receiving side)
      */
-    OpenRequest(DomainData data);
+    explicit OpenRequest(DomainData data);
 
     const std::string& getPath();
     uint8_t getOflag();

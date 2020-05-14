@@ -14,7 +14,7 @@ void ServerEndpoint::run()
     executor.serverStop.lock();
     std::thread executorThread(&Executor::run, &executor);
 
-    NetworkAddress source;
+    NetworkAddress source{};
     RequestMessage request(socket.receive(source));
 
     //run new thread here and go back to receiving on socket

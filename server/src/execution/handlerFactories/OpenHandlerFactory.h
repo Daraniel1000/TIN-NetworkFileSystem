@@ -8,7 +8,7 @@
 class OpenHandlerFactory : public HandlerFactory
 {
 public:
-    std::unique_ptr<Handler> create(DomainData requestData, DomainData &replyData, int8_t& replyError) const override
+    std::unique_ptr<Handler> create(DomainData requestData, DomainData &replyData, PlainError& replyError) const override
     {
         return std::make_unique<OpenHandler>(requestData, replyData, replyError);
     }
