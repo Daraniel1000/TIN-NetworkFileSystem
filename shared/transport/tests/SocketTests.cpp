@@ -1,59 +1,99 @@
 #include <catch.hpp>
-#include <fff.h>
+#include <thread>
+#include <transport/read_interrupted_error.h>
 
 #include "transport/socket/UDPSocket.h"
+#include "addresses/EphemeralPort.h"
 
-FAKE_VALUE_FUNC(int, select, int, fd_set*, fd_set*, fd_set*, struct timeval *);
-FAKE_VALUE_FUNC(ssize_t, recvfrom, int, void*, size_t, int, struct sockaddr *, socklen_t*);
-
-int select_custom_fake(int socket, fd_set* read_set, fd_set*, fd_set*, struct timeval *)
+TEST_CASE("Socket correctly constructs on implicit ephemeral port", "[UDPSocket]")
 {
-    FD_ZERO(read_set);
-    FD_SET(socket-1, read_set);
-    return 1;
+    CHECK_NOTHROW(UDPSocket(EphemeralPort()));
 }
 
-std::vector<std::byte> dummyData;
-sockaddr_in dummyAddress;
-
-ssize_t recvfrom_custom_fake(int, void* buffer, size_t, int, struct sockaddr * address, socklen_t*)
+TEST_CASE("Socket not constructing on explicit ephemeral port", "[UDPSocket]")
 {
-    memcpy(buffer, dummyData.data(), dummyData.size());
-    memcpy(address, &dummyAddress, sizeof(dummyAddress));
-    return dummyData.size();
+    CHECK_NOTHROW(UDPSocket(Port(54321)));
 }
 
-TEST_CASE("Socket receives correct data", "[UDPSocket]")
+TEST_CASE("Socket not constructing on reserved port", "[UDPSocket]")
 {
-    dummyData = {std::byte(0x1), std::byte(0x2), std::byte(0x3)};
-    dummyAddress.sin_port = 100;
-    dummyAddress.sin_addr.s_addr = 1234;
+    CHECK_THROWS(UDPSocket(Port(22)));
+}
 
-    select_fake.custom_fake = select_custom_fake;
-    recvfrom_fake.custom_fake = recvfrom_custom_fake;
+TEST_CASE("Socket correct communication with normal data", "[UDPSocket]")
+{
+    std::vector<std::byte> dummyData = {std::byte(0x1), std::byte(0x2), std::byte(0x3)};
+    uint16_t port = 54321;
+    uint32_t address = 2130706433; // 127.0.0.1
 
-    UDPSocket s(Port(0));
+    UDPSocket sendSocket((EphemeralPort()));
+    UDPSocket receiveSocket((Port(port)));
+
+    NetworkAddress receiveAddress((IpAddress(address)), Port(port));
+    sendSocket.send(receiveAddress, PlainData(dummyData.data(), dummyData.size()));
     NetworkAddress sourceAddress;
-    auto data = s.receive(sourceAddress);
+    auto data = receiveSocket.receive(sourceAddress);
 
     CHECK(data.getData() == dummyData);
 }
 
-FAKE_VALUE_FUNC(ssize_t , sendto, int, const void*, size_t, int, const struct sockaddr *, socklen_t);
-
-TEST_CASE("Socket writes correct data", "[UDPSocket]")
+TEST_CASE("Socket correct communication with empty data", "[UDPSocket]")
 {
-    dummyData = {std::byte(0x1), std::byte(0x2), std::byte(0x3)};
+    std::vector<std::byte> dummyData = {};
+    uint16_t port = 54321;
+    uint32_t address = 2130706433; // 127.0.0.1
+
+    UDPSocket sendSocket((EphemeralPort()));
+    UDPSocket receiveSocket((Port(port)));
+
+    NetworkAddress receiveAddress((IpAddress(address)), Port(port));
+    sendSocket.send(receiveAddress, PlainData(dummyData.data(), dummyData.size()));
+    NetworkAddress sourceAddress;
+    auto data = receiveSocket.receive(sourceAddress);
+
+    CHECK(data.getData() == dummyData);
+}
+
+TEST_CASE("Socket send throws when message is too big", "[UDPSocket]")
+{
+    std::vector<std::byte> dummyData(UDPSocket::MAX_DATA_SIZE + 1);
+    uint16_t port = 54321;
+    uint32_t address = 2130706433; // 127.0.0.1
+
+    UDPSocket sendSocket((EphemeralPort()));
+    UDPSocket receiveSocket((Port(port)));
+
+    NetworkAddress receiveAddress((IpAddress(address)), Port(port));
+
+    CHECK_THROWS(sendSocket.send(receiveAddress, PlainData(dummyData.data(), dummyData.size())));
+}
+
+TEST_CASE("Socket send throws with bad recipient", "[UDPSocket]")
+{
+    std::vector<std::byte> dummyData(UDPSocket::MAX_DATA_SIZE + 1);
+
+    UDPSocket sendSocket((EphemeralPort()));
+
+    NetworkAddress receiveAddress((IpAddress()), Port());
+
+    CHECK_THROWS(sendSocket.send(receiveAddress, PlainData(dummyData.data(), dummyData.size())));
+}
+
+TEST_CASE("Socket wakes up after signal", "[UDPSocket]")
+{
+    std::vector<std::byte> dummyData = {std::byte(0x1), std::byte(0x2), std::byte(0x3)};
+    sockaddr_in dummyAddress;
     dummyAddress.sin_port = 100;
     dummyAddress.sin_addr.s_addr = 1234;
 
-    UDPSocket s(Port(0));
-    NetworkAddress sourceAddress(IpAddress(dummyAddress.sin_addr.s_addr), Port(dummyAddress.sin_port));
-    PlainData dataToSend(dummyData.data(), dummyData.size());
-    s.send(sourceAddress, dataToSend);
+    UDPSocket s((EphemeralPort()));
+    NetworkAddress sourceAddress;
 
-    auto buf = static_cast<const std::byte*>(sendto_fake.arg1_val);
-    auto size = sendto_fake.arg2_val;
-
-    CHECK(dummyData == std::vector<std::byte>(buf, buf + size));
+    std::thread thread([&]{
+        try{ s.receive(sourceAddress);}
+        catch (read_interrupted_error) {}
+    });
+    std::this_thread::sleep_for(std::chrono::milliseconds(10));
+    s.signal();
+    thread.join();
 }

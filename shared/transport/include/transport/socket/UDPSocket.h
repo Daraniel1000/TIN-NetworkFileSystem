@@ -8,6 +8,10 @@
 
 class UDPSocket
 {
+public:
+    const static int MAX_DATA_SIZE = 65507;
+
+private:
     const static int FAMILY = AF_INET;
     const static int TYPE = SOCK_DGRAM;
 
@@ -17,8 +21,7 @@ class UDPSocket
     int signalPipeRead;
     int signalPipeWrite;
 
-    const static int READ_BUFFER_SIZE = 65507;
-    std::byte readBuffer[READ_BUFFER_SIZE];
+    std::byte readBuffer[MAX_DATA_SIZE];
 
 public:
     /**

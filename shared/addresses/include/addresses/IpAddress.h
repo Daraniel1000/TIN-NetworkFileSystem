@@ -23,11 +23,6 @@ public:
      */
     IpAddress(char *addressString);
 
-    /**
-     * TODO:
-     * getters but i don't know the exact form of them yet
-     */
-
     uint32_t toNetworkOrder() const;
 
     uint32_t toHostOrder() const;

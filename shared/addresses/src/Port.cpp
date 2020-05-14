@@ -1,13 +1,11 @@
+#include <netinet/in.h>
 #include "addresses/Port.h"
 
-Port::Port(uint16_t port)
-{
-
-}
+Port::Port(uint16_t port) : port(port) {}
 
 uint16_t Port::toNetworkOrder() const
 {
-    return 0;
+    return htons(this->port);
 }
 
 uint16_t Port::toHostOrder() const

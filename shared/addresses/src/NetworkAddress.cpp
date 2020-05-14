@@ -1,6 +1,7 @@
 #include "addresses/NetworkAddress.h"
 
-NetworkAddress::NetworkAddress(IpAddress ipAddress, Port port) : ipAddress(ipAddress), port(port) {}
+NetworkAddress::NetworkAddress(IpAddress ipAddress, Port port) : ipAddress(ipAddress), port(port)
+{}
 
 const IpAddress &NetworkAddress::getAddress() const
 {
@@ -24,7 +25,10 @@ void NetworkAddress::setPort(Port newPort)
 
 sockaddr_in NetworkAddress::toStruct() const
 {
-    return sockaddr_in(); //TODO
+    return sockaddr_in{AF_INET,
+                       this->port.toNetworkOrder(),
+                       this->getAddress().toNetworkOrder(),
+                       0}; //TODO, zrobiłem to nasz szybko, może się da lepiej
 }
 
 std::string NetworkAddress::toString() const
