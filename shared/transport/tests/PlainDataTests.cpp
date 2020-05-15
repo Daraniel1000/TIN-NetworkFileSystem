@@ -59,3 +59,62 @@ TEST_CASE("PlainData holding copy of data", "[PlainData]")
 
     CHECK(data.getData() != dummyData);
 }
+
+TEST_CASE("PlainData correctly copies", "[PlainData]")
+{
+    std::vector<std::byte> dummyData1 = {std::byte(0x1), std::byte(0x2), std::byte(0x3)};
+    std::vector<std::byte> dummyData2 = {std::byte(0x4), std::byte(0x5), std::byte(0x6)};
+
+    auto data1 = PlainData(dummyData1.data(), dummyData1.size());
+    auto data2 = PlainData(dummyData2.data(), dummyData1.size());
+    data2 = data1;
+
+    data1.append(dummyData2.data(), dummyData2.size());
+
+    CHECK(data2.getData() == dummyData1);
+}
+
+TEST_CASE("PlainData gives correct size when non-empty", "[PlainData]")
+{
+    std::vector<std::byte> dummyData = {std::byte(0x1), std::byte(0x2), std::byte(0x3)};
+
+    auto data = PlainData(dummyData.data(), dummyData.size());
+
+    CHECK(data.getSize() == dummyData.size());
+}
+
+TEST_CASE("PlainData gives correct size when empty", "[PlainData]")
+{
+    auto data = PlainData();
+
+    CHECK(data.getSize() == 0);
+}
+
+TEST_CASE("PlainData gives correct subdata", "[PlainData]")
+{
+    std::vector<std::byte> dummyData = {std::byte(0x1), std::byte(0x2), std::byte(0x3), std::byte(0x4)};
+    auto subDummyData = std::vector<std::byte>(dummyData.begin(), dummyData.begin() + 2);
+
+    auto data = PlainData(dummyData.data(), dummyData.size());
+
+    CHECK(data.getNBytes(2) == subDummyData);
+}
+
+TEST_CASE("PlainData gives correct subdata with offset", "[PlainData]")
+{
+    std::vector<std::byte> dummyData = {std::byte(0x1), std::byte(0x2), std::byte(0x3), std::byte(0x4)};
+    auto subDummyData = std::vector<std::byte>(dummyData.begin() + 1, dummyData.begin() + 3);
+
+    auto data = PlainData(dummyData.data(), dummyData.size());
+
+    CHECK(data.getNBytes(2, 1) == subDummyData);
+}
+
+TEST_CASE("PlainData throws when number of bytes is out of bounds", "[PlainData]")
+{
+    std::vector<std::byte> dummyData = {std::byte(0x1), std::byte(0x2), std::byte(0x3), std::byte(0x4)};
+
+    auto data = PlainData(dummyData.data(), dummyData.size());
+
+    CHECK_THROWS(data.getNBytes(5));
+}

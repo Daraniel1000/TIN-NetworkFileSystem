@@ -17,7 +17,7 @@ OpenReplyError::OpenReplyError(const PlainError &error) : MyNFSError(error)
 }
 
 
-std::string OpenReplyError::toString()
+std::string OpenReplyError::toString() const
 {
     return OpenReplyError::stringMap.at(this->getErrorValue());
 }

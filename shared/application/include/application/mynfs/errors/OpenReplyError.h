@@ -10,7 +10,7 @@ class OpenReplyError : public MyNFSError
 public:
     explicit OpenReplyError(int8_t errorValue = 0);
     explicit OpenReplyError(const PlainError& error);
-    std::string toString() override;
+    std::string toString() const override;
 };
 
 

@@ -8,8 +8,10 @@
 
 class DataMessage : public Message
 {
-    int8_t type;
+    static const uint8_t MESSAGE_TYPE = 2;
+
     PlainError error;
+    int8_t type;
     DomainData data;
 public:
     /**
@@ -25,25 +27,25 @@ public:
     /**
      * Deserialize message (receiving side)
      */
-    explicit DataMessage(PlainData data);
-
-    /**
-     * Get type of request this message is bound to
-     */
-    int8_t getType();
+    explicit DataMessage(const PlainData& data);
 
     /**
      * Get message error
      * If there is some error on server side, it will be available for the client here
      */
-    PlainError getError();
+    const PlainError& getError() const;
+
+    /**
+     * Get type of request this message is bound to
+     */
+    int8_t getType() const;
 
     /**
      * Get message plain domain data (not serialization, only data getter)
      */
-    DomainData getData();
+    const DomainData& getData() const;
 
-    PlainData serialize() override;
+    PlainData serialize() const override;
 };
 
 

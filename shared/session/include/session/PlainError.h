@@ -9,7 +9,6 @@ class PlainError
 public:
     explicit PlainError(int8_t errorValue = 0) : errorValue(errorValue) {}
     int8_t getErrorValue() const { return this->errorValue; }
-    void setErrorValue(int8_t newErrorValue) { this->errorValue = newErrorValue; }
 };
 
 

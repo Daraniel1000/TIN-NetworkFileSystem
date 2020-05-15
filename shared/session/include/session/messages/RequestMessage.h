@@ -6,6 +6,7 @@
 
 class RequestMessage : public Message
 {
+    static const uint8_t MESSAGE_TYPE = 0;
 public:
     /**
      * Create message (sending side)
@@ -15,9 +16,9 @@ public:
     /**
      * Deserialize message (receiving side)
      */
-    explicit RequestMessage(PlainData data);
+    explicit RequestMessage(const PlainData& data);
 
-    PlainData serialize() override;
+    PlainData serialize() const override;
 };
 
 

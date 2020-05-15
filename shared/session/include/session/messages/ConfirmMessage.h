@@ -7,20 +7,24 @@
 
 class ConfirmMessage : public Message
 {
+    static const uint8_t MESSAGE_TYPE = 1;
+
     PlainError error;
 public:
     /**
      * Create message from arguments (sending side)
      * @param error if some error happened while handling request, pass it here
      */
-    explicit ConfirmMessage(PlainError error = PlainError(0));
+    explicit ConfirmMessage(const PlainError& error = PlainError(0));
 
     /**
      * Deserialize message (receiving side)
      */
-    explicit ConfirmMessage(PlainData data);
+    explicit ConfirmMessage(const PlainData& data);
 
-    PlainData serialize() override;
+    const PlainError& getError() const;
+
+    PlainData serialize() const override;
 };
 
 
