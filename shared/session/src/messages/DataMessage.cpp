@@ -2,6 +2,7 @@
 
 #include <utility>
 #include <stdexcept>
+#include <session/Converter.h>
 
 DataMessage::DataMessage(int8_t type, DomainData data, PlainError error) : type(type), data(std::move(data)),
                                                                            error(error)
@@ -18,12 +19,12 @@ DataMessage::DataMessage(const PlainData& data)
     Message::checkDataType(data, DataMessage::MESSAGE_TYPE);
     auto dataOffset = sizeof(DataMessage::MESSAGE_TYPE);
 
-    auto errorValue = DataMessage::getUint8FromBytes(
+    auto errorValue = Converter::getUint8FromBytes(
             data.getNBytes(sizeof(uint8_t), dataOffset));
     this->error = PlainError(errorValue);
     dataOffset += sizeof(errorValue);
 
-    auto reqType = DataMessage::getUint8FromBytes(
+    auto reqType = Converter::getUint8FromBytes(
             data.getNBytes(sizeof(this->type), dataOffset));
     this->type = reqType;
     dataOffset += sizeof(reqType);
@@ -49,12 +50,12 @@ const DomainData& DataMessage::getData() const
 
 PlainData DataMessage::serialize() const
 {
-    std::vector<std::byte> msgBytes = DataMessage::getBytesFromUint8(DataMessage::MESSAGE_TYPE);
+    std::vector<std::byte> msgBytes = Converter::getBytesFromUint8(DataMessage::MESSAGE_TYPE);
 
-    auto errorBytes = DataMessage::getBytesFromUint8(this->error.getErrorValue());
+    auto errorBytes = Converter::getBytesFromUint8(this->error.getErrorValue());
     msgBytes.insert(msgBytes.end(), errorBytes.begin(), errorBytes.end());
 
-    auto typeBytes = DataMessage::getBytesFromUint8(this->type);
+    auto typeBytes = Converter::getBytesFromUint8(this->type);
     msgBytes.insert(msgBytes.end(), typeBytes.begin(), typeBytes.end());
 
     auto dataBytes = this->getData().getData();

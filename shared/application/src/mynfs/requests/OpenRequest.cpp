@@ -1,9 +1,6 @@
 #include "application/mynfs/requests/OpenRequest.h"
 
-OpenRequest::OpenRequest(char *path, uint8_t oflag)
-{
-
-}
+OpenRequest::OpenRequest(char *path, uint8_t oflag) : path(path), oflag(oflag) {}
 
 OpenRequest::OpenRequest(DomainData data)
 {

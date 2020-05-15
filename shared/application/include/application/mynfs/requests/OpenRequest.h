@@ -8,6 +8,8 @@
 
 class OpenRequest : public Request
 {
+    static const uint8_t TYPE = 0;
+
     std::string path;
     uint8_t oflag;
 public:

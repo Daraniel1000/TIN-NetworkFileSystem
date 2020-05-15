@@ -1,2 +1,2 @@
-add_executable(session_tests TestsMain.cpp RequestMessageTests.cpp ConfirmMessageTests.cpp DataMessageTests.cpp MessagesSendingTests.cpp)
+add_executable(session_tests TestsMain.cpp RequestMessageTests.cpp ConfirmMessageTests.cpp DataMessageTests.cpp MessagesSendingTests.cpp ConverterTests.cpp)
 target_link_libraries(session_tests unit_tests session)

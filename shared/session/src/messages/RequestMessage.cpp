@@ -1,3 +1,4 @@
+#include <session/Converter.h>
 #include "session/messages/RequestMessage.h"
 
 RequestMessage::RequestMessage(const PlainData& data)
@@ -8,6 +9,6 @@ RequestMessage::RequestMessage(const PlainData& data)
 
 PlainData RequestMessage::serialize() const
 {
-    std::vector<std::byte> msgBytes = RequestMessage::getBytesFromUint8(RequestMessage::MESSAGE_TYPE);
+    std::vector<std::byte> msgBytes = Converter::getBytesFromUint8(RequestMessage::MESSAGE_TYPE);
     return PlainData(msgBytes);
 }
