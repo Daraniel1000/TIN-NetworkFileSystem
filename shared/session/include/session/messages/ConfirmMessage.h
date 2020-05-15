@@ -25,6 +25,10 @@ public:
     const PlainError& getError() const;
 
     PlainData serialize() const override;
+
+    bool operator==(const ConfirmMessage &rhs) const;
+
+    bool operator!=(const ConfirmMessage &rhs) const;
 };
 
 

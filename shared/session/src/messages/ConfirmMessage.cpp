@@ -26,3 +26,13 @@ PlainData ConfirmMessage::serialize() const
     msgBytes.insert(msgBytes.end(), errorBytes.begin(), errorBytes.end());
     return PlainData(msgBytes);
 }
+
+bool ConfirmMessage::operator==(const ConfirmMessage &rhs) const
+{
+    return error == rhs.error;
+}
+
+bool ConfirmMessage::operator!=(const ConfirmMessage &rhs) const
+{
+    return !(rhs == *this);
+}

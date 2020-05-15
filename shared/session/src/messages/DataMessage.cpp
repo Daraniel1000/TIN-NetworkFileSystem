@@ -62,3 +62,15 @@ PlainData DataMessage::serialize() const
 
     return PlainData(msgBytes);
 }
+
+bool DataMessage::operator==(const DataMessage &rhs) const
+{
+    return error == rhs.error &&
+           type == rhs.type &&
+           data == rhs.data;
+}
+
+bool DataMessage::operator!=(const DataMessage &rhs) const
+{
+    return !(rhs == *this);
+}

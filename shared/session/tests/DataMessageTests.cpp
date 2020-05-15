@@ -58,5 +58,5 @@ TEST_CASE("DataMessage correctly serializes", "[DataMessage]")
     auto rawData = argData.getData();
     data.append(rawData.data(), rawData.size());
 
-    CHECK(serialized.getData() == data.getData());
+    CHECK(serialized == data);
 }

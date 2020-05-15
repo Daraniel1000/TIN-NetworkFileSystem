@@ -32,3 +32,13 @@ std::vector<std::byte> PlainData::getNBytes(size_t n, size_t offset) const
         throw std::out_of_range("Number of bytes is out of range for this data");
     return std::vector<std::byte>(this->byteVector.begin() + offset, this->byteVector.begin() + offset + n);
 }
+
+bool PlainData::operator==(const PlainData &rhs) const
+{
+    return byteVector == rhs.byteVector;
+}
+
+bool PlainData::operator!=(const PlainData &rhs) const
+{
+    return !(rhs == *this);
+}

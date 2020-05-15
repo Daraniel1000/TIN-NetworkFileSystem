@@ -22,7 +22,7 @@ TEST_CASE("Socket not constructing on reserved port", "[UDPSocket]")
 
 TEST_CASE("Socket correct communication with normal data", "[UDPSocket]")
 {
-    std::vector<std::byte> dummyData = {std::byte(0x1), std::byte(0x2), std::byte(0x3)};
+    PlainData dummyData({std::byte(0x1), std::byte(0x2), std::byte(0x3)});
     uint16_t port = 54321;
     uint32_t address = 2130706433; // 127.0.0.1
 
@@ -30,16 +30,16 @@ TEST_CASE("Socket correct communication with normal data", "[UDPSocket]")
     UDPSocket receiveSocket((Port(port)));
 
     NetworkAddress receiveAddress((IpAddress(address)), Port(port));
-    sendSocket.send(receiveAddress, PlainData(dummyData.data(), dummyData.size()));
-    NetworkAddress sourceAddress;
+    sendSocket.send(receiveAddress, dummyData);
+    NetworkAddress sourceAddress{};
     auto data = receiveSocket.receive(sourceAddress);
 
-    CHECK(data.getData() == dummyData);
+    CHECK(data == dummyData);
 }
 
 TEST_CASE("Socket correct communication with empty data", "[UDPSocket]")
 {
-    std::vector<std::byte> dummyData = {};
+    PlainData dummyData;
     uint16_t port = 54321;
     uint32_t address = 2130706433; // 127.0.0.1
 
@@ -47,16 +47,16 @@ TEST_CASE("Socket correct communication with empty data", "[UDPSocket]")
     UDPSocket receiveSocket((Port(port)));
 
     NetworkAddress receiveAddress((IpAddress(address)), Port(port));
-    sendSocket.send(receiveAddress, PlainData(dummyData.data(), dummyData.size()));
-    NetworkAddress sourceAddress;
+    sendSocket.send(receiveAddress, dummyData);
+    NetworkAddress sourceAddress{};
     auto data = receiveSocket.receive(sourceAddress);
 
-    CHECK(data.getData() == dummyData);
+    CHECK(data == dummyData);
 }
 
 TEST_CASE("Socket send throws when message is too big", "[UDPSocket]")
 {
-    std::vector<std::byte> dummyData(UDPSocket::MAX_DATA_SIZE + 1);
+    PlainData dummyData(std::vector<std::byte>(UDPSocket::MAX_DATA_SIZE + 1));
     uint16_t port = 54321;
     uint32_t address = 2130706433; // 127.0.0.1
 
@@ -65,33 +65,28 @@ TEST_CASE("Socket send throws when message is too big", "[UDPSocket]")
 
     NetworkAddress receiveAddress((IpAddress(address)), Port(port));
 
-    CHECK_THROWS(sendSocket.send(receiveAddress, PlainData(dummyData.data(), dummyData.size())));
+    CHECK_THROWS(sendSocket.send(receiveAddress, dummyData));
 }
 
 TEST_CASE("Socket send throws with bad recipient", "[UDPSocket]")
 {
-    std::vector<std::byte> dummyData(UDPSocket::MAX_DATA_SIZE + 1);
+    PlainData dummyData(std::vector<std::byte>(UDPSocket::MAX_DATA_SIZE + 1));
 
     UDPSocket sendSocket((EphemeralPort()));
 
     NetworkAddress receiveAddress((IpAddress()), Port());
 
-    CHECK_THROWS(sendSocket.send(receiveAddress, PlainData(dummyData.data(), dummyData.size())));
+    CHECK_THROWS(sendSocket.send(receiveAddress, dummyData));
 }
 
 TEST_CASE("Socket wakes up after signal", "[UDPSocket]")
 {
-    std::vector<std::byte> dummyData = {std::byte(0x1), std::byte(0x2), std::byte(0x3)};
-    sockaddr_in dummyAddress;
-    dummyAddress.sin_port = 100;
-    dummyAddress.sin_addr.s_addr = 1234;
-
     UDPSocket s((EphemeralPort()));
-    NetworkAddress sourceAddress;
+    NetworkAddress sourceAddress{};
 
     std::thread thread([&]{
         try{ s.receive(sourceAddress);}
-        catch (read_interrupted_error) {}
+        catch (read_interrupted_error&) {}
     });
     std::this_thread::sleep_for(std::chrono::milliseconds(10));
     s.signal();

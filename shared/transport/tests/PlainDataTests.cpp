@@ -118,3 +118,25 @@ TEST_CASE("PlainData throws when number of bytes is out of bounds", "[PlainData]
 
     CHECK_THROWS(data.getNBytes(5));
 }
+
+TEST_CASE("PlainData correct equality", "[PlainData]")
+{
+    std::vector<std::byte> dummyData1 = {std::byte(0x1), std::byte(0x2), std::byte(0x3)};
+    std::vector<std::byte> dummyData2 = {std::byte(0x1), std::byte(0x2), std::byte(0x3)};
+
+    auto data1 = PlainData(dummyData1.data(), dummyData1.size());
+    auto data2 = PlainData(dummyData2.data(), dummyData2.size());
+
+    CHECK(data1 == data2);
+}
+
+TEST_CASE("PlainData correct inequality", "[PlainData]")
+{
+    std::vector<std::byte> dummyData1 = {std::byte(0x1), std::byte(0x2), std::byte(0x3)};
+    std::vector<std::byte> dummyData2 = {std::byte(0x3), std::byte(0x2), std::byte(0x1)};
+
+    auto data1 = PlainData(dummyData1.data(), dummyData1.size());
+    auto data2 = PlainData(dummyData2.data(), dummyData2.size());
+
+    CHECK(data1 != data2);
+}

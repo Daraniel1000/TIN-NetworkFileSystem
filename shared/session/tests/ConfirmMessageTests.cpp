@@ -46,5 +46,5 @@ TEST_CASE("ConfirmMessage correctly serializes", "[ConfirmMessage]")
     uint8_t error = 2;
     data.append(&error, sizeof(error));
 
-    CHECK(serialized.getData() == data.getData());
+    CHECK(serialized == data);
 }

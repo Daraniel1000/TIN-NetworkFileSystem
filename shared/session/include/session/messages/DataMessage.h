@@ -46,6 +46,10 @@ public:
     const DomainData& getData() const;
 
     PlainData serialize() const override;
+
+    bool operator==(const DataMessage &rhs) const;
+
+    bool operator!=(const DataMessage &rhs) const;
 };
 
 

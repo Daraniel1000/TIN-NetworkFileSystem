@@ -21,6 +21,10 @@ public:
     size_t getSize() const;
 
     std::vector<std::byte> getNBytes(size_t n, size_t offset = 0) const;
+
+    bool operator==(const PlainData &rhs) const;
+
+    bool operator!=(const PlainData &rhs) const;
 };
 
 
