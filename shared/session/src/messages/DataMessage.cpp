@@ -4,7 +4,7 @@
 #include <stdexcept>
 #include <session/Converter.h>
 
-DataMessage::DataMessage(int8_t type, DomainData data, PlainError error) : type(type), data(std::move(data)),
+DataMessage::DataMessage(uint8_t type, DomainData data, PlainError error) : type(type), data(std::move(data)),
                                                                            error(error)
 {}
 
@@ -36,7 +36,7 @@ DataMessage::DataMessage(const PlainData& data)
     this->data = DomainData(data.getNBytes(dataSize, dataOffset));
 }
 
-int8_t DataMessage::getType() const
+uint8_t DataMessage::getType() const
 {
     return this->type;
 }

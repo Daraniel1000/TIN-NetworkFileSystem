@@ -8,7 +8,7 @@
 
 class HandlerFactoryPool
 {
-    std::map<int8_t , std::unique_ptr<HandlerFactory>> handlersFactories;
+    std::map<uint8_t , std::unique_ptr<HandlerFactory>> handlersFactories;
 
 public:
     HandlerFactoryPool();
@@ -16,7 +16,7 @@ public:
     /**
      * Get handler factory of given type
      */
-    const HandlerFactory& getHandlerFactory(int8_t type) const;
+    const HandlerFactory& getHandlerFactory(uint8_t type) const;
 };
 
 

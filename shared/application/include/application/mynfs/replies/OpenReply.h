@@ -24,11 +24,11 @@ public:
      * @param data reply data
      * @param error reply error
      */
-    OpenReply(DomainData data, PlainError error);
+    OpenReply(const DomainData& data, PlainError error);
 
-    int16_t getDescriptor();
+    int16_t getDescriptor() const;
 
-    const MyNFSError & getError() override;
+    const MyNFSError & getError() const override;
     DomainData getData() const override;
 };
 

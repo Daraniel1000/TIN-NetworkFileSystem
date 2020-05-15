@@ -11,7 +11,7 @@ public:
     /**
      * Get type of request
      */
-    virtual int8_t getType() const = 0;
+    virtual uint8_t getType() const = 0;
 
     /**
      * Serialize request object to plain data

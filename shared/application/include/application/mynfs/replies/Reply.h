@@ -13,7 +13,7 @@ public:
     /**
      * Get reply error (0 = no erro)
      */
-    virtual const MyNFSError& getError() = 0;
+    virtual const MyNFSError& getError() const = 0;
 
     /**
      * Serialize reply object to plain data

@@ -26,6 +26,30 @@ TEST_CASE("Converter correctly converts from uint32 to bytes", "[Converter]")
     CHECK(converted == std::vector<std::byte>{std::byte(0x12), std::byte(0x34), std::byte(0x56), std::byte(0x78)});
 }
 
+TEST_CASE("Converter correctly converts from int8 to bytes", "[Converter]")
+{
+    int8_t value = 10;
+    auto converted = Converter::getBytesFromInt8(value);
+
+    CHECK(converted == std::vector<std::byte>{std::byte(value)});
+}
+
+TEST_CASE("Converter correctly converts from int16 to bytes", "[Converter]")
+{
+    int16_t value = 0x1234;
+    auto converted = Converter::getBytesFromInt16(value);
+
+    CHECK(converted == std::vector<std::byte>{std::byte(0x12), std::byte(0x34)});
+}
+
+TEST_CASE("Converter correctly converts from int32 to bytes", "[Converter]")
+{
+    int32_t value = 0x12345678;
+    auto converted = Converter::getBytesFromInt32(value);
+
+    CHECK(converted == std::vector<std::byte>{std::byte(0x12), std::byte(0x34), std::byte(0x56), std::byte(0x78)});
+}
+
 TEST_CASE("Converter correctly converts from bytes to uint8", "[Converter]")
 {
     auto bytes = std::vector<std::byte>{std::byte(0x12)};
@@ -49,6 +73,33 @@ TEST_CASE("Converter correctly converts from bytes to uint32", "[Converter]")
     auto bytes = std::vector<std::byte>{std::byte(0x12), std::byte(0x34), std::byte(0x56), std::byte(0x78)};
 
     auto converted = Converter::getUint32FromBytes(bytes);
+
+    CHECK(converted == 0x12345678);
+}
+
+TEST_CASE("Converter correctly converts from bytes to int8", "[Converter]")
+{
+    auto bytes = std::vector<std::byte>{std::byte(0x12)};
+
+    auto converted = Converter::getInt8FromBytes(bytes);
+
+    CHECK(converted == 0x12);
+}
+
+TEST_CASE("Converter correctly converts from bytes to int16", "[Converter]")
+{
+    auto bytes = std::vector<std::byte>{std::byte(0x12), std::byte(0x34)};
+
+    auto converted = Converter::getInt16FromBytes(bytes);
+
+    CHECK(converted == 0x1234);
+}
+
+TEST_CASE("Converter correctly converts from bytes to int32", "[Converter]")
+{
+    auto bytes = std::vector<std::byte>{std::byte(0x12), std::byte(0x34), std::byte(0x56), std::byte(0x78)};
+
+    auto converted = Converter::getInt32FromBytes(bytes);
 
     CHECK(converted == 0x12345678);
 }

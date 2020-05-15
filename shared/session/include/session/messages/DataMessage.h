@@ -11,7 +11,7 @@ class DataMessage : public Message
     static const uint8_t MESSAGE_TYPE = 2;
 
     PlainError error;
-    int8_t type;
+    uint8_t type;
     DomainData data;
 public:
     /**
@@ -22,7 +22,7 @@ public:
      *
      * If error is nonzero other arguments can be anything as they should be ignored by receiving side
      */
-    DataMessage(int8_t type, DomainData data, PlainError error = PlainError());
+    DataMessage(uint8_t type, DomainData data, PlainError error = PlainError());
 
     /**
      * Deserialize message (receiving side)
@@ -38,7 +38,7 @@ public:
     /**
      * Get type of request this message is bound to
      */
-    int8_t getType() const;
+    uint8_t getType() const;
 
     /**
      * Get message plain domain data (not serialization, only data getter)

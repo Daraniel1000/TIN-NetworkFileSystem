@@ -6,7 +6,6 @@
 
 class MyNFSError
 {
-
 protected:
     int8_t errorValue;
 public:

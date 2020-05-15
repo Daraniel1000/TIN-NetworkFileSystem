@@ -1,7 +1,8 @@
 #include "application/mynfs/errors/OpenReplyError.h"
 
 const std::unordered_map<int8_t, std::string> OpenReplyError::stringMap = {
-        {0, "Success"}
+        {0, "Success"},
+        {1, "Error"} //TODO
 };
 
 OpenReplyError::OpenReplyError(int8_t errorValue) : MyNFSError(errorValue)
