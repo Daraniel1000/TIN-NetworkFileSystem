@@ -9,6 +9,7 @@ RequestMessage::RequestMessage(const PlainData& data)
 
 PlainData RequestMessage::serialize() const
 {
+    // convert type only
     std::vector<std::byte> msgBytes = Converter::getBytesFromUint8(RequestMessage::MESSAGE_TYPE);
     return PlainData(msgBytes);
 }
