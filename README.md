@@ -23,8 +23,8 @@ Pliki wykonywalne są umieszczone bezpośrednio w katalogach projektu, np. ```se
 | :white_check_mark: | obsługa błędów w ClientEndpoint, timeouty, ponowne wysyłanie | :skull: :skull: | Weronika |
 | :white_check_mark: | adresy, czyli po prostu wrappery na obsługę danych o adresie, przy okazji IpAddress w konstruktorze jak podamy stringa to wykona zapytanie do resolvera | :skull: | Gosia |
 | :white_check_mark: | dorobienie wszystkich Reply i Request, ich serializacja i deserializacja | :skull: :skull: | Sebastian |
-| :white_check_mark: | serializacja i deserializacja komunikatów (Messages) | :skull: :skull: | Sebastian |
-| :white_check_mark: | obsługa gniazda (czyli kod Socket) | :skull: :skull: | Sebastian |
+| :heavy_check_mark: | serializacja i deserializacja komunikatów (Messages) | :skull: :skull: | Sebastian |
+| :heavy_check_mark: | obsługa gniazda (czyli kod Socket) | :skull: :skull: | Sebastian |
 | :white_check_mark: | implementacja handlerów czyli wykonanie żądań po stronie serwera | :skull: :skull: | Gosia |
 | :white_check_mark: | obsługa błędów po stronie serwera, timeouty, ponowne wysyłanie | :skull: :skull: | Gosia |
 | :white_check_mark: | sprawdzanie praw dostępu klientów, nadawanie naszych deskryptorów | :skull: | Weronika |
