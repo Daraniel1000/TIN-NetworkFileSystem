@@ -3,6 +3,8 @@
 #include <session/messages/RequestMessage.h>
 #include <application/mynfs/replies/OpenReply.h>
 #include <application/mynfs/requests/OpenRequest.h>
+#include <application/mynfs/replies/ReadReply.h>
+#include <application/mynfs/requests/ReadRequest.h>
 #include "ClientEndpoint.h"
 
 ClientEndpoint::ClientEndpoint(Port port) : socket(port) {}
@@ -21,3 +23,4 @@ Rep ClientEndpoint::send(NetworkAddress recipient, const Req &request)
 }
 
 template OpenReply ClientEndpoint::send<OpenRequest, OpenReply>(NetworkAddress, const OpenRequest&);
+template ReadReply ClientEndpoint::send<ReadRequest, ReadReply>(NetworkAddress, const ReadRequest&);
