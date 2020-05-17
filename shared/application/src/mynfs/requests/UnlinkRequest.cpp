@@ -3,7 +3,7 @@
 const uint8_t UnlinkRequest::TYPE = 5;
 const int16_t UnlinkRequest::MAX_PATH_SIZE = 4096;
 
-UnlinkRequest::UnlinkRequest(char *path)
+UnlinkRequest::UnlinkRequest(char const *path)
 {
 
 }

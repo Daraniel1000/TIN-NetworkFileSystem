@@ -13,7 +13,7 @@
 #include "mynfslib.h"
 #include "endpoint/ClientEndpoint.h"
 
-int16_t mynfs_open(char *host, char *path, uint8_t oflag)
+int16_t mynfs_open(char const *host, char const *path, uint8_t oflag)
 {
     // create endpoint
     ClientEndpoint clientEndpoint;
@@ -31,7 +31,7 @@ int16_t mynfs_open(char *host, char *path, uint8_t oflag)
     return readReply.getDescriptor();
 }
 
-int16_t mynfs_read(char *host, int16_t fd, void *buf, int16_t count)
+int16_t mynfs_read(char const *host, int16_t fd, void *buf, int16_t count)
 {
     ClientEndpoint clientEndpoint;
 

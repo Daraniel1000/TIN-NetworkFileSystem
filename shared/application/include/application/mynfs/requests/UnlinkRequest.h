@@ -17,7 +17,7 @@ public:
      * Create unlink request from arguments (sending side)
      * @param path path to the file
      */
-    UnlinkRequest(char *path);
+    UnlinkRequest(char const *path);
 
     /**
      * Deserialize request (receiving side)

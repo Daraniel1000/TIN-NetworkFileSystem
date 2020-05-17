@@ -1,20 +1,9 @@
 #include <catch.hpp>
-#include <fff.h>
+#include <fcntl.h>
 
-FAKE_VALUE_FUNC(int, close, int);
+#include "mynfslib.h"
 
-int close_custom_fake(int fd)
+TEST_CASE("mynfs_open working correctly", "[mynfs]")
 {
-    //sample mock
-    return 0;
-}
-
-TEST_CASE("Description", "[TAG]")
-{
-    close_fake.custom_fake = close_custom_fake; // mock entire function (before calling)
-    close_fake.return_val = 1; // set return value (before calling)
-
-    auto fd = close_fake.arg0_val; // capture passed argument value (after calling)
-
-    CHECK(true == true);
+    mynfs_open("127.0.0.1", "/dir/file", O_RDONLY);
 }

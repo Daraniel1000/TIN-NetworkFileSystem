@@ -19,7 +19,7 @@ public:
      * @param buf buffer with data to write
      * @param count buffer size
      */
-    WriteRequest(int16_t descriptor, void* buf, int16_t count);
+    WriteRequest(int16_t descriptor, void const *buf, int16_t count);
 
     /**
      * Deserialize request (receiving side)

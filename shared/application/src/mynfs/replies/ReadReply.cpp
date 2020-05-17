@@ -1,6 +1,6 @@
 #include "application/mynfs/replies/ReadReply.h"
 
-ReadReply::ReadReply(void *buf, int16_t count, ReadReplyError error)
+ReadReply::ReadReply(void const *buf, int16_t count, ReadReplyError error)
 {
 
 }

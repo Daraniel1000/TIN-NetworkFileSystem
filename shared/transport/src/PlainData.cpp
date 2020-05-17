@@ -3,16 +3,16 @@
 #include <utility>
 #include <stdexcept>
 
-PlainData::PlainData(void *byteArray, unsigned int length)
+PlainData::PlainData(void const *byteArray, unsigned int length)
 {
     this->append(byteArray, length);
 }
 
 PlainData::PlainData(std::vector<std::byte> byteVector) : byteVector(std::move(byteVector)) {}
 
-void PlainData::append(void *byteArray, unsigned int length)
+void PlainData::append(void const *byteArray, unsigned int length)
 {
-    auto charByteArray = static_cast<std::byte *>(byteArray);
+    auto charByteArray = static_cast<std::byte const *>(byteArray);
     this->byteVector.insert(this->byteVector.end(), charByteArray, charByteArray + length);
 }
 

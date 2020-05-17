@@ -26,7 +26,7 @@ static void checkOflag(uint16_t value)
                 "Invalid oflag value " + std::to_string(value) + ". Only possible values are: " + s);
 }
 
-OpenRequest::OpenRequest(char *path, uint16_t oflag) : path(path), oflag(oflag)
+OpenRequest::OpenRequest(char const *path, uint16_t oflag) : path(path), oflag(oflag)
 {
     if (this->path.size() > OpenRequest::MAX_PATH_SIZE)
         throw std::logic_error(

@@ -21,7 +21,7 @@ public:
      * If it's a name, query the resolver
      * @param addressString null-terminated address (numerical or name)
      */
-    IpAddress(char *addressString);
+    IpAddress(char const *addressString);
 
     uint32_t toNetworkOrder() const;
 

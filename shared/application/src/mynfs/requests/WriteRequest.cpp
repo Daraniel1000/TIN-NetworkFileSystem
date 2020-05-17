@@ -2,7 +2,7 @@
 
 const uint8_t WriteRequest::TYPE = 2;
 
-WriteRequest::WriteRequest(int16_t descriptor, void *buf, int16_t count)
+WriteRequest::WriteRequest(int16_t descriptor, void const *buf, int16_t count)
 {
 
 }

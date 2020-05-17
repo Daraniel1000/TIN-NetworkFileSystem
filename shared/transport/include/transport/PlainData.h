@@ -11,10 +11,10 @@ class PlainData
 
 public:
     PlainData() = default;
-    PlainData(void* byteArray, unsigned int length);
+    PlainData(void const* byteArray, unsigned int length);
     PlainData(std::vector<std::byte> byteVector);
 
-    void append(void* byteArray, unsigned int length);
+    void append(void const* byteArray, unsigned int length);
 
     const std::vector<std::byte>& getData() const;
 

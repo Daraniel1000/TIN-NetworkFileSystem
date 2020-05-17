@@ -20,7 +20,7 @@ public:
      * @param count size of buffer
      * @param error if error happened pass it here (other arguments are not important)
      */
-    explicit ReadReply(void* buf, int16_t count, ReadReplyError  error = ReadReplyError());
+    explicit ReadReply(void const *buf, int16_t count, ReadReplyError  error = ReadReplyError());
 
     /**
      * Deserialize reply (receiving side)

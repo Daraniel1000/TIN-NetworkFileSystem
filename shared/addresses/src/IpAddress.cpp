@@ -3,7 +3,7 @@
 
 IpAddress::IpAddress(uint32_t address) : address(address) {}
 
-IpAddress::IpAddress(char *addressString)
+IpAddress::IpAddress(char const *addressString)
 {
 
 }

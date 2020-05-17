@@ -19,7 +19,7 @@ public:
      * @param path path to the file
      * @param oflag open flags
      */
-    OpenRequest(char *path, uint16_t oflag);
+    OpenRequest(char const *path, uint16_t oflag);
 
     /**
      * Deserialize request (receiving side)
