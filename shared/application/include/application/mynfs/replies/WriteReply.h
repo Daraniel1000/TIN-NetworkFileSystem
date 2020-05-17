@@ -14,6 +14,8 @@ class WriteReply : public Reply
     int16_t count;
     WriteReplyError error;
 public:
+    static const int16_t MAX_DATA_SIZE;
+
     /**
      * Create write reply from arguments (sending side)
      * @param count number of bytes written

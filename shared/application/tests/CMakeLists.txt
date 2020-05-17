@@ -1,2 +1,2 @@
-add_executable(application_tests TestsMain.cpp OpenRequestTests.cpp OpenReplyTests.cpp)
+add_executable(application_tests TestsMain.cpp OpenRequestTests.cpp OpenReplyTests.cpp ReadRequestTests.cpp ReadReplyTests.cpp WriteRequestTests.cpp WriteReplyTests.cpp LseekRequestTests.cpp LseekReplyTests.cpp CloseRequestTests.cpp CloseReplyTests.cpp UnlinkRequestTests.cpp UnlinkReplyTests.cpp)
 target_link_libraries(application_tests unit_tests application)

@@ -14,6 +14,8 @@ class ReadReply : public Reply
     PlainData readData;
     ReadReplyError error;
 public:
+    static const int16_t MAX_DATA_SIZE;
+
     /**
      * Create read reply from arguments (sending side)
      * @param buf buffer with data

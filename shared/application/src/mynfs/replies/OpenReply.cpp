@@ -3,9 +3,10 @@
 #include <utility>
 #include <session/Converter.h>
 
-OpenReply::OpenReply(int16_t descriptor, OpenReplyError error) : descriptor(descriptor), error(std::move(error)) {}
+OpenReply::OpenReply(int16_t descriptor, OpenReplyError error) : descriptor(descriptor), error(std::move(error))
+{}
 
-OpenReply::OpenReply(const DomainData& data, PlainError error) : error(error)
+OpenReply::OpenReply(const DomainData &data, PlainError error) : error(std::move(error))
 {
     auto expectedSize = sizeof(this->descriptor);
     if (data.getSize() != expectedSize)

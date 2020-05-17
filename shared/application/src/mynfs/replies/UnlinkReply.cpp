@@ -1,13 +1,15 @@
 #include "application/mynfs/replies/UnlinkReply.h"
 
-UnlinkReply::UnlinkReply(UnlinkReplyError error)
+UnlinkReply::UnlinkReply(UnlinkReplyError error) : error(std::move(error))
+{}
+
+UnlinkReply::UnlinkReply(const DomainData &data, PlainError error) : error(std::move(error))
 {
-
-}
-
-UnlinkReply::UnlinkReply(const DomainData &data, PlainError error)
-{
-
+    auto expectedSize = 0;
+    if (data.getSize() != expectedSize)
+        throw std::logic_error(
+                "Bad message size. Expected " + std::to_string(expectedSize) + ", but got " +
+                std::to_string(data.getSize()));
 }
 
 const MyNFSError &UnlinkReply::getError() const

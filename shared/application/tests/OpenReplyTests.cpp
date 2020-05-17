@@ -16,7 +16,7 @@ TEST_CASE("OpenReply correctly constructs from arguments", "[OpenReply]")
 TEST_CASE("OpenReply correctly deserializes", "[OpenReply]")
 {
     DomainData data;
-    uint16_t descriptor = htons(10);
+    int16_t descriptor = htons(10);
     data.append(&descriptor, sizeof(descriptor));
     PlainError error(1);
 
@@ -24,6 +24,17 @@ TEST_CASE("OpenReply correctly deserializes", "[OpenReply]")
     OpenReply rep(data, error);
     CHECK(rep.getDescriptor() == ntohs(descriptor));
     CHECK(rep.getError().getErrorValue() == error.getErrorValue());
+}
+
+TEST_CASE("OpenReply throws with bad deserialization data size", "[OpenReply]")
+{
+    DomainData data;
+    int16_t descriptor = htons(10);
+    data.append(&descriptor, sizeof(descriptor));
+    data.append(&descriptor, sizeof(descriptor));
+    PlainError error(1);
+
+    CHECK_THROWS(OpenReply(data, error));
 }
 
 TEST_CASE("OpenReply correctly serializes", "[OpenReply]")

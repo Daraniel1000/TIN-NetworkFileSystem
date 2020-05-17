@@ -28,10 +28,8 @@ void checkOflag(uint16_t value)
     }
 }
 
-OpenRequest::OpenRequest(char const *path, uint16_t oflag)
+OpenRequest::OpenRequest(char const *path, uint16_t oflag) : path(path), oflag(oflag)
 {
-    this->path = std::string(path);
-    this->oflag = oflag;
     if (this->path.size() > OpenRequest::MAX_PATH_SIZE)
         throw std::logic_error(
                 "Path is too long. Expected at most" + std::to_string(OpenRequest::MAX_PATH_SIZE) + ", but got " +
@@ -66,7 +64,7 @@ OpenRequest::OpenRequest(const DomainData &data)
             data.getNBytes(sizeof(OpenRequest::MAX_PATH_SIZE), dataOffset));
     dataOffset += sizeof(pathLength);
 
-    //get data
+    //get path
     auto pathBytes = data.getNBytes(pathLength, dataOffset);
     auto charPathPtr = static_cast<char *>(static_cast<void *>(pathBytes.data()));
     this->path = std::string(charPathPtr, charPathPtr + pathBytes.size());

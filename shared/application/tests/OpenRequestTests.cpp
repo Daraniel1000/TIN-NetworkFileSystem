@@ -42,6 +42,15 @@ TEST_CASE("OpenRequest correctly deserializes", "[OpenRequest]")
     CHECK(req.getPath() == path);
 }
 
+TEST_CASE("OpenRequest deserialization throws with bad message size", "[OpenRequest]")
+{
+    DomainData data;
+    uint8_t something = 5;
+    data.append(&something, sizeof(something));
+
+    CHECK_THROWS(OpenRequest(data));
+}
+
 TEST_CASE("OpenRequest deserialization throws with bad oflag", "[OpenRequest]")
 {
     std::string path = "/dir/";

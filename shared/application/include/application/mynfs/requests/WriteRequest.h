@@ -12,6 +12,7 @@ class WriteRequest : public Request
     PlainData writeData;
 public:
     static const uint8_t TYPE;
+    static const int16_t MAX_DATA_SIZE;
 
     /**
      * Create write request from arguments (sending side)
