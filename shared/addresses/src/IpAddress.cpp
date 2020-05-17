@@ -9,7 +9,7 @@
 
 IpAddress::IpAddress(uint32_t address) : address(address) {}
 
-IpAddress::IpAddress(char *addressString)
+IpAddress::IpAddress(char const *addressString)
 {
     uint32_t nAddress;
     struct in_addr inAddr;

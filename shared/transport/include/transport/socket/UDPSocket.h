@@ -9,7 +9,7 @@
 class UDPSocket
 {
 public:
-    const static int MAX_DATA_SIZE = 65507;
+    const static int MAX_DATA_SIZE;
 
 private:
     const static int FAMILY = AF_INET;
@@ -20,8 +20,6 @@ private:
 
     int signalPipeRead;
     int signalPipeWrite;
-
-    std::byte readBuffer[MAX_DATA_SIZE];
 
 public:
     /**
@@ -48,13 +46,15 @@ public:
      * @param source reference to address structure, that will be filled with address info of the source of the message
      * @return serialized received message
      */
-    PlainData receive(NetworkAddress& source);
+    PlainData receive(NetworkAddress& source) const;
 
     /**
      * Wake up blocked socket
      * Has to be called from another thread obviously
      */
     void signal() const;
+
+    const NetworkAddress& getAddress() const;
 };
 
 

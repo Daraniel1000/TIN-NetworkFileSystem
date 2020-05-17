@@ -16,6 +16,7 @@ public:
     /**
      * Create open reply from arguments (sending side)
      * @param descriptor descriptor of opened file
+     * @param error if error happened pass it here (other arguments are not important)
      */
     explicit OpenReply(int16_t descriptor, OpenReplyError  error = OpenReplyError());
 
@@ -29,7 +30,7 @@ public:
     int16_t getDescriptor() const;
 
     const MyNFSError & getError() const override;
-    DomainData getData() const override;
+    DomainData serialize() const override;
 };
 
 

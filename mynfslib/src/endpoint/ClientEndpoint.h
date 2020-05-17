@@ -28,7 +28,7 @@ public:
      * @return reply
      */
     template<class Req, class Rep>
-    Rep send(NetworkAddress recipient, const Req& request);
+    Rep send(NetworkAddress recipient, const Req& request) const;
 };
 
 

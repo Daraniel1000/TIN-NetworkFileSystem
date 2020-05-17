@@ -3,7 +3,8 @@ project(${TARGET})
 
 set(BINDIR "bin")
 
-set(SRC_FILES src/main.cpp) # add source files here
+set(SRC_FILES
+        src/main.cpp) # add source files here
 
 set(CMAKE_RUNTIME_OUTPUT_DIRECTORY ${PROJECT_SOURCE_DIR}/${BINDIR})
 

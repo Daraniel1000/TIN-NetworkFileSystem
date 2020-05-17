@@ -11,15 +11,15 @@ class OpenRequest : public Request
     std::string path;
     uint16_t oflag;
 public:
-    static const uint8_t TYPE = 0;
-    static const int16_t MAX_PATH_SIZE = 4096;
+    static const uint8_t TYPE;
+    static const int16_t MAX_PATH_SIZE;
 
     /**
      * Create open request from arguments (sending side)
      * @param path path to the file
      * @param oflag open flags
      */
-    OpenRequest(char *path, uint16_t oflag);
+    OpenRequest(char const *path, uint16_t oflag);
 
     /**
      * Deserialize request (receiving side)
@@ -30,7 +30,7 @@ public:
     uint16_t getOflag() const;
 
     uint8_t getType() const override;
-    DomainData getData() const override;
+    DomainData serialize() const override;
 };
 
 

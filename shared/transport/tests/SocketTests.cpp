@@ -1,5 +1,6 @@
 #include <catch.hpp>
 #include <thread>
+#include <cstddef>
 #include <transport/read_interrupted_error.h>
 
 #include "transport/socket/UDPSocket.h"

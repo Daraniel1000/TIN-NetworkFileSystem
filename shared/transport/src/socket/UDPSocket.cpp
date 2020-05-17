@@ -5,6 +5,7 @@
 #include "addresses/AnyAddress.h"
 #include "transport/read_interrupted_error.h"
 
+const int UDPSocket::MAX_DATA_SIZE = 65507;
 
 UDPSocket::UDPSocket(Port port)
 {
@@ -62,7 +63,7 @@ void UDPSocket::send(NetworkAddress recipient, const PlainData &message) const
                 "Sending message to " + recipient.toString() + " failed. " + std::string(strerror(errno)) + ".");
 }
 
-PlainData UDPSocket::receive(NetworkAddress &source)
+PlainData UDPSocket::receive(NetworkAddress &source) const
 {
     // add descriptors to set
     fd_set readSet;
@@ -90,8 +91,9 @@ PlainData UDPSocket::receive(NetworkAddress &source)
     sockaddr_in sourceAddress{};
     socklen_t sourceAddressLength = sizeof(sockaddr_in);
     auto flags = 0;
+    std::byte readBuffer[MAX_DATA_SIZE];
 
-    int numBytes = recvfrom(this->socketDescriptor, this->readBuffer, UDPSocket::MAX_DATA_SIZE, flags,
+    int numBytes = recvfrom(this->socketDescriptor, readBuffer, UDPSocket::MAX_DATA_SIZE, flags,
                             (struct sockaddr *) &sourceAddress, &sourceAddressLength);
 
     if (numBytes < 0)
@@ -102,11 +104,16 @@ PlainData UDPSocket::receive(NetworkAddress &source)
     source.setAddress(IpAddress(sourceAddress.sin_addr.s_addr));
     source.setPort(Port(sourceAddress.sin_port));
 
-    return PlainData(this->readBuffer, numBytes);
+    return PlainData(readBuffer, numBytes);
 }
 
 void UDPSocket::signal() const
 {
     std::byte dummyByte{0x1};
     write(this->signalPipeWrite, &dummyByte, sizeof(dummyByte)); // write 1 byte to pipe
+}
+
+const NetworkAddress &UDPSocket::getAddress() const
+{
+    return this->socketAddress;
 }
