@@ -35,3 +35,14 @@ DomainData OpenReply::serialize() const
 
     return DomainData(dataBytes);
 }
+
+bool OpenReply::operator==(const OpenReply &rhs) const
+{
+    return descriptor == rhs.descriptor &&
+           error == rhs.error;
+}
+
+bool OpenReply::operator!=(const OpenReply &rhs) const
+{
+    return !(rhs == *this);
+}

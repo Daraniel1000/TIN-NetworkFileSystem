@@ -31,3 +31,14 @@ DomainData WriteRequest::serialize() const
 {
     return DomainData();
 }
+
+bool WriteRequest::operator==(const WriteRequest &rhs) const
+{
+    return descriptor == rhs.descriptor &&
+           writeData == rhs.writeData;
+}
+
+bool WriteRequest::operator!=(const WriteRequest &rhs) const
+{
+    return !(rhs == *this);
+}

@@ -31,6 +31,10 @@ public:
 
     uint8_t getType() const override;
     DomainData serialize() const override;
+
+    bool operator==(const WriteRequest &rhs) const;
+
+    bool operator!=(const WriteRequest &rhs) const;
 };
 
 

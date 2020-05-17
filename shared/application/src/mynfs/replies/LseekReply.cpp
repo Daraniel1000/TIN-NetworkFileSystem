@@ -24,3 +24,14 @@ DomainData LseekReply::serialize() const
 {
     return DomainData();
 }
+
+bool LseekReply::operator==(const LseekReply &rhs) const
+{
+    return offset == rhs.offset &&
+           error == rhs.error;
+}
+
+bool LseekReply::operator!=(const LseekReply &rhs) const
+{
+    return !(rhs == *this);
+}

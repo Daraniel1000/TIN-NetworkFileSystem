@@ -31,6 +31,10 @@ public:
 
     const MyNFSError & getError() const override;
     DomainData serialize() const override;
+
+    bool operator==(const OpenReply &rhs) const;
+
+    bool operator!=(const OpenReply &rhs) const;
 };
 
 

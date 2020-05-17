@@ -19,3 +19,13 @@ DomainData CloseReply::serialize() const
 {
     return DomainData();
 }
+
+bool CloseReply::operator==(const CloseReply &rhs) const
+{
+    return error == rhs.error;
+}
+
+bool CloseReply::operator!=(const CloseReply &rhs) const
+{
+    return !(rhs == *this);
+}

@@ -19,3 +19,13 @@ DomainData UnlinkReply::serialize() const
 {
     return DomainData();
 }
+
+bool UnlinkReply::operator==(const UnlinkReply &rhs) const
+{
+    return error == rhs.error;
+}
+
+bool UnlinkReply::operator!=(const UnlinkReply &rhs) const
+{
+    return !(rhs == *this);
+}

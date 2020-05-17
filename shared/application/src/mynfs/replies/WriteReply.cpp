@@ -24,3 +24,14 @@ DomainData WriteReply::serialize() const
 {
     return DomainData();
 }
+
+bool WriteReply::operator==(const WriteReply &rhs) const
+{
+    return count == rhs.count &&
+           error == rhs.error;
+}
+
+bool WriteReply::operator!=(const WriteReply &rhs) const
+{
+    return !(rhs == *this);
+}

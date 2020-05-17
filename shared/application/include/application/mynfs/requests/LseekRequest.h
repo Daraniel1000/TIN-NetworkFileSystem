@@ -33,6 +33,10 @@ public:
 
     uint8_t getType() const override;
     DomainData serialize() const override;
+
+    bool operator==(const LseekRequest &rhs) const;
+
+    bool operator!=(const LseekRequest &rhs) const;
 };
 
 

@@ -36,3 +36,15 @@ DomainData LseekRequest::serialize() const
 {
     return DomainData();
 }
+
+bool LseekRequest::operator==(const LseekRequest &rhs) const
+{
+    return descriptor == rhs.descriptor &&
+           offset == rhs.offset &&
+           whence == rhs.whence;
+}
+
+bool LseekRequest::operator!=(const LseekRequest &rhs) const
+{
+    return !(rhs == *this);
+}

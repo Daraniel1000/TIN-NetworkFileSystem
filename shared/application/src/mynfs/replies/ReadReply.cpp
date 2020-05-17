@@ -24,3 +24,14 @@ DomainData ReadReply::serialize() const
 {
     return DomainData();
 }
+
+bool ReadReply::operator==(const ReadReply &rhs) const
+{
+    return readData == rhs.readData &&
+           error == rhs.error;
+}
+
+bool ReadReply::operator!=(const ReadReply &rhs) const
+{
+    return !(rhs == *this);
+}

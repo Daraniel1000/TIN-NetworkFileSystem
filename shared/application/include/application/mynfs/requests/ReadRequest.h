@@ -30,6 +30,10 @@ public:
 
     uint8_t getType() const override;
     DomainData serialize() const override;
+
+    bool operator==(const ReadRequest &rhs) const;
+
+    bool operator!=(const ReadRequest &rhs) const;
 };
 
 #endif //MYNFS_READREQUEST_H

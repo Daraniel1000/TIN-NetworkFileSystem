@@ -27,6 +27,10 @@ public:
 
     uint8_t getType() const override;
     DomainData serialize() const override;
+
+    bool operator==(const CloseRequest &rhs) const;
+
+    bool operator!=(const CloseRequest &rhs) const;
 };
 
 #endif //MYNFS_CLOSEREQUEST_H

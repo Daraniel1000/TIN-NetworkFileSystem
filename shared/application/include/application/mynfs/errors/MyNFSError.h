@@ -16,6 +16,16 @@ public:
     int8_t getErrorValue() const { return this->errorValue; }
     virtual std::string toString() const = 0;
     PlainError serialize() const { return PlainError(this->errorValue); }
+
+    bool operator==(const MyNFSError &rhs) const
+    {
+        return errorValue == rhs.errorValue;
+    }
+
+    bool operator!=(const MyNFSError &rhs) const
+    {
+        return !(rhs == *this);
+    }
 };
 
 

@@ -8,26 +8,30 @@
 const uint8_t OpenRequest::TYPE = 0;
 const int16_t OpenRequest::MAX_PATH_SIZE = 4096;
 
-static void checkOflag(uint16_t value)
+void checkOflag(uint16_t value)
 {
-    std::vector<uint16_t> possibleValues = {O_RDONLY, O_WRONLY, O_RDWR, O_APPEND, O_CREAT, O_EXCL, O_TRUNC};
-
-    std::stringstream ss;
-    for(size_t i = 0; i < possibleValues.size(); ++i)
-    {
-        if(i != 0)
-            ss << ",";
-        ss << possibleValues[i];
-    }
-    std::string s = ss.str();
+    std::vector<uint16_t> possibleValues{O_RDONLY, O_WRONLY, O_RDWR, O_APPEND, O_CREAT, O_EXCL, O_TRUNC};
 
     if (std::find(possibleValues.begin(), possibleValues.end(), value) == possibleValues.end())
+    {
+        std::stringstream ss;
+        for (size_t i = 0; i < possibleValues.size(); ++i)
+        {
+            if (i != 0)
+                ss << ",";
+            ss << possibleValues[i];
+        }
+        std::string s = ss.str();
+
         throw std::logic_error(
                 "Invalid oflag value " + std::to_string(value) + ". Only possible values are: " + s);
+    }
 }
 
-OpenRequest::OpenRequest(char const *path, uint16_t oflag) : path(path), oflag(oflag)
+OpenRequest::OpenRequest(char const *path, uint16_t oflag)
 {
+    this->path = std::string(path);
+    this->oflag = oflag;
     if (this->path.size() > OpenRequest::MAX_PATH_SIZE)
         throw std::logic_error(
                 "Path is too long. Expected at most" + std::to_string(OpenRequest::MAX_PATH_SIZE) + ", but got " +
@@ -97,4 +101,15 @@ DomainData OpenRequest::serialize() const
     dataBytes.insert(dataBytes.end(), charPathPtr, charPathPtr + this->path.size());
 
     return DomainData(dataBytes);
+}
+
+bool OpenRequest::operator==(const OpenRequest &rhs) const
+{
+    return path == rhs.path &&
+           oflag == rhs.oflag;
+}
+
+bool OpenRequest::operator!=(const OpenRequest &rhs) const
+{
+    return !(rhs == *this);
 }

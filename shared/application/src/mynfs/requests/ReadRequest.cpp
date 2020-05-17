@@ -31,3 +31,14 @@ DomainData ReadRequest::serialize() const
 {
     return DomainData();
 }
+
+bool ReadRequest::operator==(const ReadRequest &rhs) const
+{
+    return descriptor == rhs.descriptor &&
+           count == rhs.count;
+}
+
+bool ReadRequest::operator!=(const ReadRequest &rhs) const
+{
+    return !(rhs == *this);
+}

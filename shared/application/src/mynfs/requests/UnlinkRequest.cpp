@@ -27,3 +27,13 @@ DomainData UnlinkRequest::serialize() const
 {
     return DomainData();
 }
+
+bool UnlinkRequest::operator==(const UnlinkRequest &rhs) const
+{
+    return path == rhs.path;
+}
+
+bool UnlinkRequest::operator!=(const UnlinkRequest &rhs) const
+{
+    return !(rhs == *this);
+}
