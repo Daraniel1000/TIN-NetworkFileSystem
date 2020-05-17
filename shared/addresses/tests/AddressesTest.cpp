@@ -43,6 +43,28 @@ TEST_CASE("Not valid ip address throw exception", "[IpAddress]")
     CHECK_THROWS(IpAddress("555.23.456.3"));
 }
 
+TEST_CASE("Construct NetworkAddress from string without port", "[NetworkAddress]")
+{
+    char address[] = "192.168.24.21";
+    NetworkAddress netAddress(address);
+    CHECK(netAddress.getPort().toHostOrder() == 0);
+    CHECK(IpAddress("192.168.24.21").toHostOrder() == netAddress.getAddress().toHostOrder());
+}
+TEST_CASE("Construct NetworkAddress from string", "[NetworkAddress]")
+{
+    char address[] = "192.168.24.21:22";
+    NetworkAddress netAddress(address);
+    CHECK(netAddress.getPort().toHostOrder() == 22);
+    CHECK(IpAddress("192.168.24.21").toHostOrder() == netAddress.getAddress().toHostOrder());
+}
+TEST_CASE("Construct NetworkAddress from string with colon, but without port", "[NetworkAddress]")
+{
+    char address[] = "192.168.24.21:";
+    NetworkAddress netAddress(address);
+    CHECK(netAddress.getPort().toHostOrder() == 0);
+    CHECK(IpAddress("192.168.24.21").toHostOrder() == netAddress.getAddress().toHostOrder());
+}
+
 TEST_CASE("Address toString()", "[NetworkAddress]")
 {
     sockaddr_in str = NetworkAddress(IpAddress("192.168.24.21"), Port(22)).toStruct();

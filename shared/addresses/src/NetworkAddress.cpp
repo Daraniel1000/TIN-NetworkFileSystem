@@ -2,9 +2,28 @@
 #include <cstring>
 #include <sstream>
 #include "addresses/NetworkAddress.h"
+#include "addresses/EphemeralPort.h"
 
 NetworkAddress::NetworkAddress(IpAddress ipAddress, Port port) : ipAddress(ipAddress), port(port)
 {}
+
+NetworkAddress::NetworkAddress(char* address)
+{
+    char *ip, *portNo;
+    ip = strtok(address, ":");
+    if(ip == NULL) {
+        this->ipAddress = IpAddress(address);
+        this->port = EphemeralPort();
+    }
+    else {
+        this->ipAddress = IpAddress(ip);
+        portNo = strtok(NULL, ":");
+        if (portNo == NULL)
+            this->port = EphemeralPort();
+        else
+            this->port = Port(atoi(portNo));
+    }
+}
 
 const IpAddress &NetworkAddress::getAddress() const
 {

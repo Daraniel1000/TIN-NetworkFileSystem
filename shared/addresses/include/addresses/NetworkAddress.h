@@ -16,6 +16,13 @@ public:
     NetworkAddress() = default;
     NetworkAddress(IpAddress ipAddress, Port port);
 
+    /**
+    * Construct NetworkAddress from string
+    * If port is not specified it will be set to 0
+    * @param addressString null-terminated address (IpAddress:Port)
+    */
+    NetworkAddress(char* address);
+
     const IpAddress& getAddress() const;
     const Port& getPort() const;
 
