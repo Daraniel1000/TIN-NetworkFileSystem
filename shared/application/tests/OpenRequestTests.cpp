@@ -73,7 +73,7 @@ TEST_CASE("OpenRequest deserialization throws with too long path", "[OpenRequest
 TEST_CASE("OpenRequest correctly serializes", "[OpenRequest]")
 {
     std::string path = "/dir/";
-    auto data = OpenRequest(path.data(), O_RDONLY).getData();
+    auto data = OpenRequest(path.data(), O_RDONLY).serialize();
 
     DomainData expectedData;
     uint16_t oFlag = htons(O_RDONLY);

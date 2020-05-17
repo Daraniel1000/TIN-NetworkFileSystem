@@ -18,7 +18,7 @@ public:
     /**
      * Serialize reply object to plain data
      */
-    virtual DomainData getData() const = 0;
+    virtual DomainData serialize() const = 0;
 };
 
 

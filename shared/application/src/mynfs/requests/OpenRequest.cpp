@@ -5,6 +5,9 @@
 #include <sstream>
 #include "application/mynfs/requests/OpenRequest.h"
 
+const uint8_t OpenRequest::TYPE = 0;
+const int16_t OpenRequest::MAX_PATH_SIZE = 4096;
+
 static void checkOflag(uint16_t value)
 {
     std::vector<uint16_t> possibleValues = {O_RDONLY, O_WRONLY, O_RDWR, O_APPEND, O_CREAT, O_EXCL, O_TRUNC};
@@ -80,7 +83,7 @@ uint8_t OpenRequest::getType() const
     return OpenRequest::TYPE;
 }
 
-DomainData OpenRequest::getData() const
+DomainData OpenRequest::serialize() const
 {
     // convert oflag
     std::vector<std::byte> dataBytes = Converter::getBytesFromUint16(this->oflag);

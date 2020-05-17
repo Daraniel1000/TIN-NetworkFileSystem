@@ -1,37 +1,34 @@
-#ifndef MYNFS_OPENREQUEST_H
-#define MYNFS_OPENREQUEST_H
+#ifndef MYNFS_UNLINKREQUEST_H
+#define MYNFS_UNLINKREQUEST_H
 
 
 #include <cstdint>
 #include <string>
 #include "Request.h"
 
-class OpenRequest : public Request
+class UnlinkRequest : public Request
 {
     std::string path;
-    uint16_t oflag;
 public:
     static const uint8_t TYPE;
     static const int16_t MAX_PATH_SIZE;
 
     /**
-     * Create open request from arguments (sending side)
+     * Create unlink request from arguments (sending side)
      * @param path path to the file
-     * @param oflag open flags
      */
-    OpenRequest(char *path, uint16_t oflag);
+    UnlinkRequest(char *path);
 
     /**
      * Deserialize request (receiving side)
      */
-    explicit OpenRequest(const DomainData& data);
+    explicit UnlinkRequest(const DomainData& data);
 
     const std::string& getPath() const;
-    uint16_t getOflag() const;
 
     uint8_t getType() const override;
     DomainData serialize() const override;
 };
 
 
-#endif //MYNFS_OPENREQUEST_H
+#endif //MYNFS_UNLINKREQUEST_H

@@ -4,7 +4,9 @@ project(${TARGET})
 set(INCLUDEDIR "include")
 set(LIBDIR "lib")
 
-set(SRC_FILES src/mynfslib.cpp src/endpoint/ClientEndpoint.cpp) # add source files here
+set(SRC_FILES
+        src/mynfslib.cpp
+        src/endpoint/ClientEndpoint.cpp) # add source files here
 
 set(CMAKE_ARCHIVE_OUTPUT_DIRECTORY ${PROJECT_SOURCE_DIR}/${LIBDIR})
 

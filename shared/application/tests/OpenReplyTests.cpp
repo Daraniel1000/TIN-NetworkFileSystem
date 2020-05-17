@@ -30,7 +30,7 @@ TEST_CASE("OpenReply correctly serializes", "[OpenReply]")
 {
     int16_t descriptor = 10;
     OpenReplyError error(1);
-    auto data = OpenReply(descriptor, error).getData();
+    auto data = OpenReply(descriptor, error).serialize();
 
     DomainData expectedData;
     descriptor = htons(10);

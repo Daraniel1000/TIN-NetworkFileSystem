@@ -1,4 +1,5 @@
 #include <catch.hpp>
+#include <cstddef>
 
 #include "session/messages/ConfirmMessage.h"
 

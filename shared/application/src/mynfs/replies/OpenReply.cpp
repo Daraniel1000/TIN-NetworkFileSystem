@@ -28,7 +28,7 @@ const MyNFSError &OpenReply::getError() const
     return this->error;
 }
 
-DomainData OpenReply::getData() const
+DomainData OpenReply::serialize() const
 {
     // convert descriptor
     std::vector<std::byte> dataBytes = Converter::getBytesFromInt16(this->descriptor);

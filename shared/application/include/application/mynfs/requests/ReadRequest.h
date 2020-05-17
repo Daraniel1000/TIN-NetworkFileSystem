@@ -1,38 +1,35 @@
 #ifndef MYNFS_READREQUEST_H
 #define MYNFS_READREQUEST_H
 
+
 #include <cstdint>
 #include <string>
 #include "Request.h"
 
 class ReadRequest : public Request
 {
-    int16_t fd;
-    void *buf;
+    int16_t descriptor;
     int16_t count;
-
 public:
-    static const int16_t MAX_BUF_SIZE = 4096;
+    static const uint8_t TYPE;
 
     /**
-     * Create open request from arguments (sending side)
-     * @param fd file descriptor
-     * @param buf buffer for read data
-     * @param count data size to read
+     * Create read request from arguments (sending side)
+     * @param descriptor descriptor of file
+     * @param count how many bytes to read
      */
-    ReadRequest(int16_t fd, void *buf, int16_t count);
+    ReadRequest(int16_t descriptor, int16_t count);
 
     /**
      * Deserialize request (receiving side)
      */
     explicit ReadRequest(const DomainData& data);
 
-    int16_t getFileDescriptor();
-    void * getBuf() const;
-    int16_t getCount();
+    int16_t getDescriptor() const;
+    int16_t getCount() const;
 
     uint8_t getType() const override;
-    DomainData getData() const override;
+    DomainData serialize() const override;
 };
 
 #endif //MYNFS_READREQUEST_H
