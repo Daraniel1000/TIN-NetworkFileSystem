@@ -10,5 +10,8 @@ uint16_t Port::toNetworkOrder() const
 
 uint16_t Port::toHostOrder() const
 {
-    return 0;
+    return this->port;
 }
+
+
+

@@ -6,10 +6,10 @@
 class EphemeralPort : public Port
 {
 /**
- * TODO:
  * just a "shortcut" for writing Port(0)
- * just create a constructor without arguments and create Port(0)
  */
+public:
+ EphemeralPort():Port(0){}
 };
 
 #endif //MYNFS_EPHEMERALPORT_H

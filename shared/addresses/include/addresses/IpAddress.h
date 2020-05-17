@@ -3,6 +3,7 @@
 
 
 #include <cstdint>
+#include <cstdlib>
 
 class IpAddress
 {
@@ -26,6 +27,7 @@ public:
     uint32_t toNetworkOrder() const;
 
     uint32_t toHostOrder() const;
+
 };
 
 
