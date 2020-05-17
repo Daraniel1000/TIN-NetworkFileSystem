@@ -18,7 +18,7 @@
 ClientEndpoint::ClientEndpoint(Port port) : socket(port) {}
 
 template<class Req, class Rep>
-Rep ClientEndpoint::send(NetworkAddress recipient, const Req &request)
+Rep ClientEndpoint::send(NetworkAddress recipient, const Req &request) const
 {
     socket.send(recipient, RequestMessage().serialize());
     NetworkAddress source{};
@@ -30,9 +30,9 @@ Rep ClientEndpoint::send(NetworkAddress recipient, const Req &request)
     return Rep(replyData.getData(), replyData.getError());
 }
 
-template OpenReply ClientEndpoint::send<OpenRequest, OpenReply>(NetworkAddress, const OpenRequest&);
-template ReadReply ClientEndpoint::send<ReadRequest, ReadReply>(NetworkAddress, const ReadRequest&);
-template WriteReply ClientEndpoint::send<WriteRequest, WriteReply>(NetworkAddress, const WriteRequest&);
-template LseekReply ClientEndpoint::send<LseekRequest, LseekReply>(NetworkAddress, const LseekRequest&);
-template CloseReply ClientEndpoint::send<CloseRequest, CloseReply>(NetworkAddress, const CloseRequest&);
-template UnlinkReply ClientEndpoint::send<UnlinkRequest, UnlinkReply>(NetworkAddress, const UnlinkRequest&);
+template OpenReply ClientEndpoint::send<OpenRequest, OpenReply>(NetworkAddress, const OpenRequest&) const;
+template ReadReply ClientEndpoint::send<ReadRequest, ReadReply>(NetworkAddress, const ReadRequest&) const;
+template WriteReply ClientEndpoint::send<WriteRequest, WriteReply>(NetworkAddress, const WriteRequest&) const;
+template LseekReply ClientEndpoint::send<LseekRequest, LseekReply>(NetworkAddress, const LseekRequest&) const;
+template CloseReply ClientEndpoint::send<CloseRequest, CloseReply>(NetworkAddress, const CloseRequest&) const;
+template UnlinkReply ClientEndpoint::send<UnlinkRequest, UnlinkReply>(NetworkAddress, const UnlinkRequest&) const;
