@@ -101,8 +101,8 @@ PlainData UDPSocket::receive(NetworkAddress &source) const
                 "Receiving failed. " + std::string(strerror(errno)) + ".");
 
     // set address of received message
-    source.setAddress(IpAddress(sourceAddress.sin_addr.s_addr));
-    source.setPort(Port(sourceAddress.sin_port));
+    source.setAddress(IpAddress(ntohl(sourceAddress.sin_addr.s_addr)));
+    source.setPort(Port(ntohs(sourceAddress.sin_port)));
 
     return PlainData(readBuffer, numBytes);
 }
