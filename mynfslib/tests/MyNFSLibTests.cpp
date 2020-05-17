@@ -9,8 +9,8 @@
 
 #include "mynfslib.h"
 
-const auto serverPort = 54321;
-const auto serverAddress = "127.0.0.1:" + std::to_string(serverPort);
+const auto serverPort = 54321; // assuming it's not already in use
+const auto serverAddress = "localhost:" + std::to_string(serverPort);
 
 void mock_server(const Reply &mockRep)
 {
@@ -30,15 +30,20 @@ void mock_server(const Reply &mockRep)
 
 TEST_CASE("mynfs_open working correctly", "[mynfs]")
 {
+    // expected reply
     OpenReply rep(10, OpenReplyError(0));
 
+    // mock server on another thread
     std::thread thread([&] {
         mock_server(rep);
     });
 
-    auto descriptor = mynfs_open(serverAddress.data(), "/dir/file", O_RDONLY);
+    // call function
+    auto descriptor = mynfs_open(serverAddress.data(), "/path/whatever", O_RDONLY);
 
+    // check if values match
     CHECK(descriptor == rep.getDescriptor());
 
+    // join server thread
     thread.join();
 }
