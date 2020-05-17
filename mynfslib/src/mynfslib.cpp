@@ -21,7 +21,7 @@ int16_t mynfs_open(char const *host, char const *path, uint8_t oflag)
     // send request and get reply
     OpenReply readReply = clientEndpoint.send<OpenRequest, OpenReply>
                                         (
-                                            NetworkAddress(IpAddress(host), Port()),
+                                            NetworkAddress(host),
                                             OpenRequest(path, oflag)
                                         );
     // react to error here
@@ -37,7 +37,7 @@ int16_t mynfs_read(char const *host, int16_t fd, void *buf, int16_t count)
 
     ReadReply readReply = clientEndpoint.send<ReadRequest, ReadReply>
             (
-                    NetworkAddress(IpAddress(host), Port()),
+                    NetworkAddress(host),
                     ReadRequest(fd, count)
             );
 

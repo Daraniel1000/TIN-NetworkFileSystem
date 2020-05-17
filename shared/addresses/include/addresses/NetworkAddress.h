@@ -21,7 +21,7 @@ public:
     * If port is not specified it will be set to 0
     * @param addressString null-terminated address (IpAddress:Port)
     */
-    NetworkAddress(char* address);
+    NetworkAddress(char const* address);
 
     const IpAddress& getAddress() const;
     const Port& getPort() const;

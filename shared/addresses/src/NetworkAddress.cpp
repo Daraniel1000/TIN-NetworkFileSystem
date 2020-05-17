@@ -7,12 +7,12 @@
 NetworkAddress::NetworkAddress(IpAddress ipAddress, Port port) : ipAddress(ipAddress), port(port)
 {}
 
-NetworkAddress::NetworkAddress(char* address)
+NetworkAddress::NetworkAddress(char const* address)
 {
-    char *ip, *portNo;
-    ip = strtok(address, ":");
+    char *ip, *portNo, *addressCopy = strdup(address);
+    ip = strtok(addressCopy, ":");
     if(ip == NULL) {
-        this->ipAddress = IpAddress(address);
+        this->ipAddress = IpAddress(addressCopy);
         this->port = EphemeralPort();
     }
     else {
@@ -23,6 +23,7 @@ NetworkAddress::NetworkAddress(char* address)
         else
             this->port = Port(atoi(portNo));
     }
+    free(addressCopy);
 }
 
 const IpAddress &NetworkAddress::getAddress() const
