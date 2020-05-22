@@ -9,6 +9,8 @@ class OpenHandler : public Handler
 public:
     OpenHandler(DomainData requestData, DomainData& replyData, PlainError& replyError);
     void handle() override;
+
+    virtual ~OpenHandler();
 };
 
 

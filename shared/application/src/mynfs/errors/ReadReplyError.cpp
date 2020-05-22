@@ -2,7 +2,8 @@
 
 const std::unordered_map<int8_t, std::string> ReadReplyError::stringMap = {
         {0, "Success"},
-        {1, "Error"} //TODO
+        {1, "Error"},
+        {9, "Not valid descriptor"}//TODO
 };
 
 ReadReplyError::ReadReplyError(int8_t errorValue) : MyNFSError(errorValue)

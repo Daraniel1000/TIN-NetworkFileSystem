@@ -1,2 +1,2 @@
-add_executable(server_tests TestsMain.cpp SampleTest.cpp)
-target_link_libraries(server_tests unit_tests)
+add_executable(server_tests TestsMain.cpp HandlersTests.cpp ../src/execution/handlers/OpenHandler.cpp ../src/execution/handlers/ReadHandler.cpp ../src/execution/handlers/CloseHandler.cpp ../src/execution/handlers/UnlinkHandler.cpp ../src/execution/handlers/LseekHandler.cpp ../src/execution/handlers/WriteHandler.cpp)
+target_link_libraries(server_tests unit_tests application addresses session transport)

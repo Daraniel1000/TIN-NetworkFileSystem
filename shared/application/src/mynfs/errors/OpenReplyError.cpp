@@ -2,7 +2,8 @@
 
 const std::unordered_map<int8_t, std::string> OpenReplyError::stringMap = {
         {0, "Success"},
-        {1, "Error"} //TODO
+        {1, "Error"},
+        {2, "No file"}//TODO
 };
 
 OpenReplyError::OpenReplyError(int8_t errorValue) : MyNFSError(errorValue)

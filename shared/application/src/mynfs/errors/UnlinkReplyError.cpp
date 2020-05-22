@@ -2,7 +2,8 @@
 
 const std::unordered_map<int8_t, std::string> UnlinkReplyError::stringMap = {
         {0, "Success"},
-        {1, "Error"} //TODO
+        {1, "Error"},
+        {EISDIR, "Path refers to directory"}//TODO
 };
 
 UnlinkReplyError::UnlinkReplyError(int8_t errorValue) : MyNFSError(errorValue)

@@ -27,7 +27,7 @@ public:
                                                                                      replyError(replyError)
     {}
 
-    virtual ~Handler() = default;
+    virtual ~Handler() {};
 
     /**
      * Main handler function, operate on request and fill reply (or error) according to handler logic
