@@ -1,6 +1,7 @@
 #include <stdexcept>
 #include <unistd.h>
 #include <cstring>
+#include <transport/timeout_error.h>
 #include "transport/socket/UDPSocket.h"
 #include "addresses/AnyAddress.h"
 #include "transport/read_interrupted_error.h"
@@ -63,7 +64,7 @@ void UDPSocket::send(NetworkAddress recipient, const PlainData &message) const
                 "Sending message to " + recipient.toString() + " failed. " + std::string(strerror(errno)) + ".");
 }
 
-PlainData UDPSocket::receive(NetworkAddress &source) const
+PlainData UDPSocket::receive(NetworkAddress &source, int timeout) const
 {
     // add descriptors to set
     fd_set readSet;
@@ -71,13 +72,22 @@ PlainData UDPSocket::receive(NetworkAddress &source) const
     FD_SET(this->socketDescriptor, &readSet);
     FD_SET(this->signalPipeRead, &readSet);
 
-    if (select(std::max(this->socketDescriptor, this->signalPipeRead) + 1,
-               &readSet,
-               nullptr,
-               nullptr,
-               nullptr) < 0)
+    timeval timeoutStruct{timeout, 0};
+    timeval* timeoutStructPtr = nullptr;
+    if(timeout >= 0)
+        timeoutStructPtr = &timeoutStruct;
+
+    auto nDescriptors = select(std::max(this->socketDescriptor, this->signalPipeRead) + 1,
+                               &readSet,
+                               nullptr,
+                               nullptr,
+                               timeoutStructPtr);
+
+    if (nDescriptors < 0)
         throw std::runtime_error(
                 "Select failed. " + std::string(strerror(errno)) + ".");
+    if (nDescriptors == 0)
+        throw timeout_error("Receive timed out");
 
     // check if signal woke us
     if (FD_ISSET(this->signalPipeRead, &readSet))

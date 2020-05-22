@@ -46,7 +46,7 @@ public:
      * @param source reference to address structure, that will be filled with address info of the source of the message
      * @return serialized received message
      */
-    PlainData receive(NetworkAddress& source) const;
+    PlainData receive(NetworkAddress& source, int timeout = -1) const;
 
     /**
      * Wake up blocked socket

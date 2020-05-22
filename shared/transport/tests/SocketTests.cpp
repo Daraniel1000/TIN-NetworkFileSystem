@@ -93,3 +93,19 @@ TEST_CASE("Socket wakes up after signal", "[UDPSocket]")
     s.signal();
     thread.join();
 }
+
+TEST_CASE("Socket receive times out", "[UDPSocket]")
+{
+    UDPSocket receiveSocket((Port(54321)));
+    NetworkAddress sourceAddress{};
+
+    CHECK_THROWS(receiveSocket.receive(sourceAddress, 1));
+}
+
+TEST_CASE("Socket receive times out with 0 timeout", "[UDPSocket]")
+{
+    UDPSocket receiveSocket((Port(54321)));
+    NetworkAddress sourceAddress{};
+
+    CHECK_THROWS(receiveSocket.receive(sourceAddress, 0));
+}
