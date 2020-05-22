@@ -6,8 +6,14 @@
 #include <application/mynfs/replies/Reply.h>
 #include <thread>
 #include <application/mynfs/replies/OpenReply.h>
+#include <mutex>
+#include <condition_variable>
 
 #include "mynfslib.h"
+
+std::mutex m;
+std::condition_variable cv;
+bool serverReady = false;
 
 const auto serverPort = 54321; // assuming it's not already in use
 const auto serverAddress = "localhost:" + std::to_string(serverPort);
@@ -15,6 +21,13 @@ const auto serverAddress = "localhost:" + std::to_string(serverPort);
 void mock_server(const Reply &mockRep)
 {
     UDPSocket serverSocket(serverPort);
+
+    // notify creating server
+    {
+        std::lock_guard<std::mutex> lk(m);
+        serverReady = true;
+    }
+    cv.notify_one();
 
     NetworkAddress source{};
     serverSocket.receive(source); // get request and ignore
@@ -37,6 +50,10 @@ TEST_CASE("mynfs_open working correctly", "[mynfs]")
     std::thread thread([&] {
         mock_server(rep);
     });
+
+    // wait for server to start
+    std::unique_lock<std::mutex> lk(m);
+    cv.wait(lk, []{return serverReady;});
 
     // call function
     auto descriptor = mynfs_open(serverAddress.data(), "/path/whatever", O_RDONLY);
