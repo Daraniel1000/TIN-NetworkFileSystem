@@ -4,6 +4,7 @@
 #include "ServerEndpoint.h"
 #include "ServerSubEndpoint.h"
 #include "../execution/Executor/Executor.h"
+#include "../TerminalListener.h"
 
 
 ServerEndpoint::ServerEndpoint(Port port) : socket(port) {}
@@ -11,17 +12,27 @@ ServerEndpoint::ServerEndpoint(Port port) : socket(port) {}
 void ServerEndpoint::run()
 {
     Executor executor(messageQueue);
+    TerminalListener listener;
     executor.serverStop.lock();
+    std::thread listenerThread(&TerminalListener::run, &listener);
     std::thread executorThread(&Executor::run, &executor);
 
     NetworkAddress source{};
-    RequestMessage request(socket.receive(source));
 
-    //run new thread here and go back to receiving on socket
-    ServerSubEndpoint subEndpoint(UDPSocket(EphemeralPort()), source, this->handlerFactoryPool, this->messageQueue);
-    std::thread thread(&ServerSubEndpoint::run, &subEndpoint);  //TODO wrzucić to jeszcze w jakiś wektor czy coś jak to ma być w pętli
+    while(!listener.serverStop.try_lock()) {
+        RequestMessage request(socket.receive(source));
 
+        //run new thread here and go back to receiving on socket
+        ServerSubEndpoint subEndpoint(UDPSocket(EphemeralPort()), source, this->handlerFactoryPool, this->messageQueue, this->counter);
+        counter.enter();
+        std::thread thread(&ServerSubEndpoint::run, &subEndpoint);
+
+        thread.detach();
+    }
+    listener.serverStop.unlock();
+    listenerThread.join();
+    counter.await();
     executor.serverStop.unlock();
+    messageQueue.notify();
     executorThread.join();
-    thread.join();  //wszystkie subEndpointy zjoinować
 }

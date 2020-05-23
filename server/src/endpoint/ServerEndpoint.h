@@ -7,12 +7,14 @@
 #include <queue>
 #include "../execution/HandlerFactoryPool.h"
 #include "../SafeQueue.h"
+#include "../ThreadCounter.h"
 
 class ServerEndpoint
 {
     UDPSocket socket;
     HandlerFactoryPool handlerFactoryPool;
     SafeQueue<Handler*> messageQueue;      //queue of pointers, subendpoint keeps ownership of handler for mutex
+    ThreadCounter counter;
 public:
     /**
      * Create server at given port
@@ -21,7 +23,6 @@ public:
 
     /**
      * Run server
-     * TODO: preferably run on another thread
      */
     void run();
 

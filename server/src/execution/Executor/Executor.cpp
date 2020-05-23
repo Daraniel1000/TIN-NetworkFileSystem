@@ -2,15 +2,18 @@
 
 void Executor::run()
 {
+    Handler* ptr;
     while(!serverStop.try_lock())
     {
-        messageQueue.frontSafe()->handle();
-        messageQueue.popSafe();
+        if((ptr = messageQueue.frontSafe()) != nullptr) {
+            ptr->handle();
+            messageQueue.popSafe();
+        }
     }
-    while(!messageQueue.emptySafe())
+    /*while(!messageQueue.emptySafe())
     {
         messageQueue.frontSafe()->fail();
         messageQueue.popSafe();
-    }
+    }*/
     serverStop.unlock();
 }

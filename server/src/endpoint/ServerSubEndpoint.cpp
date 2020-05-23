@@ -5,9 +5,12 @@
 
 ServerSubEndpoint::ServerSubEndpoint(UDPSocket socket, NetworkAddress clientAddress,
                                      const HandlerFactoryPool &handlerFactoryPool,
-                                     SafeQueue<Handler*>& queueRef) : socket(socket), clientAddress(clientAddress),
+                                     SafeQueue<Handler*>& queueRef,
+                                     ThreadCounter& counterRef) : socket(socket), clientAddress(clientAddress),
                                                                 handlerFactoryPool(handlerFactoryPool),
-                                                                messageQueue(queueRef)
+                                                                messageQueue(queueRef),
+                                                                counter(counterRef)
+
 {
 
 }
@@ -33,4 +36,5 @@ void ServerSubEndpoint::run()
 
     this->socket.send(clientAddress, replyDataMessage.serialize());
     ConfirmMessage confirm(this->socket.receive(clientAddress));
+    counter.leave();
 }

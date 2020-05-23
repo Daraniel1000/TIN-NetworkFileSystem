@@ -13,13 +13,14 @@ public:
     SafeQueue() : std::queue<Type>::queue() {};
     SafeQueue(SafeQueue& q) : std::queue<Type>::queue(q) {};
 
-    Type& frontSafe()
+    Type frontSafe()
     {
         std::unique_lock<std::mutex> mlock(mutex);
-        while(this->empty())
+        if(this->empty())
         {
             isEmpty.wait(mlock);
         }
+        if(this->empty()) return null;
         return this->front();
     }
 
@@ -65,6 +66,12 @@ public:
         return ret;
     }
 
+    const void notify()
+    {
+        isEmpty.notify_all();
+    }
+
 };
+
 
 #endif //MYNFS_SAFEQUEUE_H
