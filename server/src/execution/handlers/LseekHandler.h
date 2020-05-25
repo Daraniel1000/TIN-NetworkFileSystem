@@ -9,6 +9,8 @@ class LseekHandler : public Handler
 public:
     LseekHandler(DomainData requestData, DomainData& replyData, PlainError& replyError);
     void handle() override;
+private:
+    std::vector<int> possibleErrors;
 };
 
 

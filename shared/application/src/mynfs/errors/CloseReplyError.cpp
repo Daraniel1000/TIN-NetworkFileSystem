@@ -2,7 +2,7 @@
 
 const std::unordered_map<int8_t, std::string> CloseReplyError::stringMap = {
         {0, "Success"},
-        {1, "Error"},
+        {-1, "Internal server error"},
         {EBADF, "Not valid descriptor"}//TODO
 };
 

@@ -9,6 +9,9 @@ class ReadHandler : public Handler
 public:
     ReadHandler(DomainData requestData, DomainData& replyData, PlainError& replyError);
     void handle() override;
+
+private:
+    std::vector<int> possibleErrors;
 };
 
 #endif //MYNFS_READHANDLER_H

@@ -9,6 +9,9 @@ class WriteHandler : public Handler
 public:
     WriteHandler(DomainData requestData, DomainData& replyData, PlainError& replyError);
     void handle() override;
+
+private:
+    std::vector<int> possibleErrors;
 };
 
 

@@ -11,6 +11,9 @@ public:
     void handle() override;
 
     virtual ~OpenHandler();
+
+private:
+    std::vector<int> possibleErrors;
 };
 
 

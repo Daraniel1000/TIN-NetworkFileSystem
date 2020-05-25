@@ -2,8 +2,16 @@
 
 const std::unordered_map<int8_t, std::string> OpenReplyError::stringMap = {
         {0, "Success"},
-        {1, "Error"},
-        {2, "No file"}//TODO
+        {-1, "Internal server error"},
+        {EACCES, "Permission denied"},
+        {EEXIST, "O_CREAT and O_EXCL are set but file exists"},
+        {ELOOP, "A loop exists in symbolic links encountered during resolution of the path"},
+        {ENAMETOOLONG, "Path is too long or pathname component is too long"},
+        {ENFILE, "Too much files are open in the system"},
+        {ENOENT, "File does not exist"},
+        {ENOSPC, "A file can not be created in specify localization and O_CREAT is set"},
+        {ENOTDIR, "A component of the path prefix is not a directory"},
+        {EINVAL, "The value of the flag argument is not valid"}//TODO
 };
 
 OpenReplyError::OpenReplyError(int8_t errorValue) : MyNFSError(errorValue)

@@ -2,13 +2,15 @@
 #include <application/mynfs/replies/WriteReply.h>
 #include <application/mynfs/requests/WriteRequest.h>
 #include <unistd.h>
+#include <algorithm>
 #include "WriteHandler.h"
 
 WriteHandler::WriteHandler(DomainData requestData, DomainData &replyData, PlainError &replyError) : Handler(requestData,
                                                                                                             replyData,
                                                                                                             replyError)
 {
-
+    int errorList[] = {EBADF, EAGAIN, EFBIG, EINVAL};
+    possibleErrors.assign(errorList, errorList+sizeof(errorList)/sizeof(int));
 }
 
 void WriteHandler::handle()
@@ -25,6 +27,9 @@ void WriteHandler::handle()
 
     //create reply
     if(writeBytes <= 0) {
+        int error = errno;
+        if(std::find(possibleErrors.begin(), possibleErrors.end(), error) == possibleErrors.end())
+            error = -1;
         WriteReply reply(writeBytes, WriteReplyError(errno));
 
         // save reply and error

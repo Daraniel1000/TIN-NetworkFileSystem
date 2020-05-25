@@ -2,12 +2,14 @@
 #include <application/mynfs/replies/UnlinkReply.h>
 #include <application/mynfs/requests/UnlinkRequest.h>
 #include <unistd.h>
+#include <algorithm>
 #include "UnlinkHandler.h"
 
 UnlinkHandler::UnlinkHandler(DomainData requestData, DomainData &replyData, PlainError &replyError) : Handler(
         requestData, replyData, replyError)
 {
-
+    int errorList[] = {EISDIR, EBUSY, ENAMETOOLONG, ENOENT, ENOTDIR};
+    possibleErrors.assign(errorList, errorList+sizeof(errorList)/sizeof(int));
 }
 
 void UnlinkHandler::handle()
@@ -23,6 +25,9 @@ void UnlinkHandler::handle()
 
     //create reply
     if(result == -1) {
+        int error = errno;
+        if(std::find(possibleErrors.begin(), possibleErrors.end(), error) == possibleErrors.end())
+            error = -1;
         UnlinkReply reply((UnlinkReplyError(errno)));
 
         // save reply and error

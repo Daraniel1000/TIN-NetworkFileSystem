@@ -2,8 +2,9 @@
 
 const std::unordered_map<int8_t, std::string> LseekReplyError::stringMap = {
         {0, "Success"},
-        {1, "Error"},
-        {EBADF, "Not valid descriptor"}//TODO
+        {-1, "Internal Server error"},
+        {EBADF, "Not valid descriptor"},
+        {EINVAL, "Not valid whence or result offset would be negative"}//TODO
 };
 
 LseekReplyError::LseekReplyError(int8_t errorValue) : MyNFSError(errorValue)

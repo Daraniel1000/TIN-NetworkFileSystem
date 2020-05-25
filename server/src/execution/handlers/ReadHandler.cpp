@@ -3,13 +3,15 @@
 #include <application/mynfs/requests/ReadRequest.h>
 #include <unistd.h>
 #include <cstring>
+#include <algorithm>
 #include "ReadHandler.h"
 
 ReadHandler::ReadHandler(DomainData requestData, DomainData &replyData, PlainError &replyError) : Handler(requestData,
                                                                                                           replyData,
                                                                                                           replyError)
 {
-
+    int errorList[] = {EBADF, EAGAIN, EINVAL, EISDIR};
+    possibleErrors.assign(errorList, errorList+sizeof(errorList)/sizeof(int));
 }
 
 void ReadHandler::handle()
@@ -27,6 +29,9 @@ void ReadHandler::handle()
 
     //create reply
     if(readBytes <= 0) {
+        int error = errno;
+        if(std::find(possibleErrors.begin(), possibleErrors.end(), error) == possibleErrors.end())
+            error = -1;
         ReadReply reply(buf, 0, ReadReplyError(errno)); //nie wiem
         // save reply and error
         this->replyData = reply.serialize();

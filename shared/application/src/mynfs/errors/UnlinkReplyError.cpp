@@ -2,8 +2,12 @@
 
 const std::unordered_map<int8_t, std::string> UnlinkReplyError::stringMap = {
         {0, "Success"},
-        {1, "Error"},
-        {EISDIR, "Path refers to directory"}//TODO
+        {-1, "Internal server error"},
+        {EISDIR, "Path refers to directory"},
+        {EBUSY, "File can not be unlinked because it is being used"},
+        {ENAMETOOLONG, "Pathname was too long"},
+        {ENOENT, "A component im pathname does not exist"},
+        {ENOTDIR, "A component used as a directory in pathname is not a directory"}//TODO
 };
 
 UnlinkReplyError::UnlinkReplyError(int8_t errorValue) : MyNFSError(errorValue)

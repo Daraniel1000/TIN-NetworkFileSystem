@@ -2,13 +2,15 @@
 #include <application/mynfs/replies/LseekReply.h>
 #include <application/mynfs/requests/LseekRequest.h>
 #include <unistd.h>
+#include <algorithm>
 #include "LseekHandler.h"
 
 LseekHandler::LseekHandler(DomainData requestData, DomainData &replyData, PlainError &replyError) : Handler(requestData,
                                                                                                             replyData,
                                                                                                             replyError)
 {
-
+    int errorList[] = {EBADF, EINVAL};
+    possibleErrors.assign(errorList, errorList+sizeof(errorList)/sizeof(int));
 }
 
 void LseekHandler::handle()
@@ -26,7 +28,10 @@ void LseekHandler::handle()
 
     //create reply
     if(result == -1) {
-        LseekReply reply(result, LseekReplyError(errno));
+        int error = errno;
+        if(std::find(possibleErrors.begin(), possibleErrors.end(), error) == possibleErrors.end())
+            error = -1;
+        LseekReply reply(result, LseekReplyError(error));
 
         // save reply and error
         this->replyData = reply.serialize();
