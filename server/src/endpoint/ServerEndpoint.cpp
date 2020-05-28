@@ -12,7 +12,7 @@ ServerEndpoint::ServerEndpoint(Port port) : socket(port) {}
 void ServerEndpoint::run()
 {
     Executor executor(messageQueue);
-    TerminalListener listener;
+    TerminalListener listener(socket);
     executor.serverStop.lock();
     std::thread listenerThread(&TerminalListener::run, &listener);
     std::thread executorThread(&Executor::run, &executor);
@@ -26,7 +26,7 @@ void ServerEndpoint::run()
         //run new thread here and go back to receiving on socket
         subEndpoint = new ServerSubEndpoint(UDPSocket(EphemeralPort()), source, this->handlerFactoryPool, this->messageQueue, this->counter);
         counter.enter();
-        std::thread thread(&ServerSubEndpoint::run, &subEndpoint);
+        std::thread thread(&ServerSubEndpoint::run, subEndpoint);
         thread.detach();
 
         delete request;

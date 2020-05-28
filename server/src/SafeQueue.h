@@ -20,7 +20,7 @@ public:
         {
             isEmpty.wait(mlock);
         }
-        if(this->empty()) return null;
+        if(this->empty()) return nullptr;
         return this->front();
     }
 
