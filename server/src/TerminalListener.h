@@ -12,6 +12,10 @@ public:
 
     TerminalListener(UDPSocket& s): socket(s) {};
 
+    void writeQuit(){
+        std::cout<<"Server quit correctly";
+    }
+
     void run(){
         serverStop.lock();
         std::cout<<"Press any key to stop the server...";
