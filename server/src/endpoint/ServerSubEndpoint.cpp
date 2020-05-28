@@ -37,4 +37,5 @@ void ServerSubEndpoint::run()
     this->socket.send(clientAddress, replyDataMessage.serialize());
     ConfirmMessage confirm(this->socket.receive(clientAddress));
     counter.leave();
+    delete this;
 }

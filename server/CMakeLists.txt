@@ -9,7 +9,6 @@ set(SRC_FILES
         src/execution/HandlerFactoryPool.cpp
         src/execution/handlers/OpenHandler.cpp
         src/endpoint/ServerSubEndpoint.cpp
-        src/execution/handlers/Handler.cpp
         src/execution/Executor/Executor.cpp
         src/execution/handlers/ReadHandler.cpp
         src/execution/handlers/WriteHandler.cpp

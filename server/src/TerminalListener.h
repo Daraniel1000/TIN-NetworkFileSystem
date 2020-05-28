@@ -1,20 +1,23 @@
 #ifndef MYNFS_TERMINALLISTENER_H
 #define MYNFS_TERMINALLISTENER_H
 
+#include <transport/socket/UDPSocket.h>
 #include <iostream>
 #include <mutex>
 
 class TerminalListener {
+    UDPSocket& socket;
 public:
     std::mutex serverStop;
 
-    //TerminalListener(std::mutex& m): serverStop(m) {};
+    TerminalListener(UDPSocket& s): socket(s) {};
 
     void run(){
         serverStop.lock();
         std::cout<<"Press any key to stop the server...";
         std::cin.get();
         serverStop.unlock();
+        socket.signal();
     };
 
 };

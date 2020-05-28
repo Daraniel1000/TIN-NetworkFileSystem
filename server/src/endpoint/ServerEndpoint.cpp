@@ -18,17 +18,21 @@ void ServerEndpoint::run()
     std::thread executorThread(&Executor::run, &executor);
 
     NetworkAddress source{};
+    RequestMessage* request = new RequestMessage(socket.receive(source));
+    ServerSubEndpoint* subEndpoint;
 
     while(!listener.serverStop.try_lock()) {
-        RequestMessage request(socket.receive(source));
 
         //run new thread here and go back to receiving on socket
-        ServerSubEndpoint subEndpoint(UDPSocket(EphemeralPort()), source, this->handlerFactoryPool, this->messageQueue, this->counter);
+        subEndpoint = new ServerSubEndpoint(UDPSocket(EphemeralPort()), source, this->handlerFactoryPool, this->messageQueue, this->counter);
         counter.enter();
         std::thread thread(&ServerSubEndpoint::run, &subEndpoint);
-
         thread.detach();
+
+        delete request;
+        request = new RequestMessage(socket.receive(source));
     }
+    delete request;
     listener.serverStop.unlock();
     listenerThread.join();
     counter.await();
