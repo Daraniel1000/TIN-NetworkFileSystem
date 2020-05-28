@@ -19,10 +19,10 @@
 
 TEST_CASE("Creating new file", "[OpenHandler]")
 {
-    std::string path = "/home/gosia/Pulpit/TIN-NetworkFileSystem/server/tests/test";
+    std::string path = "test";
     DomainData replay;
     PlainError replayError;
-    OpenHandler handler(DomainData(OpenRequest(path.data(), O_CREAT).serialize()), replay, replayError);
+    OpenHandler handler(DomainData(OpenRequest(path.data(), O_CREAT).serialize()), replay, replayError); //file will be created in server/bin
     handler.handle();
     CHECK(replayError.getErrorValue() == 0);
 
@@ -42,7 +42,7 @@ TEST_CASE("File to open does not exist", "[OpenHandler]")
 }
 TEST_CASE("Close file", "[CloseHandler]")
 {
-    std::string path = "/home/gosia/Pulpit/TIN-NetworkFileSystem/server/tests/test";
+    std::string path = "test";
     DomainData replay;
     PlainError replayError;
     int fd = open(path.data(), O_RDONLY);
@@ -63,7 +63,7 @@ TEST_CASE("Close unopened file", "[CloseHandler]")
 
 TEST_CASE("Read file", "[ReadHandler]")
 {
-    std::string path = "/home/gosia/Pulpit/TIN-NetworkFileSystem/server/tests/test";
+    std::string path = "test";
     DomainData replay;
     PlainError replayError;
     int fd = open(path.data(), O_RDONLY);
@@ -75,7 +75,7 @@ TEST_CASE("Read file", "[ReadHandler]")
 
 TEST_CASE("Read unopened file", "[ReadHandler]")
 {
-    std::string path = "/home/gosia/Pulpit/TIN-NetworkFileSystem/server/tests/test";
+    std::string path = "test";
     DomainData replay;
     PlainError replayError;
     int fd = 23;
@@ -87,7 +87,7 @@ TEST_CASE("Read unopened file", "[ReadHandler]")
 
 TEST_CASE("Use lseek", "[LseekHandler]")
 {
-    std::string path = "/home/gosia/Pulpit/TIN-NetworkFileSystem/server/tests/test";
+    std::string path = "test";
     DomainData replay;
     PlainError replayError;
     int fd = open(path.data(), O_RDONLY);
@@ -112,7 +112,7 @@ TEST_CASE("Lseek on unopened file", "[LseekHandler]")
 
 TEST_CASE("Write on read only file", "[WriteHandler]")
 {
-    std::string path = "/home/gosia/Pulpit/TIN-NetworkFileSystem/server/tests/test";
+    std::string path = "test";
     DomainData replay;
     PlainError replayError;
     int fd = open(path.data(), O_RDONLY);
@@ -126,7 +126,7 @@ TEST_CASE("Write on read only file", "[WriteHandler]")
 
 TEST_CASE("Write on write only file", "[WriteHandler]")
 {
-    std::string path = "/home/gosia/Pulpit/TIN-NetworkFileSystem/server/tests/test";
+    std::string path = "test";
     DomainData replay;
     PlainError replayError;
     int fd = open(path.data(), O_WRONLY);
@@ -140,7 +140,7 @@ TEST_CASE("Write on write only file", "[WriteHandler]")
 
 TEST_CASE("Unlink on directory path", "[UnlinkHandler]")
 {
-    std::string path = "/home/gosia/Pulpit/TIN-NetworkFileSystem/server/tests/";
+    std::string path = "../src";
     DomainData replay;
     PlainError replayError;
     UnlinkHandler handler(DomainData(UnlinkRequest(path.data()).serialize()), replay, replayError);
@@ -150,7 +150,7 @@ TEST_CASE("Unlink on directory path", "[UnlinkHandler]")
 
 TEST_CASE("Unlink file", "[UnlinkHandler]")
 {
-    std::string path = "/home/gosia/Pulpit/TIN-NetworkFileSystem/server/tests/test";
+    std::string path = "test";
     DomainData replay;
     PlainError replayError;
     UnlinkHandler handler(DomainData(UnlinkRequest(path.data()).serialize()), replay, replayError);
