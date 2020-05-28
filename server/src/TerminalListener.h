@@ -13,7 +13,7 @@ public:
     TerminalListener(UDPSocket& s): socket(s) {};
 
     void writeQuit(){
-        std::cout<<"Server quit correctly";
+        std::cout<<"Server quit correctly"<<std::endl;
     }
 
     void run(){
