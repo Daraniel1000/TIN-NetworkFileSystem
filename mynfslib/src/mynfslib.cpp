@@ -11,26 +11,55 @@
 #include <application/mynfs/replies/UnlinkReply.h>
 #include <application/mynfs/requests/UnlinkRequest.h>
 #include <mynfslib.h>
+#include <transport/socket_error.h>
+#include <addresses/address_error.h>
 
-#include "mynfslib.h"
 #include "endpoint/ClientEndpoint.h"
+
+int mynfs_error = 0;
+std::string mynfs_error_message;
 
 int16_t mynfs_open(char const *host, char const *path, uint8_t oflag)
 {
-    // create endpoint
-    ClientEndpoint clientEndpoint;
+    try
+    {
+        // create endpoint
+        ClientEndpoint clientEndpoint;
 
-    // send request and get reply
-    OpenReply readReply = clientEndpoint.send<OpenRequest, OpenReply>
-                                        (
-                                            NetworkAddress(host),
-                                            OpenRequest(path, oflag)
-                                        );
-    // react to error here
-    readReply.getError();
+        // send request and get reply
+        OpenReply readReply = clientEndpoint.send<OpenRequest, OpenReply>
+                (
+                        NetworkAddress(host),
+                        OpenRequest(path, oflag)
+                );
+        // react to error here
+        if(readReply.getError().getErrorValue() > 0)
+        {
+            mynfs_error = 3000 + readReply.getError().getErrorValue();
+            mynfs_error_message = readReply.getError().toString();
+            return -1;
+        }
 
-    // return reply data
-    return readReply.getDescriptor();
+        // return reply data
+        return readReply.getDescriptor();
+    }
+    catch (address_error& e)
+    {
+        mynfs_error = 1000 + 100*e.getMajorCode() + e.getMinorCode();
+        mynfs_error_message = e.what();
+    }
+    catch (socket_error& e)
+    {
+        mynfs_error = 2000 + 100*e.getMajorCode() + e.getMinorCode();
+        mynfs_error_message = e.what();
+    }
+    catch (std::exception& e)
+    {
+        mynfs_error = 4000;
+        mynfs_error_message = e.what();
+    }
+
+    return -1;
 }
 
 int16_t mynfs_read(char const *host, int16_t fd, void *buf, int16_t count)

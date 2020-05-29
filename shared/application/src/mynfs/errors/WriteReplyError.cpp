@@ -2,7 +2,7 @@
 
 const std::unordered_map<int8_t, std::string> WriteReplyError::stringMap = {
         {0, "Success"},
-        {-1, "Internal server error"},
+        {99, "Internal server error"},
         {EBADF, "Not valid descriptor or not open for writing"},
         {EAGAIN, "File marked as nonblocking and write would block it"},
         {EFBIG, "Write at the position past the maximum allowed offset"},
@@ -11,6 +11,8 @@ const std::unordered_map<int8_t, std::string> WriteReplyError::stringMap = {
 
 WriteReplyError::WriteReplyError(int8_t errorValue) : MyNFSError(errorValue)
 {
+    if(errorValue == -1)
+        this->errorValue = 99;
     if(stringMap.find(this->errorValue) == stringMap.end())
         throw std::logic_error("Wrong error value");
 }

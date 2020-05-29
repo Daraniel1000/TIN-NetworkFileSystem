@@ -6,7 +6,7 @@
 TEST_CASE("ReadReply correctly constructs from arguments", "[ReadReply]")
 {
     auto data = PlainData({std::byte(0x1), std::byte(0x2)});
-    ReadReplyError error(1);
+    ReadReplyError error(-1);
     CHECK_NOTHROW(ReadReply(data.getData().data(), data.getSize(), error));
     ReadReply rep(data.getData().data(), data.getSize(), error);
     CHECK(rep.getData() == data);
@@ -16,7 +16,7 @@ TEST_CASE("ReadReply correctly constructs from arguments", "[ReadReply]")
 TEST_CASE("ReadReply throws with too big data", "[ReadReply]")
 {
     auto data = PlainData(std::vector<std::byte>(ReadReply::MAX_DATA_SIZE + 1));
-    ReadReplyError error(1);
+    ReadReplyError error(-1);
     CHECK_THROWS(ReadReply(data.getData().data(), data.getSize(), error));
 }
 
@@ -27,7 +27,7 @@ TEST_CASE("ReadReply correctly deserializes", "[ReadReply]")
     int16_t dataSize = htons(readData.getSize());
     data.append(&dataSize, sizeof(dataSize));
     data.append(readData.getData().data(), readData.getSize());
-    PlainError error(1);
+    PlainError error(99);
 
     CHECK_NOTHROW(ReadReply(data, error));
     ReadReply rep(data, error);
@@ -41,7 +41,7 @@ TEST_CASE("ReadReply throws with bad deserialization data size", "[ReadReply]")
     DomainData data;
     int16_t dataSize = htons(readData.getSize());
     data.append(&dataSize, sizeof(dataSize));
-    PlainError error(1);
+    PlainError error(-1);
 
     CHECK_THROWS(ReadReply(data, error));
 }
@@ -53,7 +53,7 @@ TEST_CASE("ReadReply throws with too big data when deserializing", "[ReadReply]"
     int16_t dataSize = htons(readData.getSize());
     data.append(&dataSize, sizeof(dataSize));
     data.append(readData.getData().data(), readData.getSize());
-    PlainError error(1);
+    PlainError error(-1);
 
     CHECK_THROWS(ReadReply(data, error));
 }
@@ -61,7 +61,7 @@ TEST_CASE("ReadReply throws with too big data when deserializing", "[ReadReply]"
 TEST_CASE("ReadReply correctly serializes", "[ReadReply]")
 {
     auto readData = PlainData({std::byte(0x1), std::byte(0x2)});
-    ReadReplyError error(1);
+    ReadReplyError error(-1);
     auto data = ReadReply(readData.getData().data(), readData.getSize(), error).serialize();
 
     DomainData expectedData;

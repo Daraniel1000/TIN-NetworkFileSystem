@@ -2,7 +2,7 @@
 
 const std::unordered_map<int8_t, std::string> ReadReplyError::stringMap = {
         {0, "Success"},
-        {-1, "Internal server error"},
+        {99, "Internal server error"},
         {EBADF, "Not valid descriptor or not opened for reading"},
         {EAGAIN, "File marked as nonblocking and read would block it"},
         {EINVAL, "File is unsuitable for reading"},
@@ -11,6 +11,8 @@ const std::unordered_map<int8_t, std::string> ReadReplyError::stringMap = {
 
 ReadReplyError::ReadReplyError(int8_t errorValue) : MyNFSError(errorValue)
 {
+    if(errorValue == -1)
+        this->errorValue = 99;
     if(stringMap.find(this->errorValue) == stringMap.end())
         throw std::logic_error("Wrong error value");
 }

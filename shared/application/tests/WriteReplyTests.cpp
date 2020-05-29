@@ -6,7 +6,7 @@
 TEST_CASE("WriteReply correctly constructs from arguments", "[WriteReply]")
 {
     int16_t count = 10;
-    WriteReplyError error(1);
+    WriteReplyError error(-1);
     CHECK_NOTHROW(WriteReply(count, error));
     WriteReply rep(count, error);
     CHECK(rep.getCount() == count);
@@ -16,7 +16,7 @@ TEST_CASE("WriteReply correctly constructs from arguments", "[WriteReply]")
 TEST_CASE("WriteReply throws with too big count", "[WriteReply]")
 {
     int16_t count = WriteReply::MAX_DATA_SIZE + 1;
-    WriteReplyError error(1);
+    WriteReplyError error(-1);
     CHECK_THROWS(WriteReply(count, error));
 }
 
@@ -25,7 +25,7 @@ TEST_CASE("WriteReply correctly deserializes", "[WriteReply]")
     DomainData data;
     int16_t count = htons(10);
     data.append(&count, sizeof(count));
-    PlainError error(1);
+    PlainError error(99);
 
     CHECK_NOTHROW(WriteReply(data, error));
     WriteReply rep(data, error);
@@ -38,7 +38,7 @@ TEST_CASE("WriteReply throws with too big data when deserializing", "[WriteReply
     DomainData data;
     int16_t count = htons(WriteReply::MAX_DATA_SIZE + 1);
     data.append(&count, sizeof(count));
-    PlainError error(1);
+    PlainError error(-1);
 
     CHECK_THROWS(WriteReply(data, error));
 }
@@ -46,7 +46,7 @@ TEST_CASE("WriteReply throws with too big data when deserializing", "[WriteReply
 TEST_CASE("WriteReply correctly serializes", "[WriteReply]")
 {
     int16_t count = 10;
-    WriteReplyError error(1);
+    WriteReplyError error(-1);
     auto data = WriteReply(count, error).serialize();
 
     DomainData expectedData;

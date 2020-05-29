@@ -1,10 +1,10 @@
-#include <stdexcept>
 #include <unistd.h>
 #include <cstring>
 #include <transport/timeout_error.h>
 #include "transport/socket/UDPSocket.h"
 #include "addresses/AnyAddress.h"
 #include "transport/read_interrupted_error.h"
+#include "transport/socket_error.h"
 
 const int UDPSocket::MAX_DATA_SIZE = 65507;
 
@@ -14,7 +14,7 @@ UDPSocket::UDPSocket(Port port)
     auto protocol = 0; // protocol 0 means default
     this->socketDescriptor = socket(UDPSocket::FAMILY, UDPSocket::TYPE, protocol);
     if (this->socketDescriptor < 0)
-        throw std::runtime_error("Can't create socket. " + std::string(strerror(errno)) + ".");
+        throw socket_error(1, errno, "Can't create socket. " + std::string(strerror(errno)) + ".");
 
     this->socketAddress = NetworkAddress(AnyAddress(), port);
     auto addressStruct = this->socketAddress.toStruct();
@@ -23,7 +23,7 @@ UDPSocket::UDPSocket(Port port)
     if (bind(this->socketDescriptor, (struct sockaddr *) &addressStruct, sizeof(addressStruct)))
     {
         close(this->socketDescriptor); // close socket descriptor if failure
-        throw std::runtime_error(
+        throw socket_error(1, errno,
                 "Can't bind socket to port " + std::to_string(this->socketAddress.getPort().toHostOrder()) +
                 ". " + std::string(strerror(errno)) + ".");
     }
@@ -33,7 +33,7 @@ UDPSocket::UDPSocket(Port port)
     if (getsockname(this->socketDescriptor, (struct sockaddr *) &sin, &len) == -1)
     {
         close(this->socketDescriptor); // close socket descriptor if failure
-        throw std::runtime_error(
+        throw socket_error(1, errno,
                 "Can't get socket address. " + std::string(strerror(errno)) + ".");
     }
 
@@ -44,7 +44,7 @@ UDPSocket::UDPSocket(Port port)
     if (pipe(pipefd))
     {
         close(this->socketDescriptor); // close socket descriptor if failure
-        throw std::runtime_error(
+        throw socket_error(1, errno,
                 "Can't create signal pipe. " + std::string(strerror(errno)) + ".");
     }
 
@@ -71,7 +71,7 @@ void UDPSocket::send(NetworkAddress recipient, const PlainData &message) const
                             sizeof(addressStruct));
 
     if (sendBytes < 0)
-        throw std::runtime_error(
+        throw socket_error(2, errno,
                 "Sending message to " + recipient.toString() + " failed. " + std::string(strerror(errno)) + ".");
 }
 
@@ -95,7 +95,7 @@ PlainData UDPSocket::receive(NetworkAddress &source, int timeout) const
                                timeoutStructPtr);
 
     if (nDescriptors < 0)
-        throw std::runtime_error(
+        throw socket_error(3, errno,
                 "Select failed. " + std::string(strerror(errno)) + ".");
     if (nDescriptors == 0)
         throw timeout_error("Receive timed out");
@@ -118,7 +118,7 @@ PlainData UDPSocket::receive(NetworkAddress &source, int timeout) const
                             (struct sockaddr *) &sourceAddress, &sourceAddressLength);
 
     if (numBytes < 0)
-        throw std::runtime_error(
+        throw socket_error(3, errno,
                 "Receiving failed. " + std::string(strerror(errno)) + ".");
 
     // set address of received message

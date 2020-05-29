@@ -2,7 +2,7 @@
 
 const std::unordered_map<int8_t, std::string> OpenReplyError::stringMap = {
         {0, "Success"},
-        {-1, "Internal server error"},
+        {99, "Internal server error"},
         {EACCES, "Permission denied"},
         {EEXIST, "O_CREAT and O_EXCL are set but file exists"},
         {ELOOP, "A loop exists in symbolic links encountered during resolution of the path"},
@@ -16,6 +16,8 @@ const std::unordered_map<int8_t, std::string> OpenReplyError::stringMap = {
 
 OpenReplyError::OpenReplyError(int8_t errorValue) : MyNFSError(errorValue)
 {
+    if(errorValue == -1)
+        this->errorValue = 99;
     if(stringMap.find(this->errorValue) == stringMap.end())
         throw std::logic_error("Wrong error value");
 }

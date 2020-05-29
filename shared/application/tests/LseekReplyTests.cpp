@@ -6,7 +6,7 @@
 TEST_CASE("LseekReply correctly constructs from arguments", "[LseekReply]")
 {
     int32_t offset = 10;
-    LseekReplyError error(1);
+    LseekReplyError error(-1);
     CHECK_NOTHROW(LseekReply(offset, error));
     LseekReply rep(offset, error);
     CHECK(rep.getOffset() == offset);
@@ -18,7 +18,7 @@ TEST_CASE("LseekReply correctly deserializes", "[LseekReply]")
     DomainData data;
     int32_t offset = htonl(10);
     data.append(&offset, sizeof(offset));
-    PlainError error(1);
+    PlainError error(99);
 
     CHECK_NOTHROW(LseekReply(data, error));
     LseekReply rep(data, error);
@@ -32,7 +32,7 @@ TEST_CASE("LseekReply throws with bad deserialization data size", "[LseekReply]"
     int32_t offset = htonl(10);
     data.append(&offset, sizeof(offset));
     data.append(&offset, sizeof(offset));
-    PlainError error(1);
+    PlainError error(-1);
 
     CHECK_THROWS(LseekReply(data, error));
 }
@@ -40,7 +40,7 @@ TEST_CASE("LseekReply throws with bad deserialization data size", "[LseekReply]"
 TEST_CASE("LseekReply correctly serializes", "[LseekReply]")
 {
     int32_t offset = 10;
-    LseekReplyError error(1);
+    LseekReplyError error(-1);
     auto data = LseekReply(offset, error).serialize();
 
     DomainData expectedData;
