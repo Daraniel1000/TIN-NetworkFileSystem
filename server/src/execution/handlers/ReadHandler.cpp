@@ -28,7 +28,7 @@ void ReadHandler::handle()
     auto readBytes = read(descriptor, buf, count);
 
     //create reply
-    if(readBytes <= 0) {
+    if(readBytes < 0) {
         int error = errno;
         if(std::find(possibleErrors.begin(), possibleErrors.end(), error) == possibleErrors.end())
             error = -1;
