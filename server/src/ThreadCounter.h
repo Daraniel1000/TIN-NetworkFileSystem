@@ -6,7 +6,7 @@
 class ThreadCounter{
     std::mutex mutex;
     std::condition_variable boi;
-    int n;
+    int n = 0;
 public:
 
     void await()
