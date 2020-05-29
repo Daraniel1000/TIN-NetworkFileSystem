@@ -81,7 +81,7 @@ int16_t mynfs_read(char const *host, int16_t fd, void *buf, int16_t count)
     return readReply.getData().getSize();
 }
 
-int16_t mynfs_write(char *host, int16_t fd, void *buf, int16_t count)
+int16_t mynfs_write(char const *host, int16_t fd, void *buf, int16_t count)
 {
     // create endpoint
     ClientEndpoint clientEndpoint;
@@ -99,7 +99,7 @@ int16_t mynfs_write(char *host, int16_t fd, void *buf, int16_t count)
     return readReply.getCount();
 }
 
-int32_t mynfs_lseek(char *host, int16_t fd, int32_t offset, uint8_t whence)
+int32_t mynfs_lseek(char const *host, int16_t fd, int32_t offset, uint8_t whence)
 {
     // create endpoint
     ClientEndpoint clientEndpoint;
@@ -118,7 +118,7 @@ int32_t mynfs_lseek(char *host, int16_t fd, int32_t offset, uint8_t whence)
     return readReply.getOffset();
 }
 
-int8_t mynfs_close(char *host, int16_t fd)
+int8_t mynfs_close(char const *host, int16_t fd)
 {
     // create endpoint
     ClientEndpoint clientEndpoint;
@@ -136,7 +136,7 @@ int8_t mynfs_close(char *host, int16_t fd)
    return 0;
 }
 
-int8_t mynfs_unlink(char *host, char *path)
+int8_t mynfs_unlink(char const *host, char const *path)
 {
     // create endpoint
     ClientEndpoint clientEndpoint;

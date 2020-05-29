@@ -11,7 +11,7 @@ public:
     virtual ~Reply() = default;
 
     /**
-     * Get reply error (0 = no erro)
+     * Get reply error (0 = no error)
      */
     virtual const MyNFSError& getError() const = 0;
 
