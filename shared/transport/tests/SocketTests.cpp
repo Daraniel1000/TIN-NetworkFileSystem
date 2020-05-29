@@ -109,3 +109,10 @@ TEST_CASE("Socket receive times out with 0 timeout", "[UDPSocket]")
 
     CHECK_THROWS(receiveSocket.receive(sourceAddress, 0));
 }
+
+TEST_CASE("Socket creates on given port", "[UDPSocket]")
+{
+    UDPSocket receiveSocket((Port(54321)));
+
+    CHECK(receiveSocket.getAddress().getPort().toHostOrder() == 54321);
+}

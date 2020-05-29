@@ -28,6 +28,17 @@ UDPSocket::UDPSocket(Port port)
                 ". " + std::string(strerror(errno)) + ".");
     }
 
+    sockaddr_in sin{};
+    socklen_t len = sizeof(sin);
+    if (getsockname(this->socketDescriptor, (struct sockaddr *) &sin, &len) == -1)
+    {
+        close(this->socketDescriptor); // close socket descriptor if failure
+        throw std::runtime_error(
+                "Can't get socket address. " + std::string(strerror(errno)) + ".");
+    }
+
+    this->socketAddress.setPort(Port(ntohs(sin.sin_port)));
+
     // create pipe for signaling
     int pipefd[2];
     if (pipe(pipefd))

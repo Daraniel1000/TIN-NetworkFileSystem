@@ -42,3 +42,8 @@ void ServerEndpoint::run()
     executorThread.join();
     listener.writeQuit();
 }
+
+const NetworkAddress &ServerEndpoint::getAddress() const
+{
+    return this->socket.getAddress();
+}
