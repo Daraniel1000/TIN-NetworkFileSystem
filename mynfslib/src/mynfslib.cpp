@@ -64,92 +64,216 @@ int16_t mynfs_open(char const *host, char const *path, uint8_t oflag)
 
 int16_t mynfs_read(char const *host, int16_t fd, void *buf, int16_t count)
 {
-    // create endpoint
-    ClientEndpoint clientEndpoint;
+    try {
+        // create endpoint
+        ClientEndpoint clientEndpoint;
 
-    // send request and get reply
-    ReadReply readReply = clientEndpoint.send<ReadRequest, ReadReply>
-            (
-                    NetworkAddress(host),
-                    ReadRequest(fd, count)
-            );
+        // send request and get reply
+        ReadReply readReply = clientEndpoint.send<ReadRequest, ReadReply>
+                (
+                        NetworkAddress(host),
+                        ReadRequest(fd, count)
+                );
 
-    // react to error here
-    readReply.getError();
+        // react to error here
+        if(readReply.getError().getErrorValue() > 0)
+        {
+            mynfs_error = 3000 + readReply.getError().getErrorValue();
+            mynfs_error_message = readReply.getError().toString();
+            return -1;
+        }
 
-    //return
-    return readReply.getData().getSize();
+        //return
+        return readReply.getData().getSize();
+    }
+    catch (address_error& e)
+    {
+        mynfs_error = 1000 + 100*e.getMajorCode() + e.getMinorCode();
+        mynfs_error_message = e.what();
+    }
+    catch (socket_error& e)
+    {
+        mynfs_error = 2000 + 100*e.getMajorCode() + e.getMinorCode();
+        mynfs_error_message = e.what();
+    }
+    catch (std::exception& e)
+    {
+        mynfs_error = 4000;
+        mynfs_error_message = e.what();
+    }
+
+    return -1;
 }
 
 int16_t mynfs_write(char const *host, int16_t fd, void *buf, int16_t count)
 {
-    // create endpoint
-    ClientEndpoint clientEndpoint;
+    try {
+        // create endpoint
+        ClientEndpoint clientEndpoint;
 
-    // send request and get reply
-    WriteReply readReply = clientEndpoint.send<WriteRequest, WriteReply>
-            (
-                    NetworkAddress(host),
-                    WriteRequest(fd, buf,count)
-            );
+        // send request and get reply
+        WriteReply readReply = clientEndpoint.send<WriteRequest, WriteReply>
+                (
+                        NetworkAddress(host),
+                        WriteRequest(fd, buf, count)
+                );
 
-    // react to error here
-    readReply.getError();
+        // react to error here
+        if(readReply.getError().getErrorValue() > 0)
+        {
+            mynfs_error = 3000 + readReply.getError().getErrorValue();
+            mynfs_error_message = readReply.getError().toString();
+            return -1;
+        }
 
-    return readReply.getCount();
+        return readReply.getCount();
+    }
+
+    catch (address_error& e)
+    {
+        mynfs_error = 1000 + 100*e.getMajorCode() + e.getMinorCode();
+        mynfs_error_message = e.what();
+    }
+    catch (socket_error& e)
+    {
+        mynfs_error = 2000 + 100*e.getMajorCode() + e.getMinorCode();
+        mynfs_error_message = e.what();
+    }
+    catch (std::exception& e)
+    {
+        mynfs_error = 4000;
+        mynfs_error_message = e.what();
+    }
+
+    return -1;
 }
 
 int32_t mynfs_lseek(char const *host, int16_t fd, int32_t offset, uint8_t whence)
 {
-    // create endpoint
-    ClientEndpoint clientEndpoint;
+    try {
+        // create endpoint
+        ClientEndpoint clientEndpoint;
 
-    // send request and get reply
-    LseekReply readReply = clientEndpoint.send<LseekRequest, LseekReply>
-            (
-                    NetworkAddress(host),
-                    LseekRequest(fd, offset, whence)
-            );
+        // send request and get reply
+        LseekReply readReply = clientEndpoint.send<LseekRequest, LseekReply>
+                (
+                        NetworkAddress(host),
+                        LseekRequest(fd, offset, whence)
+                );
 
-    // react to error here
-    readReply.getError();
+        // react to error here
+        if(readReply.getError().getErrorValue() > 0)
+        {
+            mynfs_error = 3000 + readReply.getError().getErrorValue();
+            mynfs_error_message = readReply.getError().toString();
+            return -1;
+        }
 
-    //return offset
-    return readReply.getOffset();
+        //return offset
+        return readReply.getOffset();
+    }
+
+    catch (address_error& e)
+    {
+        mynfs_error = 1000 + 100*e.getMajorCode() + e.getMinorCode();
+        mynfs_error_message = e.what();
+    }
+    catch (socket_error& e)
+    {
+        mynfs_error = 2000 + 100*e.getMajorCode() + e.getMinorCode();
+        mynfs_error_message = e.what();
+    }
+    catch (std::exception& e)
+    {
+        mynfs_error = 4000;
+        mynfs_error_message = e.what();
+    }
+
+    return -1;
 }
 
 int8_t mynfs_close(char const *host, int16_t fd)
 {
-    // create endpoint
-    ClientEndpoint clientEndpoint;
+    try {
+        // create endpoint
+        ClientEndpoint clientEndpoint;
 
-    // send request and get reply
-    CloseReply readReply = clientEndpoint.send<CloseRequest, CloseReply>
-            (
-                    NetworkAddress(host),
-                    CloseRequest(fd)
-            );
+        // send request and get reply
+        CloseReply readReply = clientEndpoint.send<CloseRequest, CloseReply>
+                (
+                        NetworkAddress(host),
+                        CloseRequest(fd)
+                );
 
-    // react to error here
-    readReply.getError();
+        // react to error here
+        if(readReply.getError().getErrorValue() > 0)
+        {
+            mynfs_error = 3000 + readReply.getError().getErrorValue();
+            mynfs_error_message = readReply.getError().toString();
+            return -1;
+        }
 
-   return 0;
+        return 0;
+    }
+
+    catch (address_error& e)
+    {
+        mynfs_error = 1000 + 100*e.getMajorCode() + e.getMinorCode();
+        mynfs_error_message = e.what();
+    }
+    catch (socket_error& e)
+    {
+        mynfs_error = 2000 + 100*e.getMajorCode() + e.getMinorCode();
+        mynfs_error_message = e.what();
+    }
+    catch (std::exception& e)
+    {
+        mynfs_error = 4000;
+        mynfs_error_message = e.what();
+    }
+
+    return -1;
 }
 
 int8_t mynfs_unlink(char const *host, char const *path)
 {
-    // create endpoint
-    ClientEndpoint clientEndpoint;
+    try {
+        // create endpoint
+        ClientEndpoint clientEndpoint;
 
-    // send request and get reply
-    UnlinkReply readReply = clientEndpoint.send<UnlinkRequest, UnlinkReply>
-            (
-                    NetworkAddress(host),
-                    UnlinkRequest(path)
-            );
+        // send request and get reply
+        UnlinkReply readReply = clientEndpoint.send<UnlinkRequest, UnlinkReply>
+                (
+                        NetworkAddress(host),
+                        UnlinkRequest(path)
+                );
 
-    // react to error here
-    readReply.getError();
+        // react to error here
+        if(readReply.getError().getErrorValue() > 0)
+        {
+            mynfs_error = 3000 + readReply.getError().getErrorValue();
+            mynfs_error_message = readReply.getError().toString();
+            return -1;
+        }
 
-    return 0;
+        return 0;
+    }
+
+    catch (address_error& e)
+    {
+        mynfs_error = 1000 + 100*e.getMajorCode() + e.getMinorCode();
+        mynfs_error_message = e.what();
+    }
+    catch (socket_error& e)
+    {
+        mynfs_error = 2000 + 100*e.getMajorCode() + e.getMinorCode();
+        mynfs_error_message = e.what();
+    }
+    catch (std::exception& e)
+    {
+        mynfs_error = 4000;
+        mynfs_error_message = e.what();
+    }
+
+    return -1;
 }
