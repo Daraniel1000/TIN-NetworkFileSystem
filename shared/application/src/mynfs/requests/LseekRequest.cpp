@@ -2,6 +2,7 @@
 #include <session/Converter.h>
 #include <algorithm>
 #include <sstream>
+#include <application/mynfs/bad_argument_error.h>
 #include "application/mynfs/requests/LseekRequest.h"
 
 const uint8_t LseekRequest::TYPE = 3;
@@ -21,7 +22,7 @@ void checkWhence(int8_t value)
         }
         std::string s = ss.str();
 
-        throw std::logic_error(
+        throw bad_argument_error(1, 2,
                 "Invalid whence value " + std::to_string(value) + ". Only possible values are: " + s);
     }
 }
@@ -36,7 +37,7 @@ LseekRequest::LseekRequest(const DomainData &data)
 {
     auto expectedSize = sizeof(this->descriptor) + sizeof(this->offset) + sizeof(this->whence);
     if (data.getSize() != expectedSize)
-        throw std::logic_error(
+        throw bad_argument_error(1, 1,
                 "Bad message size. Expected " + std::to_string(expectedSize) + ", but got " +
                 std::to_string(data.getSize()));
 

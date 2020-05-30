@@ -1,5 +1,6 @@
 #include <stdexcept>
 #include <session/Converter.h>
+#include <application/mynfs/bad_argument_error.h>
 #include "application/mynfs/requests/UnlinkRequest.h"
 
 const uint8_t UnlinkRequest::TYPE = 5;
@@ -7,8 +8,11 @@ const int16_t UnlinkRequest::MAX_PATH_SIZE = 4096;
 
 UnlinkRequest::UnlinkRequest(char const *path) : path(path)
 {
+    if(path == nullptr)
+        throw bad_argument_error(1, 3, "Path is null");
+    this->path = std::string(path);
     if (this->path.size() > UnlinkRequest::MAX_PATH_SIZE)
-        throw std::logic_error(
+        throw bad_argument_error(1, 2,
                 "Path is too long. Expected at most" + std::to_string(UnlinkRequest::MAX_PATH_SIZE) + ", but got " +
                 std::to_string(this->path.size()));
 }
@@ -17,13 +21,13 @@ UnlinkRequest::UnlinkRequest(const DomainData &data)
 {
     auto expectedSize = sizeof(UnlinkRequest::MAX_PATH_SIZE);
     if (data.getSize() < expectedSize)
-        throw std::logic_error(
+        throw bad_argument_error(1, 1,
                 "Bad message size. Expected at least" + std::to_string(expectedSize) + ", but got " +
                 std::to_string(data.getSize()));
 
     expectedSize += UnlinkRequest::MAX_PATH_SIZE;
     if (data.getSize() > expectedSize)
-        throw std::logic_error(
+        throw bad_argument_error(1, 2,
                 "Bad message size. Expected at most" + std::to_string(expectedSize) + ", but got " +
                 std::to_string(data.getSize()));
 

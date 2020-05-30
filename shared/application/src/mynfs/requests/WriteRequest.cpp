@@ -1,14 +1,21 @@
 #include <stdexcept>
 #include <session/Converter.h>
+#include <application/mynfs/bad_argument_error.h>
+#include <cstring>
 #include "application/mynfs/requests/WriteRequest.h"
 
 const uint8_t WriteRequest::TYPE = 2;
 const int16_t WriteRequest::MAX_DATA_SIZE = 4096;
 
-WriteRequest::WriteRequest(int16_t descriptor, void const *buf, int16_t count) : descriptor(descriptor), writeData(buf, count)
+WriteRequest::WriteRequest(int16_t descriptor, void const *buf, int16_t count) : descriptor(descriptor)
 {
+    try{
+        this->writeData = DomainData(buf, count);
+    } catch (std::exception& e){
+        throw bad_argument_error(1, 3, "Bad buffer. " + std::string(strerror(errno)) + ".");
+    }
     if (this->writeData.getSize() > WriteRequest::MAX_DATA_SIZE)
-        throw std::logic_error(
+        throw bad_argument_error(1, 2,
                 "Data is too big. Expected at most" + std::to_string(WriteRequest::MAX_DATA_SIZE) + ", but got " +
                 std::to_string(this->writeData.getSize()));
 }
@@ -17,13 +24,13 @@ WriteRequest::WriteRequest(const DomainData &data)
 {
     auto expectedSize = sizeof(this->descriptor) + sizeof(WriteRequest::MAX_DATA_SIZE);
     if (data.getSize() < expectedSize)
-        throw std::logic_error(
+        throw bad_argument_error(1, 1,
                 "Bad message size. Expected at least" + std::to_string(expectedSize) + ", but got " +
                 std::to_string(data.getSize()));
 
     expectedSize += WriteRequest::MAX_DATA_SIZE;
     if (data.getSize() > expectedSize)
-        throw std::logic_error(
+        throw bad_argument_error(1, 2,
                 "Bad message size. Expected at most" + std::to_string(expectedSize) + ", but got " +
                 std::to_string(data.getSize()));
 

@@ -3,14 +3,15 @@
 #include <mutex>
 #include "ServerSubEndpoint.h"
 
-ServerSubEndpoint::ServerSubEndpoint(UDPSocket socket, NetworkAddress clientAddress,
+ServerSubEndpoint::ServerSubEndpoint(NetworkAddress clientAddress,
                                      const HandlerFactoryPool &handlerFactoryPool,
                                      SafeQueue<Handler*>& queueRef,
-                                     ThreadCounter& counterRef) : socket(socket), clientAddress(clientAddress),
-                                                                handlerFactoryPool(handlerFactoryPool),
-                                                                messageQueue(queueRef),
-                                                                counter(counterRef)
-
+                                     ThreadCounter& counterRef,
+                                     Port port) : socket(port),
+                                                  clientAddress(clientAddress),
+                                                  handlerFactoryPool(handlerFactoryPool),
+                                                  messageQueue(queueRef),
+                                                  counter(counterRef)
 {
 
 }

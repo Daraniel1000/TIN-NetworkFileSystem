@@ -3,6 +3,7 @@
 #include <fcntl.h>
 #include <algorithm>
 #include <sstream>
+#include <application/mynfs/bad_argument_error.h>
 #include "application/mynfs/requests/OpenRequest.h"
 
 const uint8_t OpenRequest::TYPE = 0;
@@ -23,15 +24,18 @@ void checkOflag(uint16_t value)
         }
         std::string s = ss.str();
 
-        throw std::logic_error(
+        throw bad_argument_error(1, 3,
                 "Invalid oflag value " + std::to_string(value) + ". Only possible values are: " + s);
     }
 }
 
-OpenRequest::OpenRequest(char const *path, uint16_t oflag) : path(path), oflag(oflag)
+OpenRequest::OpenRequest(char const *path, uint16_t oflag) : oflag(oflag)
 {
+    if(path == nullptr)
+        throw bad_argument_error(1, 3, "Path is null");
+    this->path = std::string(path);
     if (this->path.size() > OpenRequest::MAX_PATH_SIZE)
-        throw std::logic_error(
+        throw bad_argument_error(1, 2,
                 "Path is too long. Expected at most" + std::to_string(OpenRequest::MAX_PATH_SIZE) + ", but got " +
                 std::to_string(this->path.size()));
     checkOflag(this->oflag);
@@ -41,13 +45,13 @@ OpenRequest::OpenRequest(const DomainData &data)
 {
     auto expectedSize = sizeof(this->oflag) + sizeof(OpenRequest::MAX_PATH_SIZE);
     if (data.getSize() < expectedSize)
-        throw std::logic_error(
+        throw bad_argument_error(1, 1,
                 "Bad message size. Expected at least" + std::to_string(expectedSize) + ", but got " +
                 std::to_string(data.getSize()));
 
     expectedSize += OpenRequest::MAX_PATH_SIZE;
     if (data.getSize() > expectedSize)
-        throw std::logic_error(
+        throw bad_argument_error(1, 2,
                 "Bad message size. Expected at most" + std::to_string(expectedSize) + ", but got " +
                 std::to_string(data.getSize()));
 

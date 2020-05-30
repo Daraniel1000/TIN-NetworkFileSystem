@@ -39,8 +39,8 @@ IpAddress::IpAddress(char const *addressString)
             throw address_error(1, 2,"Name is valid, but does not have IP address in gethostbyname");
         if(h_errno == NO_RECOVERY)
             throw  address_error(1, 3,"A nonrecoverable name server error occurred in gethostbyname");
-        if(h == NULL)
-            throw address_error(1, 4,"Null pointer exception in gethostbyname");
+        if(h == nullptr)
+            throw address_error(1, 4,"Address not found");
         memset(&nAddress, 0, sizeof(nAddress));
         memcpy(&nAddress,h->h_addr,h->h_length);
         address = ntohl(nAddress);

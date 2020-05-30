@@ -15,6 +15,7 @@
 #include <addresses/address_error.h>
 #include <cstring>
 #include <sstream>
+#include <application/mynfs/bad_argument_error.h>
 
 #include "endpoint/ClientEndpoint.h"
 
@@ -37,8 +38,8 @@ int16_t mynfs_open(char const *host, char const *path, uint16_t oflag)
         // react to error here
         if(readReply.getError().getErrorValue() > 0)
         {
-            mynfs_error = 3000 + readReply.getError().getErrorValue();
-            mynfs_error_message = readReply.getError().toString();
+            mynfs_error = 4000 + readReply.getError().getErrorValue();
+            mynfs_error_message = "Reply error. " + readReply.getError().toString();
             return -1;
         }
 
@@ -48,17 +49,22 @@ int16_t mynfs_open(char const *host, char const *path, uint16_t oflag)
     catch (address_error& e)
     {
         mynfs_error = 1000 + 100*e.getMajorCode() + e.getMinorCode();
-        mynfs_error_message = e.what();
+        mynfs_error_message = "Bad host address. " + std::string(e.what());
+    }
+    catch (bad_argument_error& e)
+    {
+        mynfs_error = 2000 + 100*e.getMajorCode() + e.getMinorCode();
+        mynfs_error_message = "Bad request argument. " + std::string(e.what());
     }
     catch (socket_error& e)
     {
-        mynfs_error = 2000 + 100*e.getMajorCode() + e.getMinorCode();
-        mynfs_error_message = e.what();
+        mynfs_error = 3000 + 100*e.getMajorCode() + e.getMinorCode();
+        mynfs_error_message = "Network error. " + std::string(e.what());
     }
     catch (std::exception& e)
     {
-        mynfs_error = 4000;
-        mynfs_error_message = e.what();
+        mynfs_error = 5000;
+        mynfs_error_message = "Unknown error. " + std::string(e.what());
     }
 
     return -1;
@@ -80,8 +86,8 @@ int16_t mynfs_read(char const *host, int16_t fd, void *buf, int16_t count)
         // react to error here
         if(readReply.getError().getErrorValue() > 0)
         {
-            mynfs_error = 3000 + readReply.getError().getErrorValue();
-            mynfs_error_message = readReply.getError().toString();
+            mynfs_error = 4000 + readReply.getError().getErrorValue();
+            mynfs_error_message = "Reply error. " + readReply.getError().toString();
             return -1;
         }
 
@@ -96,17 +102,22 @@ int16_t mynfs_read(char const *host, int16_t fd, void *buf, int16_t count)
     catch (address_error& e)
     {
         mynfs_error = 1000 + 100*e.getMajorCode() + e.getMinorCode();
-        mynfs_error_message = e.what();
+        mynfs_error_message = "Bad host address. " + std::string(e.what());
+    }
+    catch (bad_argument_error& e)
+    {
+        mynfs_error = 2000 + 100*e.getMajorCode() + e.getMinorCode();
+        mynfs_error_message = "Bad request argument. " + std::string(e.what());
     }
     catch (socket_error& e)
     {
-        mynfs_error = 2000 + 100*e.getMajorCode() + e.getMinorCode();
-        mynfs_error_message = e.what();
+        mynfs_error = 3000 + 100*e.getMajorCode() + e.getMinorCode();
+        mynfs_error_message = "Network error. " + std::string(e.what());
     }
     catch (std::exception& e)
     {
-        mynfs_error = 4000;
-        mynfs_error_message = e.what();
+        mynfs_error = 5000;
+        mynfs_error_message = "Unknown error. " + std::string(e.what());
     }
 
     return -1;
@@ -128,30 +139,33 @@ int16_t mynfs_write(char const *host, int16_t fd, void *buf, int16_t count)
         // react to error here
         if(readReply.getError().getErrorValue() > 0)
         {
-            mynfs_error = 3000 + readReply.getError().getErrorValue();
-            mynfs_error_message = readReply.getError().toString();
+            mynfs_error = 4000 + readReply.getError().getErrorValue();
+            mynfs_error_message = "Reply error. " + readReply.getError().toString();
             return -1;
         }
 
         return readReply.getCount();
     }
-
     catch (address_error& e)
     {
         mynfs_error = 1000 + 100*e.getMajorCode() + e.getMinorCode();
-        mynfs_error_message = e.what();
+        mynfs_error_message = "Bad host address. " + std::string(e.what());
+    }
+    catch (bad_argument_error& e)
+    {
+        mynfs_error = 2000 + 100*e.getMajorCode() + e.getMinorCode();
+        mynfs_error_message = "Bad request argument. " + std::string(e.what());
     }
     catch (socket_error& e)
     {
-        mynfs_error = 2000 + 100*e.getMajorCode() + e.getMinorCode();
-        mynfs_error_message = e.what();
+        mynfs_error = 3000 + 100*e.getMajorCode() + e.getMinorCode();
+        mynfs_error_message = "Network error. " + std::string(e.what());
     }
     catch (std::exception& e)
     {
-        mynfs_error = 4000;
-        mynfs_error_message = e.what();
+        mynfs_error = 5000;
+        mynfs_error_message = "Unknown error. " + std::string(e.what());
     }
-
     return -1;
 }
 
@@ -171,29 +185,33 @@ int32_t mynfs_lseek(char const *host, int16_t fd, int32_t offset, uint8_t whence
         // react to error here
         if(readReply.getError().getErrorValue() > 0)
         {
-            mynfs_error = 3000 + readReply.getError().getErrorValue();
-            mynfs_error_message = readReply.getError().toString();
+            mynfs_error = 4000 + readReply.getError().getErrorValue();
+            mynfs_error_message = "Reply error. " + readReply.getError().toString();
             return -1;
         }
 
         //return offset
         return readReply.getOffset();
     }
-
     catch (address_error& e)
     {
         mynfs_error = 1000 + 100*e.getMajorCode() + e.getMinorCode();
-        mynfs_error_message = e.what();
+        mynfs_error_message = "Bad host address. " + std::string(e.what());
+    }
+    catch (bad_argument_error& e)
+    {
+        mynfs_error = 2000 + 100*e.getMajorCode() + e.getMinorCode();
+        mynfs_error_message = "Bad request argument. " + std::string(e.what());
     }
     catch (socket_error& e)
     {
-        mynfs_error = 2000 + 100*e.getMajorCode() + e.getMinorCode();
-        mynfs_error_message = e.what();
+        mynfs_error = 3000 + 100*e.getMajorCode() + e.getMinorCode();
+        mynfs_error_message = "Network error. " + std::string(e.what());
     }
     catch (std::exception& e)
     {
-        mynfs_error = 4000;
-        mynfs_error_message = e.what();
+        mynfs_error = 5000;
+        mynfs_error_message = "Unknown error. " + std::string(e.what());
     }
 
     return -1;
@@ -215,28 +233,32 @@ int8_t mynfs_close(char const *host, int16_t fd)
         // react to error here
         if(readReply.getError().getErrorValue() > 0)
         {
-            mynfs_error = 3000 + readReply.getError().getErrorValue();
-            mynfs_error_message = readReply.getError().toString();
+            mynfs_error = 4000 + readReply.getError().getErrorValue();
+            mynfs_error_message = "Reply error. " + readReply.getError().toString();
             return -1;
         }
 
         return 0;
     }
-
     catch (address_error& e)
     {
         mynfs_error = 1000 + 100*e.getMajorCode() + e.getMinorCode();
-        mynfs_error_message = e.what();
+        mynfs_error_message = "Bad host address. " + std::string(e.what());
+    }
+    catch (bad_argument_error& e)
+    {
+        mynfs_error = 2000 + 100*e.getMajorCode() + e.getMinorCode();
+        mynfs_error_message = "Bad request argument. " + std::string(e.what());
     }
     catch (socket_error& e)
     {
-        mynfs_error = 2000 + 100*e.getMajorCode() + e.getMinorCode();
-        mynfs_error_message = e.what();
+        mynfs_error = 3000 + 100*e.getMajorCode() + e.getMinorCode();
+        mynfs_error_message = "Network error. " + std::string(e.what());
     }
     catch (std::exception& e)
     {
-        mynfs_error = 4000;
-        mynfs_error_message = e.what();
+        mynfs_error = 5000;
+        mynfs_error_message = "Unknown error. " + std::string(e.what());
     }
 
     return -1;
@@ -258,28 +280,32 @@ int8_t mynfs_unlink(char const *host, char const *path)
         // react to error here
         if(readReply.getError().getErrorValue() > 0)
         {
-            mynfs_error = 3000 + readReply.getError().getErrorValue();
-            mynfs_error_message = readReply.getError().toString();
+            mynfs_error = 4000 + readReply.getError().getErrorValue();
+            mynfs_error_message = "Reply error. " + readReply.getError().toString();
             return -1;
         }
 
         return 0;
     }
-
     catch (address_error& e)
     {
         mynfs_error = 1000 + 100*e.getMajorCode() + e.getMinorCode();
-        mynfs_error_message = e.what();
+        mynfs_error_message = "Bad host address. " + std::string(e.what());
+    }
+    catch (bad_argument_error& e)
+    {
+        mynfs_error = 2000 + 100*e.getMajorCode() + e.getMinorCode();
+        mynfs_error_message = "Bad request argument. " + std::string(e.what());
     }
     catch (socket_error& e)
     {
-        mynfs_error = 2000 + 100*e.getMajorCode() + e.getMinorCode();
-        mynfs_error_message = e.what();
+        mynfs_error = 3000 + 100*e.getMajorCode() + e.getMinorCode();
+        mynfs_error_message = "Network error. " + std::string(e.what());
     }
     catch (std::exception& e)
     {
-        mynfs_error = 4000;
-        mynfs_error_message = e.what();
+        mynfs_error = 5000;
+        mynfs_error_message = "Unknown error. " + std::string(e.what());
     }
 
     return -1;
