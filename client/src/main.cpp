@@ -5,44 +5,53 @@
 
 int16_t nfsopen()
 {
-    char host[50];
-    char path[200];
+    std::string host;
+    std::string path;
     uint8_t oflag;
+    std::string soflag;
 
     std::cout << "Host address:" << std::endl;
-    std::cin >> host;
+    std::getline(std::cin, host);
     std::cout << "Path to file:" << std::endl;
-    std::cin >> path;
+    std::getline(std::cin, path);
     std::cout << "Oflag:" << std::endl;
-    std::cin >> oflag;
+    std::getline(std::cin, soflag);
+    oflag = static_cast<uint8_t>(std::stoi(soflag));
 
-    int16_t fd = mynfs_open(host, path, oflag);
+    int16_t fd = mynfs_open(host.c_str(), path.c_str(), oflag);
 
     if(mynfs_error != 0 ) {
         std::cout << "Error occurred, error message: "<< mynfs_error_message << std::endl;
         return -1;
     }
 
-    std::cout << "Success\nOpened file descriptor: " << fd << std::endl;
+    std::cout << "Success" << std::endl;
+    std::cout << "Opened file descriptor: " << fd << std::endl;
     return fd;
 
 }
 
 int16_t nfsread()
 {
-    char host[50];
+    std::string host;
     int16_t fd;
-    void *buf[4096];
+    std::string sfd;
     int16_t count;
+    std::string scount;
+    char buf[4096];
+    void *pBuf;
+    pBuf = &buf[0];
 
     std::cout << "Host address:" << std::endl;
-    std::cin >> host;
+    std::getline(std::cin, host);
     std::cout << "File descriptor:" << std::endl;
-    std::cin >> fd;
+    std::getline(std::cin, sfd);
+    fd = static_cast<int16_t>(std::stoi(sfd));
     std::cout << "Bytes to read:" << std::endl;
-    std::cin >> count;
+    std::getline(std::cin, scount);
+    count = static_cast<int16_t>(std::stoi(scount));
 
-    int16_t size = mynfs_read(host, fd, buf, count);
+    int16_t size = mynfs_read(host.c_str(), fd, pBuf, count);
 
     if(mynfs_error != 0 ) {
         std::cout << "Error occurred, error message: "<< mynfs_error_message << std::endl;
@@ -51,52 +60,75 @@ int16_t nfsread()
 
     std::cout << "Success" << std::endl;
     std::cout << size << " bytes read" << std::endl;
-    std::cout << buf;
+
+    int16_t i = 0;
+    while(i < size)
+    {
+        std::cout << buf[i];
+        if(i==100) std::cout << std::endl;
+        i++;
+    }
+
     return size;
 }
 
 int16_t nfswrite()
 {
-    char host[50];
+    std::string host;
     int16_t fd;
-    void *buf[4096];
+    std::string sfd;
+    std::string buf;
+    void *pBuf = &buf;
     int16_t count;
 
     std::cout << "Host address:" << std::endl;
-    std::cin >> host;
+    std::getline(std::cin, host);
     std::cout << "File descriptor:" << std::endl;
-    std::cin >> fd;
-    std::cout << "Bytes to save:" << std::endl;
-    std::cin >> count;
+    std::getline(std::cin, sfd);
+    fd = static_cast<int16_t>(std::stoi(sfd));
+    std::cout << "Data to write:" << std::endl;
+    std::getline(std::cin, buf);
 
-    int16_t size = mynfs_write(host, fd, buf, count);
+    count = 0;
+    while(buf[count] != '\0') {
+        count++;
+    }
+    count++; // '\0' at the end of buffer
 
+    int16_t size = mynfs_write(host.c_str(), fd, pBuf, count);
     if(mynfs_error != 0 ) {
         std::cout << "Error occurred, error message: "<< mynfs_error_message << std::endl;
         return -1;
     }
 
     std::cout << "Success" << std::endl;
+    std::cout << size << " bytes written" << std::endl;
     return size;
 }
 
 int32_t nfslseek()
 {
-    char host[50];
+    std::string host;
+    std::string sfd;
     int16_t fd;
+    std::string soffset;
     int32_t offset;
-    int8_t whence;
+    std::string swhence;
+    uint8_t whence;
 
     std::cout << "Host address:" << std::endl;
-    std::cin >> host;
+    std::getline(std::cin, host);
     std::cout << "File descriptor:" << std::endl;
-    std::cin >> fd;
+    std::getline(std::cin, sfd);
+    fd = static_cast<int16_t>(std::stoi(sfd));
     std::cout << "Offset:" << std::endl;
-    std::cin >> offset;
+    std::getline(std::cin, sfd);
+    offset = static_cast<int32_t>(std::stoi(soffset));
     std::cout << "Whence:" << std::endl;
-    std::cin >> whence;
+    std::getline(std::cin, soffset);
+    whence = static_cast<uint8_t>(std::stoi(swhence));
 
-    offset = mynfs_lseek(host, fd, offset, whence);
+    offset = mynfs_lseek(host.c_str(), fd, offset, whence);
 
     if(mynfs_error != 0 ) {
         std::cout << "Error occurred, error message: "<< mynfs_error_message << std::endl;
@@ -104,20 +136,23 @@ int32_t nfslseek()
     }
 
     std::cout << "Success" << std::endl;
+    std::cout << "New offset: " << offset << std::endl;
     return offset;
 }
 
 int8_t nfsclose()
 {
-    char host[50];
+    std::string host;
+    std::string sfd;
     int16_t fd;
 
     std::cout << "Host address:" << std::endl;
-    std::cin >> host;
+    std::getline(std::cin, host);
     std::cout << "File descriptor to close:" << std::endl;
-    std::cin >> fd;
+    std::getline(std::cin, sfd);
+    fd = static_cast<int16_t>(std::stoi(sfd));
 
-    mynfs_close(host, fd);
+    mynfs_close(host.c_str(), fd);
 
     if(mynfs_error != 0 ) {
         std::cout << "Error occurred, error message: "<< mynfs_error_message << std::endl;
@@ -130,15 +165,17 @@ int8_t nfsclose()
 
 int8_t nfsunlink()
 {
-    char host[50];
+    std::string host;
+    std::string sfd;
     int16_t fd;
 
     std::cout << "Host address:" << std::endl;
-    std::cin >> host;
+    std::getline(std::cin, host);
     std::cout << "File descriptor to unlink:" << std::endl;
-    std::cin >> fd;
+    std::getline(std::cin, sfd);
+    fd = static_cast<int16_t>(std::stoi(sfd));
 
-    mynfs_close(host, fd);
+    mynfs_close(host.c_str(), fd);
 
     if(mynfs_error != 0 ) {
         std::cout << "Error occurred, error message: "<< mynfs_error_message << std::endl;
@@ -151,46 +188,29 @@ int8_t nfsunlink()
 
 int main(int argc, char *argv[])
 {
-    int choice;
-    std::cout << "Welcome to MyNFS!\nChoose function to run:\n1. open\n2. read\n3. write\n4. lseek\n5. close\n6. unlink\n";
-    std::cin >> choice;
-        switch (choice) {
-            case 1:
-            {
-                std::cout << "mynfs_open chosen" << std::endl;
-                nfsopen();
-                break;
-            }
-            case 2:
-            {
-                std::cout << "mynfs_read chosen" << std::endl;
-                nfsread();
-                break;
-            }
-            case 3:
-            {
-                std::cout << "mynfs_write chosen" << std::endl;
-                nfswrite();
-                break;
-            }
-            case 4:
-            {
-                std::cout << "mynfs_lseek chosen" << std::endl;
-                nfslseek();
-                break;
-            }
-            case 5:
-            {
-                std::cout << "mynfs_close chosen" << std::endl;
-                nfsclose();
-                break;
-            }
-            case 6:
-            {
-                std::cout << "mynfs_unlink chosen" << std::endl;
-                nfsunlink();
-                break;
-            }
-        }
+    std::string choice;
+    bool exit = false;
 
+    std::cout << "Welcome to MyNFS!\n";
+    while(!exit)
+    {
+        std::cout << "Commands to run: open, read, write, lseek, close, unlink, exit\n";
+        std::getline(std::cin, choice);
+        if(choice =="open") nfsopen();
+
+        else if(choice == "read") nfsread();
+
+        else if(choice == "write") nfswrite();
+
+        else if(choice == "lseek") nfslseek();
+
+        else if(choice == "close") nfsclose();
+
+        else if(choice == "unlink") nfsunlink();
+
+        else if(choice == "exit") {exit = true; std::cout << "Goodbye!";}
+
+        else std::cout << "Typo in command. Try again.\n";
+    }
+    return 0;
 }
