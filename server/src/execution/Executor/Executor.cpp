@@ -7,6 +7,7 @@ void Executor::run()
     {
         if((ptr = messageQueue.frontSafe()) != nullptr) {
             ptr->handle();
+            ptr->signalCompletion();
             messageQueue.popSafe();
         }
     }
