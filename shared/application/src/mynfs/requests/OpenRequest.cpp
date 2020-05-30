@@ -23,7 +23,7 @@ void checkFlagPart(const std::vector<uint16_t> &possibleValues, uint16_t value, 
         std::string s = ss.str();
 
         throw bad_argument_error(1, errorCode,
-                                 "Invalid oflag value. Invalid " + part + std::to_string(value) +
+                                 "Invalid oflag value. Invalid " + part + " " + std::to_string(value) +
                                  ". Only possible values are: " + s);
     }
 }
@@ -35,9 +35,9 @@ void checkOflag(uint16_t value)
     auto statusFlag = value & 02000;
 
     std::vector<uint16_t> possibleModes{O_RDONLY, O_WRONLY, O_RDWR};
-    std::vector<uint16_t> possibleCreationFlags{O_CREAT, O_EXCL, O_TRUNC, O_CREAT | O_EXCL, O_CREAT | O_TRUNC,
+    std::vector<uint16_t> possibleCreationFlags{0, O_CREAT, O_EXCL, O_TRUNC, O_CREAT | O_EXCL, O_CREAT | O_TRUNC,
                                                 O_EXCL | O_TRUNC, O_CREAT | O_EXCL | O_TRUNC};
-    std::vector<uint16_t> possibleStatusFlags{O_APPEND};
+    std::vector<uint16_t> possibleStatusFlags{0, O_APPEND};
 
     checkFlagPart(possibleModes, accessMode, 4, "mode");
     checkFlagPart(possibleCreationFlags, creationFlag, 4, "creation flag");
