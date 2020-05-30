@@ -170,4 +170,3 @@ TEST_CASE("Unlink file", "[UnlinkHandler]")
     CHECK(replayError.getErrorValue() == 0);
     close(fd);
 }
-

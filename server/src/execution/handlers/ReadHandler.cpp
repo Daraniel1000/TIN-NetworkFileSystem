@@ -32,7 +32,7 @@ void ReadHandler::handle()
         int error = errno;
         if(std::find(possibleErrors.begin(), possibleErrors.end(), error) == possibleErrors.end())
             error = -1;
-        ReadReply reply(buf, 0, ReadReplyError(errno)); //nie wiem
+        ReadReply reply(buf, 0, ReadReplyError(errno));
         // save reply and error
         this->replyData = reply.serialize();
         this->replyError = reply.getError().serialize();
