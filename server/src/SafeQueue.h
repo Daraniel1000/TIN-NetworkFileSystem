@@ -9,6 +9,7 @@ class SafeQueue : private std::queue<Type>      //TODO przełożyć implementacj
 {
     std::mutex mutex;
     std::condition_variable isEmpty;
+    int size = 0;
 public:
     SafeQueue() : std::queue<Type>::queue() {};
     SafeQueue(SafeQueue& q) : std::queue<Type>::queue(q) {};
@@ -16,21 +17,22 @@ public:
     Type frontSafe()
     {
         std::unique_lock<std::mutex> mlock(mutex);
-        if(this->empty())
+        if(size==0)
         {
             isEmpty.wait(mlock);
         }
-        if(this->empty()) return nullptr;
+        if(size==0) return nullptr;
         return this->front();
     }
 
     void popSafe()
     {
         std::unique_lock<std::mutex> mlock(mutex);
-        while(this->empty())
+        while(size==0)
         {
             isEmpty.wait(mlock);
         }
+        --size;
         this->pop();
     }
 
@@ -38,6 +40,7 @@ public:
     {
         std::unique_lock<std::mutex> mlock(mutex);
         this->push(t);
+        ++size;
         mlock.unlock();
         isEmpty.notify_one();
     }
@@ -46,6 +49,7 @@ public:
     {
         std::unique_lock<std::mutex> mlock(mutex);
         this->push(std::move(t));
+        ++size;
         mlock.unlock();
         isEmpty.notify_one();
     }
@@ -53,7 +57,7 @@ public:
     const int sizeSafe()
     {
         std::unique_lock<std::mutex> mlock(mutex);
-        int ret = this->size();
+        int ret = size;
         mlock.unlock();
         return ret;
     }
@@ -61,7 +65,7 @@ public:
     const bool emptySafe()
     {
         std::unique_lock<std::mutex> mlock(mutex);
-        bool ret = this->empty();
+        bool ret = (size==0);
         mlock.unlock();
         return ret;
     }
