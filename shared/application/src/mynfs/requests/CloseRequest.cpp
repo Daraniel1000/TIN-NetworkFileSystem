@@ -1,5 +1,6 @@
 #include <stdexcept>
 #include <session/Converter.h>
+#include <application/mynfs/bad_argument_error.h>
 #include "application/mynfs/requests/CloseRequest.h"
 
 const uint8_t CloseRequest::TYPE = 4;
@@ -10,7 +11,7 @@ CloseRequest::CloseRequest(const DomainData &data)
 {
     auto expectedSize = sizeof(this->descriptor);
     if (data.getSize() != expectedSize)
-        throw std::logic_error(
+        throw bad_argument_error(1, 1,
                 "Bad message size. Expected " + std::to_string(expectedSize) + ", but got " +
                 std::to_string(data.getSize()));
 
