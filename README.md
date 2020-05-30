@@ -18,7 +18,7 @@ Pliki wykonywalne są umieszczone bezpośrednio w katalogach projektu, np. ```se
 
 | Status | Opis | Trudność | Kto |
 |:------:|------|----------|:---:|
-| :white_check_mark: | interfejs klienta (interakcja z użytkownikiem, wywoływanie funkcji bibliotecznych i reagowanie na nie) | :skull: | Weronika |
+| :heavy_check_mark: | interfejs klienta (interakcja z użytkownikiem, wywoływanie funkcji bibliotecznych i reagowanie na nie) | :skull: | Weronika |
 | :white_check_mark: | dokończenie biblioteki, zrobienie wszystkich funkcji, reagowanie na błędy w Reply | :skull: | Weronika |
 | :white_check_mark: | obsługa błędów w ClientEndpoint, timeouty, ponowne wysyłanie | :skull: :skull: | Weronika |
 | :heavy_check_mark: | adresy, czyli po prostu wrappery na obsługę danych o adresie, przy okazji IpAddress w konstruktorze jak podamy stringa to wykona zapytanie do resolvera | :skull: | Gosia |
