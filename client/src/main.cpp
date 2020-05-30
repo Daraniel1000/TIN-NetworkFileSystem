@@ -21,7 +21,7 @@ int16_t nfsopen()
     std::cout << "Oflag:" << std::endl;
     std::cout << "Possible values: 0 O_RDONLY | 1 O_WRONLY | 2 O_RDWR | 1024 O_APPEND | 64 O_CREAT | 128 O_EXCL | 512 O_TRUNC" << std::endl;
     std::getline(std::cin, soflag);
-    oflag = static_cast<uint16_t>(std::stoi(soflag));
+    oflag = static_cast<uint8_t>(std::stoi(soflag));
 
     int16_t fd = mynfs_open(host.c_str(), path.c_str(), oflag);
 

@@ -22,7 +22,7 @@
 int mynfs_error = 0;
 std::string mynfs_error_message;
 
-int16_t mynfs_open(char const *host, char const *path, uint16_t oflag)
+int16_t mynfs_open(char const *host, char const *path, uint8_t oflag)
 {
     try
     {
@@ -91,10 +91,7 @@ int16_t mynfs_read(char const *host, int16_t fd, void *buf, int16_t count)
             return -1;
         }
 
-        std::byte curr[readReply.getData().getData().size()];
-        std::copy(readReply.getData().getData().begin(), readReply.getData().getData().end(), curr);
-
-        memcpy(buf, curr, readReply.getData().getData().size());
+        memcpy(buf, readReply.getData().getData().data(), readReply.getData().getSize());
 
         //return
         return static_cast<int16_t>(readReply.getData().getSize());
