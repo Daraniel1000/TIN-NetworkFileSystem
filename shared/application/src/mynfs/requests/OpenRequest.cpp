@@ -9,10 +9,8 @@
 const uint8_t OpenRequest::TYPE = 0;
 const int16_t OpenRequest::MAX_PATH_SIZE = 4096;
 
-void checkOflag(uint16_t value)
+void checkFlagPart(const std::vector<uint16_t> &possibleValues, uint16_t value, int errorCode, const std::string &part)
 {
-    std::vector<uint16_t> possibleValues{O_RDONLY, O_WRONLY, O_RDWR, O_APPEND, O_CREAT, O_EXCL, O_TRUNC};
-
     if (std::find(possibleValues.begin(), possibleValues.end(), value) == possibleValues.end())
     {
         std::stringstream ss;
@@ -24,20 +22,38 @@ void checkOflag(uint16_t value)
         }
         std::string s = ss.str();
 
-        throw bad_argument_error(1, 3,
-                "Invalid oflag value " + std::to_string(value) + ". Only possible values are: " + s);
+        throw bad_argument_error(1, errorCode,
+                                 "Invalid oflag value. Invalid " + part + std::to_string(value) +
+                                 ". Only possible values are: " + s);
     }
+}
+
+void checkOflag(uint16_t value)
+{
+    auto accessMode = value & O_ACCMODE;
+    auto creationFlag = value & 01300;
+    auto statusFlag = value & 02000;
+
+    std::vector<uint16_t> possibleModes{O_RDONLY, O_WRONLY, O_RDWR};
+    std::vector<uint16_t> possibleCreationFlags{O_CREAT, O_EXCL, O_TRUNC, O_CREAT | O_EXCL, O_CREAT | O_TRUNC,
+                                                O_EXCL | O_TRUNC, O_CREAT | O_EXCL | O_TRUNC};
+    std::vector<uint16_t> possibleStatusFlags{O_APPEND};
+
+    checkFlagPart(possibleModes, accessMode, 4, "mode");
+    checkFlagPart(possibleCreationFlags, creationFlag, 4, "creation flag");
+    checkFlagPart(possibleStatusFlags, statusFlag, 4, "status flag");
 }
 
 OpenRequest::OpenRequest(char const *path, uint16_t oflag) : oflag(oflag)
 {
-    if(path == nullptr)
+    if (path == nullptr)
         throw bad_argument_error(1, 3, "Path is null");
     this->path = std::string(path);
     if (this->path.size() > OpenRequest::MAX_PATH_SIZE)
         throw bad_argument_error(1, 2,
-                "Path is too long. Expected at most" + std::to_string(OpenRequest::MAX_PATH_SIZE) + ", but got " +
-                std::to_string(this->path.size()));
+                                 "Path is too long. Expected at most" + std::to_string(OpenRequest::MAX_PATH_SIZE) +
+                                 ", but got " +
+                                 std::to_string(this->path.size()));
     checkOflag(this->oflag);
 }
 
@@ -46,14 +62,14 @@ OpenRequest::OpenRequest(const DomainData &data)
     auto expectedSize = sizeof(this->oflag) + sizeof(OpenRequest::MAX_PATH_SIZE);
     if (data.getSize() < expectedSize)
         throw bad_argument_error(1, 1,
-                "Bad message size. Expected at least" + std::to_string(expectedSize) + ", but got " +
-                std::to_string(data.getSize()));
+                                 "Bad message size. Expected at least" + std::to_string(expectedSize) + ", but got " +
+                                 std::to_string(data.getSize()));
 
     expectedSize += OpenRequest::MAX_PATH_SIZE;
     if (data.getSize() > expectedSize)
         throw bad_argument_error(1, 2,
-                "Bad message size. Expected at most" + std::to_string(expectedSize) + ", but got " +
-                std::to_string(data.getSize()));
+                                 "Bad message size. Expected at most" + std::to_string(expectedSize) + ", but got " +
+                                 std::to_string(data.getSize()));
 
     auto dataOffset = 0;
     //get oflag
