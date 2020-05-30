@@ -14,6 +14,7 @@
 #include <transport/socket_error.h>
 #include <addresses/address_error.h>
 #include <cstring>
+#include <sstream>
 
 #include "endpoint/ClientEndpoint.h"
 
@@ -84,10 +85,13 @@ int16_t mynfs_read(char const *host, int16_t fd, void *buf, int16_t count)
             return -1;
         }
 
-        std::copy(readReply.getData().getData().begin(), readReply.getData().getData().end(), buf);
+        std::byte curr[readReply.getData().getData().size()];
+        std::copy(readReply.getData().getData().begin(), readReply.getData().getData().end(), curr);
+
+        memcpy(buf, curr, readReply.getData().getData().size());
 
         //return
-        return readReply.getData().getSize();
+        return static_cast<int16_t>(readReply.getData().getSize());
     }
     catch (address_error& e)
     {

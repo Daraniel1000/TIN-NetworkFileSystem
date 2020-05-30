@@ -4,6 +4,7 @@
 #include <vector>
 #include <sstream>
 #include <algorithm>
+#include <cstddef>
 #include "mynfslib.h"
 
 int16_t nfsopen()
@@ -42,7 +43,7 @@ int16_t nfsread()
     std::string sfd;
     int16_t count;
     std::string scount;
-    char buf[4096];
+    unsigned char buf[4096];
     void *pBuf;
     pBuf = &buf[0];
 
@@ -191,7 +192,6 @@ int main(int argc, char *argv[])
 {
     std::string choice;
     bool exit = false;
-
     std::cout << "Welcome to MyNFS!\n";
     while(!exit)
     {
