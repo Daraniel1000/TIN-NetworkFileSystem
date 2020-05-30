@@ -177,9 +177,14 @@ int8_t nfsclose(std::string& host, int16_t& fd)
     return 0;
 }
 
-int8_t nfsunlink(std::string& host, int16_t& fd)
+int8_t nfsunlink(std::string& host)
 {
-    mynfs_close(host.c_str(), fd);
+    std::string path;
+    std::cout << "Path to file:" << std::endl;
+    std::getline(std::cin, path);
+
+
+    mynfs_unlink(host.c_str(), path.c_str());
 
     if(mynfs_error != 0 ) {
         std::cout << "Error: "<< mynfs_error_message << std::endl;
@@ -213,7 +218,7 @@ int main(int argc, char *argv[])
 
         else if(choice == "close") nfsclose(host, fd);
 
-        else if(choice == "unlink") nfsunlink(host, fd);
+        else if(choice == "unlink") nfsunlink(host);
 
         else if(choice == "exit") {exit = true; std::cout << "Goodbye!";}
 
