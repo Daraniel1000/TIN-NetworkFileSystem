@@ -22,7 +22,7 @@ void ServerSubEndpoint::run()
     this->socket.send(clientAddress, ConfirmMessage().serialize());
     DataMessage requestDataMessage(this->socket.receive(clientAddress));
 
-    const HandlerFactory &handlerFactory = handlerFactoryPool.getHandlerFactory(0/*requestDataMessage.getType()*/);
+    const HandlerFactory &handlerFactory = handlerFactoryPool.getHandlerFactory(requestDataMessage.getType());
 
     DomainData replyData;
     PlainError replyError;
