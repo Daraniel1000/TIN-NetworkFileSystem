@@ -37,7 +37,7 @@ void ServerSubEndpoint::run()
 
     this->socket.send(clientAddress, replyDataMessage.serialize());
     ConfirmMessage confirm(this->socket.receive(clientAddress));
-    std::cout << "Request " << requestDataMessage.getType() << " from " << clientAddress.toString() << " completed." << std::endl;
+    std::cout << "Request " << std::to_string(requestDataMessage.getType()) << " from " << clientAddress.toString() << " completed." << std::endl;
     counter.leave();
     delete this;
 }
