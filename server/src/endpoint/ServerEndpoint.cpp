@@ -24,9 +24,10 @@ void ServerEndpoint::run()
     while(!listener.serverStop.try_lock()) {
         try {
             RequestMessage request(socket.receive(source));
+            std::cout << "New request from " << source.toString() << std::endl;
 
             //run new thread here and go back to receiving on socket
-            subEndpoint = new ServerSubEndpoint(UDPSocket(EphemeralPort()), source, this->handlerFactoryPool,
+            subEndpoint = new ServerSubEndpoint(source, this->handlerFactoryPool,
                                                 this->messageQueue, this->counter);
             counter.enter();
             std::thread thread(&ServerSubEndpoint::run, subEndpoint);
