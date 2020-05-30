@@ -1,6 +1,7 @@
 #include <session/messages/ConfirmMessage.h>
 #include <session/messages/DataMessage.h>
 #include <mutex>
+#include <iostream>
 #include "ServerSubEndpoint.h"
 
 ServerSubEndpoint::ServerSubEndpoint(NetworkAddress clientAddress,
@@ -30,13 +31,13 @@ void ServerSubEndpoint::run()
 
     //add handler to queue and wait for handling
     messageQueue.pushSafe(handler.get());
-    std::unique_lock<std::mutex> lk(handler->m);
-    handler->cv.wait(lk);   //wait_for żeby ustawić timeout wykonania
+    handler->waitForCompletion(); //wait_for żeby ustawić timeout wykonania
 
     DataMessage replyDataMessage(requestDataMessage.getType(), replyData, replyError);
 
     this->socket.send(clientAddress, replyDataMessage.serialize());
     ConfirmMessage confirm(this->socket.receive(clientAddress));
+    std::cout << "Request " << requestDataMessage.getType() << " from " << clientAddress.toString() << " completed." << std::endl;
     counter.leave();
     delete this;
 }

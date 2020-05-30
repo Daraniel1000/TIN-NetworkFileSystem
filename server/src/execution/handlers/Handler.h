@@ -31,11 +31,20 @@ public:
 
     /**
      * Main handler function, operate on request and fill reply (or error) according to handler logic
-     * must end with:
-     * std::lock_guard<std::mutex> lk(m);
-     * cv.notify_all();
      */
     virtual void handle() = 0;
+
+    void waitForCompletion()
+    {
+        std::unique_lock<std::mutex> lk(this->m);
+        this->cv.wait(lk);   //wait_for żeby ustawić timeout wykonania
+    }
+
+    void signalCompletion()
+    {
+        std::lock_guard<std::mutex> lk(this->m);
+        this->cv.notify_all();
+    }
 };
 
 
