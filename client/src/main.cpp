@@ -33,19 +33,14 @@ int16_t nfsopen(std::string& host)
 
 }
 
-int16_t nfsread(std::string& host)
+int16_t nfsread(std::string& host, int16_t& fd)
 {
-    int16_t fd;
-    std::string sfd;
     int16_t count;
     std::string scount;
     unsigned char buf[4096];
     void *pBuf;
     pBuf = &buf[0];
 
-    std::cout << "File descriptor:" << std::endl;
-    std::getline(std::cin, sfd);
-    fd = static_cast<int16_t>(std::stoi(sfd));
     std::cout << "Bytes to read:" << std::endl;
     std::getline(std::cin, scount);
     count = static_cast<int16_t>(std::stoi(scount));
@@ -71,17 +66,12 @@ int16_t nfsread(std::string& host)
     return size;
 }
 
-int16_t nfswrite(std::string& host)
+int16_t nfswrite(std::string& host, int16_t& fd)
 {
-    int16_t fd;
-    std::string sfd;
     std::string buf;
     void *pBuf = &buf;
     int16_t count;
 
-    std::cout << "File descriptor:" << std::endl;
-    std::getline(std::cin, sfd);
-    fd = static_cast<int16_t>(std::stoi(sfd));
     std::cout << "Data to write:" << std::endl;
     std::getline(std::cin, buf);
 
@@ -98,20 +88,15 @@ int16_t nfswrite(std::string& host)
     return size;
 }
 
-int32_t nfslseek(std::string& host)
+int32_t nfslseek(std::string& host, int16_t& fd)
 {
-    std::string sfd;
-    int16_t fd;
     std::string soffset;
     int32_t offset;
     std::string swhence;
     uint8_t whence;
 
-    std::cout << "File descriptor:" << std::endl;
-    std::getline(std::cin, sfd);
-    fd = static_cast<int16_t>(std::stoi(sfd));
     std::cout << "Offset:" << std::endl;
-    std::getline(std::cin, sfd);
+    std::getline(std::cin, soffset);
     offset = static_cast<int32_t>(std::stoi(soffset));
     std::cout << "Whence:" << std::endl;
     std::cout << "Possible values: 0 SEEK_SET | 1 SEEK_CUR | 2 SEEK_END" << std::endl;
@@ -130,15 +115,8 @@ int32_t nfslseek(std::string& host)
     return offset;
 }
 
-int8_t nfsclose(std::string& host)
+int8_t nfsclose(std::string& host, int16_t& fd)
 {
-    std::string sfd;
-    int16_t fd;
-
-    std::cout << "File descriptor to close:" << std::endl;
-    std::getline(std::cin, sfd);
-    fd = static_cast<int16_t>(std::stoi(sfd));
-
     mynfs_close(host.c_str(), fd);
 
     if(mynfs_error != 0 ) {
@@ -150,15 +128,8 @@ int8_t nfsclose(std::string& host)
     return 0;
 }
 
-int8_t nfsunlink(std::string& host)
+int8_t nfsunlink(std::string& host, int16_t& fd)
 {
-    std::string sfd;
-    int16_t fd;
-
-    std::cout << "File descriptor to unlink:" << std::endl;
-    std::getline(std::cin, sfd);
-    fd = static_cast<int16_t>(std::stoi(sfd));
-
     mynfs_close(host.c_str(), fd);
 
     if(mynfs_error != 0 ) {
@@ -174,6 +145,7 @@ int main(int argc, char *argv[])
 {
     std::string choice;
     std::string host;
+    int16_t fd;
     bool exit = false;
     std::cout << "Welcome to MyNFS!\n";
     std::cout << "Host address:" << std::endl;
@@ -182,17 +154,17 @@ int main(int argc, char *argv[])
     {
         std::cout << "Commands to run: open, read, write, lseek, close, unlink, exit\n";
         std::getline(std::cin, choice);
-        if(choice =="open") nfsopen(host);
+        if(choice =="open") fd = nfsopen(host);
 
-        else if(choice == "read") nfsread(host);
+        else if(choice == "read") nfsread(host, fd);
 
-        else if(choice == "write") nfswrite(host);
+        else if(choice == "write") nfswrite(host, fd);
 
-        else if(choice == "lseek") nfslseek(host);
+        else if(choice == "lseek") nfslseek(host, fd);
 
-        else if(choice == "close") nfsclose(host);
+        else if(choice == "close") nfsclose(host, fd);
 
-        else if(choice == "unlink") nfsunlink(host);
+        else if(choice == "unlink") nfsunlink(host, fd);
 
         else if(choice == "exit") {exit = true; std::cout << "Goodbye!";}
 
