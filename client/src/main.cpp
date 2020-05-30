@@ -5,25 +5,58 @@
 #include <sstream>
 #include <algorithm>
 #include <cstddef>
+#include <map>
 #include "mynfslib.h"
+
+uint16_t orWord(uint16_t value, uint16_t word)
+{
+    return  value | word;
+}
 
 int16_t nfsopen(std::string& host)
 {
     std::string path;
-    uint16_t oflag;
+    uint16_t oflag = 0;
     std::string soflag;
+    std::map<std::string, uint16_t >::iterator it;
+    std::map<std::string, uint16_t> flags;
+
+    flags["RDONLY"] = 0;
+    flags["WRONLY"]=1;
+    flags["RDWR"] = 2;
+    flags["APPEND"]=1024;
+    flags["CREAT"] = 64;
+    flags["EXCL"] = 128;
+    flags["TRUNC"] = 512;
 
     std::cout << "Path to file:" << std::endl;
     std::getline(std::cin, path);
-    std::cout << "Oflag:" << std::endl;
-    std::cout << "Possible values: 0 O_RDONLY | 1 O_WRONLY | 2 O_RDWR | 1024 O_APPEND | 64 O_CREAT | 128 O_EXCL | 512 O_TRUNC" << std::endl;
+    std::cout << "Oflag/s:" << std::endl;
+    std::cout << "Possible values: RDONLY | WRONLY | RDWR | APPEND | CREAT | EXCL | TRUNC" << std::endl;
+    std::cout << "In order to use more flags write them down with whitespaces between them." << std::endl;
     std::getline(std::cin, soflag);
-    oflag = static_cast<uint8_t>(std::stoi(soflag));
+
+
+
+    std::istringstream iss(soflag);
+    std::string word;
+    while(iss >> word) {
+        it = flags.find(word);
+        if (it != flags.end())
+        {
+            oflag = orWord(oflag, it->second);
+        }
+        else
+        {
+            std::cout << "Typo in oflags. Function aborted." << std::endl;
+            return -1;
+        }
+    }
 
     int16_t fd = mynfs_open(host.c_str(), path.c_str(), oflag);
 
     if(mynfs_error != 0 ) {
-        std::cout << "Error occurred, error message: "<< mynfs_error_message << std::endl;
+        std::cout << "Error: "<< mynfs_error_message << std::endl;
         return -1;
     }
 
@@ -48,7 +81,7 @@ int16_t nfsread(std::string& host, int16_t& fd)
     int16_t size = mynfs_read(host.c_str(), fd, pBuf, count);
 
     if(mynfs_error != 0 ) {
-        std::cout << "Error occurred, error message: "<< mynfs_error_message << std::endl;
+        std::cout << "Error: "<< mynfs_error_message << std::endl;
         return -1;
     }
 
@@ -79,7 +112,7 @@ int16_t nfswrite(std::string& host, int16_t& fd)
 
     int16_t size = mynfs_write(host.c_str(), fd, pBuf, count);
     if(mynfs_error != 0 ) {
-        std::cout << "Error occurred, error message: "<< mynfs_error_message << std::endl;
+        std::cout << "Error: "<< mynfs_error_message << std::endl;
         return -1;
     }
 
@@ -94,19 +127,35 @@ int32_t nfslseek(std::string& host, int16_t& fd)
     int32_t offset;
     std::string swhence;
     uint8_t whence;
+    std::map<std::string, uint8_t >::iterator it;
+    std::map<std::string, uint8_t> flags;
+
+    flags["SEEK_SET"] = 0;
+    flags["SEEK_CUR"]= 1;
+    flags["SEEK_END"] = 2;
 
     std::cout << "Offset:" << std::endl;
     std::getline(std::cin, soffset);
     offset = static_cast<int32_t>(std::stoi(soffset));
     std::cout << "Whence:" << std::endl;
-    std::cout << "Possible values: 0 SEEK_SET | 1 SEEK_CUR | 2 SEEK_END" << std::endl;
-    std::getline(std::cin, soffset);
-    whence = static_cast<uint8_t>(std::stoi(swhence));
+    std::cout << "Possible values: SEEK_SET | SEEK_CUR | SEEK_END" << std::endl;
+    std::getline(std::cin, swhence);
+
+    it = flags.find(swhence);
+    if (it != flags.end())
+    {
+        whence = it->second;
+    }
+    else
+    {
+        std::cout << "Typo in whence. Function aborted." << std::endl;
+        return -1;
+    }
 
     offset = mynfs_lseek(host.c_str(), fd, offset, whence);
 
     if(mynfs_error != 0 ) {
-        std::cout << "Error occurred, error message: "<< mynfs_error_message << std::endl;
+        std::cout << "Error: "<< mynfs_error_message << std::endl;
         return -1;
     }
 
@@ -120,7 +169,7 @@ int8_t nfsclose(std::string& host, int16_t& fd)
     mynfs_close(host.c_str(), fd);
 
     if(mynfs_error != 0 ) {
-        std::cout << "Error occurred, error message: "<< mynfs_error_message << std::endl;
+        std::cout << "Error: "<< mynfs_error_message << std::endl;
         return -1;
     }
 
@@ -133,7 +182,7 @@ int8_t nfsunlink(std::string& host, int16_t& fd)
     mynfs_close(host.c_str(), fd);
 
     if(mynfs_error != 0 ) {
-        std::cout << "Error occurred, error message: "<< mynfs_error_message << std::endl;
+        std::cout << "Error: "<< mynfs_error_message << std::endl;
         return -1;
     }
 
@@ -152,7 +201,7 @@ int main(int argc, char *argv[])
     std::getline(std::cin, host);
     while(!exit)
     {
-        std::cout << "Commands to run: open, read, write, lseek, close, unlink, exit\n";
+        std::cout << "Type command to run: open, read, write, lseek, close, unlink, exit\n";
         std::getline(std::cin, choice);
         if(choice =="open") fd = nfsopen(host);
 
