@@ -1,13 +1,16 @@
 #include <iostream>
 #include <fcntl.h>
 #include <cstring>
+#include <vector>
+#include <sstream>
+#include <algorithm>
 #include "mynfslib.h"
 
 int16_t nfsopen()
 {
     std::string host;
     std::string path;
-    uint8_t oflag;
+    uint16_t oflag;
     std::string soflag;
 
     std::cout << "Host address:" << std::endl;
@@ -15,8 +18,9 @@ int16_t nfsopen()
     std::cout << "Path to file:" << std::endl;
     std::getline(std::cin, path);
     std::cout << "Oflag:" << std::endl;
+    std::cout << "Possible values: 0 O_RDONLY | 1 O_WRONLY | 2 O_RDWR | 1024 O_APPEND | 64 O_CREAT | 128 O_EXCL | 512 O_TRUNC" << std::endl;
     std::getline(std::cin, soflag);
-    oflag = static_cast<uint8_t>(std::stoi(soflag));
+    oflag = static_cast<uint16_t>(std::stoi(soflag));
 
     int16_t fd = mynfs_open(host.c_str(), path.c_str(), oflag);
 
@@ -89,11 +93,7 @@ int16_t nfswrite()
     std::cout << "Data to write:" << std::endl;
     std::getline(std::cin, buf);
 
-    count = 0;
-    while(buf[count] != '\0') {
-        count++;
-    }
-    count++; // '\0' at the end of buffer
+    count = static_cast<int16_t>(buf.length());
 
     int16_t size = mynfs_write(host.c_str(), fd, pBuf, count);
     if(mynfs_error != 0 ) {
@@ -125,6 +125,7 @@ int32_t nfslseek()
     std::getline(std::cin, sfd);
     offset = static_cast<int32_t>(std::stoi(soffset));
     std::cout << "Whence:" << std::endl;
+    std::cout << "Possible values: 0 SEEK_SET | 1 SEEK_CUR | 2 SEEK_END" << std::endl;
     std::getline(std::cin, soffset);
     whence = static_cast<uint8_t>(std::stoi(swhence));
 

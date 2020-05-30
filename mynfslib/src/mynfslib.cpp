@@ -13,13 +13,14 @@
 #include <mynfslib.h>
 #include <transport/socket_error.h>
 #include <addresses/address_error.h>
+#include <cstring>
 
 #include "endpoint/ClientEndpoint.h"
 
 int mynfs_error = 0;
 std::string mynfs_error_message;
 
-int16_t mynfs_open(char const *host, char const *path, uint8_t oflag)
+int16_t mynfs_open(char const *host, char const *path, uint16_t oflag)
 {
     try
     {
@@ -82,6 +83,8 @@ int16_t mynfs_read(char const *host, int16_t fd, void *buf, int16_t count)
             mynfs_error_message = readReply.getError().toString();
             return -1;
         }
+
+        std::copy(readReply.getData().getData().begin(), readReply.getData().getData().end(), buf);
 
         //return
         return readReply.getData().getSize();
