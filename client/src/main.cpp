@@ -7,15 +7,12 @@
 #include <cstddef>
 #include "mynfslib.h"
 
-int16_t nfsopen()
+int16_t nfsopen(std::string& host)
 {
-    std::string host;
     std::string path;
     uint16_t oflag;
     std::string soflag;
 
-    std::cout << "Host address:" << std::endl;
-    std::getline(std::cin, host);
     std::cout << "Path to file:" << std::endl;
     std::getline(std::cin, path);
     std::cout << "Oflag:" << std::endl;
@@ -36,9 +33,8 @@ int16_t nfsopen()
 
 }
 
-int16_t nfsread()
+int16_t nfsread(std::string& host)
 {
-    std::string host;
     int16_t fd;
     std::string sfd;
     int16_t count;
@@ -47,8 +43,6 @@ int16_t nfsread()
     void *pBuf;
     pBuf = &buf[0];
 
-    std::cout << "Host address:" << std::endl;
-    std::getline(std::cin, host);
     std::cout << "File descriptor:" << std::endl;
     std::getline(std::cin, sfd);
     fd = static_cast<int16_t>(std::stoi(sfd));
@@ -77,17 +71,14 @@ int16_t nfsread()
     return size;
 }
 
-int16_t nfswrite()
+int16_t nfswrite(std::string& host)
 {
-    std::string host;
     int16_t fd;
     std::string sfd;
     std::string buf;
     void *pBuf = &buf;
     int16_t count;
 
-    std::cout << "Host address:" << std::endl;
-    std::getline(std::cin, host);
     std::cout << "File descriptor:" << std::endl;
     std::getline(std::cin, sfd);
     fd = static_cast<int16_t>(std::stoi(sfd));
@@ -107,9 +98,8 @@ int16_t nfswrite()
     return size;
 }
 
-int32_t nfslseek()
+int32_t nfslseek(std::string& host)
 {
-    std::string host;
     std::string sfd;
     int16_t fd;
     std::string soffset;
@@ -117,8 +107,6 @@ int32_t nfslseek()
     std::string swhence;
     uint8_t whence;
 
-    std::cout << "Host address:" << std::endl;
-    std::getline(std::cin, host);
     std::cout << "File descriptor:" << std::endl;
     std::getline(std::cin, sfd);
     fd = static_cast<int16_t>(std::stoi(sfd));
@@ -142,14 +130,11 @@ int32_t nfslseek()
     return offset;
 }
 
-int8_t nfsclose()
+int8_t nfsclose(std::string& host)
 {
-    std::string host;
     std::string sfd;
     int16_t fd;
 
-    std::cout << "Host address:" << std::endl;
-    std::getline(std::cin, host);
     std::cout << "File descriptor to close:" << std::endl;
     std::getline(std::cin, sfd);
     fd = static_cast<int16_t>(std::stoi(sfd));
@@ -165,14 +150,11 @@ int8_t nfsclose()
     return 0;
 }
 
-int8_t nfsunlink()
+int8_t nfsunlink(std::string& host)
 {
-    std::string host;
     std::string sfd;
     int16_t fd;
 
-    std::cout << "Host address:" << std::endl;
-    std::getline(std::cin, host);
     std::cout << "File descriptor to unlink:" << std::endl;
     std::getline(std::cin, sfd);
     fd = static_cast<int16_t>(std::stoi(sfd));
@@ -191,23 +173,26 @@ int8_t nfsunlink()
 int main(int argc, char *argv[])
 {
     std::string choice;
+    std::string host;
     bool exit = false;
     std::cout << "Welcome to MyNFS!\n";
+    std::cout << "Host address:" << std::endl;
+    std::getline(std::cin, host);
     while(!exit)
     {
         std::cout << "Commands to run: open, read, write, lseek, close, unlink, exit\n";
         std::getline(std::cin, choice);
-        if(choice =="open") nfsopen();
+        if(choice =="open") nfsopen(host);
 
-        else if(choice == "read") nfsread();
+        else if(choice == "read") nfsread(host);
 
-        else if(choice == "write") nfswrite();
+        else if(choice == "write") nfswrite(host);
 
-        else if(choice == "lseek") nfslseek();
+        else if(choice == "lseek") nfslseek(host);
 
-        else if(choice == "close") nfsclose();
+        else if(choice == "close") nfsclose(host);
 
-        else if(choice == "unlink") nfsunlink();
+        else if(choice == "unlink") nfsunlink(host);
 
         else if(choice == "exit") {exit = true; std::cout << "Goodbye!";}
 
