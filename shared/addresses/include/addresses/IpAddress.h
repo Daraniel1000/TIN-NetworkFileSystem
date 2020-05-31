@@ -28,6 +28,18 @@ public:
 
     uint32_t toHostOrder() const;
 
+    bool operator==(const IpAddress &rhs) const;
+
+    bool operator!=(const IpAddress &rhs) const;
+
+    bool operator<(const IpAddress &rhs) const;
+
+    bool operator>(const IpAddress &rhs) const;
+
+    bool operator<=(const IpAddress &rhs) const;
+
+    bool operator>=(const IpAddress &rhs) const;
+
 };
 
 

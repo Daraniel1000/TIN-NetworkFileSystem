@@ -66,3 +66,38 @@ std::string NetworkAddress::toString() const
     strcat(buf, portArray);
     return buf;
 }
+
+bool NetworkAddress::operator==(const NetworkAddress &rhs) const
+{
+    return ipAddress == rhs.ipAddress &&
+           port == rhs.port;
+}
+
+bool NetworkAddress::operator!=(const NetworkAddress &rhs) const
+{
+    return !(rhs == *this);
+}
+
+bool NetworkAddress::operator<(const NetworkAddress &rhs) const
+{
+    if (ipAddress < rhs.ipAddress)
+        return true;
+    if (rhs.ipAddress < ipAddress)
+        return false;
+    return port < rhs.port;
+}
+
+bool NetworkAddress::operator>(const NetworkAddress &rhs) const
+{
+    return rhs < *this;
+}
+
+bool NetworkAddress::operator<=(const NetworkAddress &rhs) const
+{
+    return !(rhs < *this);
+}
+
+bool NetworkAddress::operator>=(const NetworkAddress &rhs) const
+{
+    return !(*this < rhs);
+}

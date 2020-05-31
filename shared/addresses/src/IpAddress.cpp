@@ -72,4 +72,34 @@ uint32_t IpAddress::toHostOrder() const
     return this->address;
 }
 
+bool IpAddress::operator==(const IpAddress &rhs) const
+{
+    return address == rhs.address;
+}
+
+bool IpAddress::operator!=(const IpAddress &rhs) const
+{
+    return !(rhs == *this);
+}
+
+bool IpAddress::operator<(const IpAddress &rhs) const
+{
+    return address < rhs.address;
+}
+
+bool IpAddress::operator>(const IpAddress &rhs) const
+{
+    return rhs < *this;
+}
+
+bool IpAddress::operator<=(const IpAddress &rhs) const
+{
+    return !(rhs < *this);
+}
+
+bool IpAddress::operator>=(const IpAddress &rhs) const
+{
+    return !(*this < rhs);
+}
+
 

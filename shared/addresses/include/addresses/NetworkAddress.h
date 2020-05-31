@@ -38,6 +38,18 @@ public:
      * Get address string in address:port format (eg. 127.0.0.1:22)
      */
     std::string toString() const;
+
+    bool operator==(const NetworkAddress &rhs) const;
+
+    bool operator!=(const NetworkAddress &rhs) const;
+
+    bool operator<(const NetworkAddress &rhs) const;
+
+    bool operator>(const NetworkAddress &rhs) const;
+
+    bool operator<=(const NetworkAddress &rhs) const;
+
+    bool operator>=(const NetworkAddress &rhs) const;
 };
 
 

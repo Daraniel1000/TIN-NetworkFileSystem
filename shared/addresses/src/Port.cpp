@@ -13,5 +13,35 @@ uint16_t Port::toHostOrder() const
     return this->port;
 }
 
+bool Port::operator==(const Port &rhs) const
+{
+    return port == rhs.port;
+}
+
+bool Port::operator!=(const Port &rhs) const
+{
+    return !(rhs == *this);
+}
+
+bool Port::operator<(const Port &rhs) const
+{
+    return port < rhs.port;
+}
+
+bool Port::operator>(const Port &rhs) const
+{
+    return rhs < *this;
+}
+
+bool Port::operator<=(const Port &rhs) const
+{
+    return !(rhs < *this);
+}
+
+bool Port::operator>=(const Port &rhs) const
+{
+    return !(*this < rhs);
+}
+
 
 

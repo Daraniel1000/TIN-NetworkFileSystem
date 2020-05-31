@@ -20,6 +20,18 @@ public:
 
     uint16_t toHostOrder() const;
 
+    bool operator==(const Port &rhs) const;
+
+    bool operator!=(const Port &rhs) const;
+
+    bool operator<(const Port &rhs) const;
+
+    bool operator>(const Port &rhs) const;
+
+    bool operator<=(const Port &rhs) const;
+
+    bool operator>=(const Port &rhs) const;
+
 };
 
 
