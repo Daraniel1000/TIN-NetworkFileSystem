@@ -96,6 +96,8 @@ int16_t nfsread(std::string& host, int16_t& fd)
         i++;
     }
 
+    std::cout << std::endl;
+
     return size;
 }
 

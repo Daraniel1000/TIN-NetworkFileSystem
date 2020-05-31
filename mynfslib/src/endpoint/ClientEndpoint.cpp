@@ -13,6 +13,13 @@
 #include <application/mynfs/requests/CloseRequest.h>
 #include <application/mynfs/replies/UnlinkReply.h>
 #include <application/mynfs/requests/UnlinkRequest.h>
+#include <transport/timeout_error.h>
+#include <mynfslib.h>
+#include <iostream>
+#include <addresses/address_error.h>
+#include <application/mynfs/bad_argument_error.h>
+#include <transport/socket_error.h>
+#include <cstring>
 #include "ClientEndpoint.h"
 
 ClientEndpoint::ClientEndpoint(Port port) : socket(port) {}
@@ -20,14 +27,68 @@ ClientEndpoint::ClientEndpoint(Port port) : socket(port) {}
 template<class Req, class Rep>
 Rep ClientEndpoint::send(NetworkAddress recipient, const Req &request) const
 {
-    socket.send(recipient, RequestMessage().serialize());
-    NetworkAddress source{};
-    ConfirmMessage requestConfirm(socket.receive(source));
-    socket.send(source, DataMessage(request.getType(), request.serialize()).serialize());
-    DataMessage replyData(socket.receive(source));
-    socket.send(source, ConfirmMessage().serialize());
+    int timeoutCount = 0;
+    const int maxApproach = 5;
+    bool confirmation = false;
 
-    return Rep(replyData.getData(), replyData.getError());
+    try {
+        socket.send(recipient, RequestMessage().serialize());
+        NetworkAddress source{};
+
+        while (timeoutCount < maxApproach && !confirmation) {
+            try {
+                ConfirmMessage requestConfirm(socket.receive(source, 5));
+                confirmation = true;
+            }
+            catch (timeout_error &e) {
+                mynfs_error = 6000;
+                std::cout << "Timeout error: " + std::string(e.what()) << std::endl;
+                this->socket.send(recipient, RequestMessage().serialize());
+                timeoutCount++;
+            }
+        }
+
+        timeoutCount = 0;
+        socket.send(source, DataMessage(request.getType(), request.serialize()).serialize());
+
+        while (timeoutCount < maxApproach ) {
+            try {
+                DataMessage replyData(socket.receive(source, 5));
+                socket.send(source, ConfirmMessage().serialize());
+                return Rep(replyData.getData(), replyData.getError());
+            }
+            catch (timeout_error &e) {
+                socket.send(source, DataMessage(request.getType(), request.serialize()).serialize());
+                timeoutCount++;
+            }
+        }
+
+    }
+    catch (timeout_error& e)
+    {
+        throw socket_error(4, errno,
+                           "Receiving failed.");
+    }
+    catch (address_error& e)
+    {
+       throw e;
+    }
+    catch (bad_argument_error& e)
+    {
+        throw e;
+    }
+    catch (socket_error& e)
+    {
+        throw e;
+    }
+    catch (std::exception& e)
+    {
+        throw  e;
+    }
+
+    throw socket_error(4, errno,
+                       "Receiving failed.");
+
 }
 
 template OpenReply ClientEndpoint::send<OpenRequest, OpenReply>(NetworkAddress, const OpenRequest&) const;
