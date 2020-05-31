@@ -37,10 +37,9 @@ TEST_CASE("File to open does not exist", "[OpenHandler]")
     std::string path = "totek.txt";
     DomainData replay;
     PlainError replayError;
-    int error = errno;
     OpenHandler handler(DomainData(OpenRequest(path.data(), O_RDONLY).serialize()), replay, replayError);
     handler.handle();
-    CHECK(replayError.getErrorValue() == errno);
+    CHECK(replayError.getErrorValue() == ENOENT);
 
 }
 
@@ -98,7 +97,7 @@ TEST_CASE("Read unopened file", "[ReadHandler]")
     int count = 20;
     ReadHandler handler(DomainData(ReadRequest(fd, count).serialize()), replay, replayError);
     handler.handle();
-    CHECK(replayError.getErrorValue() == 9);
+    CHECK(replayError.getErrorValue() == EBADF);
 }
 
 TEST_CASE("Use lseek", "[LseekHandler]")

@@ -29,7 +29,7 @@ void OpenHandler::handle()
     //create reply
     int error = 0;
     if(fd == -1) {
-        int error = errno;
+        error = errno;
         if (std::find(possibleErrors.begin(), possibleErrors.end(), error) == possibleErrors.end())
             error = -1;
     }
