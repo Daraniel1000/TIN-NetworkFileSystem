@@ -48,7 +48,7 @@ void ServerSubEndpoint::run()
         int confirmation = 0;
         while(timeoutCount < 5 && confirmation == 0) {
             try {
-                ConfirmMessage confirm(this->socket.receive(clientAddress));
+                ConfirmMessage confirm(this->socket.receive(clientAddress, 5));
                 confirmation = 1;
             }
             catch (timeout_error &e) {
@@ -58,10 +58,12 @@ void ServerSubEndpoint::run()
                 timeoutCount++;
             }
         }
-        std::cout << "Request " << std::to_string(requestDataMessage.getType()) << " from " << clientAddress.toString()
+        if(confirmation == 1)
+            std::cout << "Request " << std::to_string(requestDataMessage.getType()) << " from " << clientAddress.toString()
                   << " completed." << std::endl;
-        counter.leave();
-        delete this;
+        else
+            std::cout << "Request " << std::to_string(requestDataMessage.getType()) << " from " << clientAddress.toString()
+                      << " failed to receive confirmation." << std::endl;
     }
     catch(std::out_of_range& e){
         error = 7000;
@@ -94,5 +96,7 @@ void ServerSubEndpoint::run()
         std::cout <<std::to_string(error) +" Unknown error. " + std::string(e.what()) << std::endl;
     }
 
+    counter.leave();
+    delete this;
 
 }
