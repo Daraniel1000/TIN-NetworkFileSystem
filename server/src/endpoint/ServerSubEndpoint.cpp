@@ -46,9 +46,11 @@ void ServerSubEndpoint::run()
         this->socket.send(clientAddress, replyDataMessage.serialize());
         int timeoutCount = 0;
         int confirmation = 0;
+        PlainData data;
         while(timeoutCount < 5 && confirmation == 0) {
             try {
-                ConfirmMessage confirm(this->socket.receive(clientAddress, 5));
+                data = this->socket.receive(clientAddress, 5);
+                ConfirmMessage confirm(data);
                 confirmation = 1;
             }
             catch (timeout_error &e) {
@@ -56,6 +58,27 @@ void ServerSubEndpoint::run()
                 std::cout << std::to_string(error) + " Timeout error. " + std::string(e.what()) << std::endl;
                 this->socket.send(clientAddress, replyDataMessage.serialize());
                 timeoutCount++;
+            }
+            catch (socket_error& e)
+            {
+                error = 3000 + 100*e.getMajorCode() + e.getMinorCode();
+                std::cout <<std::to_string(error) +" Network error. " + std::string(e.what()) << std::endl;
+                timeoutCount++;
+            }
+            catch(std::logic_error &e){ //Unable to create ConfirmMessage, possibly it is DataMessage
+                try{
+
+                    DataMessage repeatedData(data);
+                    this->socket.send(clientAddress, replyDataMessage.serialize());
+                    timeoutCount++;
+                    std::cout << "Reply resend." << std::endl;
+                }
+                catch (socket_error& e)
+                {
+                    error = 3000 + 100*e.getMajorCode() + e.getMinorCode();
+                    std::cout <<std::to_string(error) +" Network error. " + std::string(e.what()) << std::endl;
+                    timeoutCount++;
+                }
             }
         }
         if(confirmation == 1)
