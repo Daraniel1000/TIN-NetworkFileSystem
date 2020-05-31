@@ -8,6 +8,7 @@
 #include <addresses/NetworkAddress.h>
 #include <map>
 #include <set>
+#include <vector>
 
 class AccessManager
 {
@@ -15,6 +16,9 @@ class AccessManager
 
     std::set<IpAddress> permittedHosts;
     std::map<NetworkAddress, int16_t> descriptorsMap;
+
+    int high_water_mark = 0;
+    std::vector<int16_t> unused_numbers;
 public:
     explicit AccessManager(const std::string& baseDir, const std::string& hostsFile = DEFAULT_HOST_FILE);
 

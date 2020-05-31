@@ -14,7 +14,7 @@ set(SRC_FILES
         src/execution/handlers/WriteHandler.cpp
         src/execution/handlers/LseekHandler.cpp
         src/execution/handlers/CloseHandler.cpp
-        src/execution/handlers/UnlinkHandler.cpp) # add source files here
+        src/execution/handlers/UnlinkHandler.cpp src/AccessManager.cpp src/AccessManager.h) # add source files here
 
 set(CMAKE_RUNTIME_OUTPUT_DIRECTORY ${PROJECT_SOURCE_DIR}/${BINDIR})
 set(THREADS_PREFER_PTHREAD_FLAG ON)

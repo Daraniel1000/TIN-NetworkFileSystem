@@ -1,6 +1,7 @@
 #include <fstream>
 #include "AccessManager.h"
 #include <addresses/IpAddress.h>
+#include <algorithm>
 
 const std::string AccessManager::DEFAULT_HOST_FILE = "hosts.txt";
 
@@ -45,7 +46,21 @@ int16_t AccessManager::getDescriptor(const NetworkAddress &address) const
 
 int16_t AccessManager::generateDescriptor(const NetworkAddress &address)
 {
-    return 0;
+    auto it = this->descriptorsMap.find(address);
+    if (it != this->descriptorsMap.end())
+        return it->second;
+
+    int16_t descriptor;
+    if (this->unused_numbers.empty())
+        descriptor = high_water_mark++;
+    else
+    {
+        std::pop_heap(unused_numbers.begin(), unused_numbers.end(), std::greater<>());
+        descriptor = this->unused_numbers.back();
+        this->unused_numbers.pop_back();
+    }
+    this->descriptorsMap.emplace(address, descriptor);
+    return descriptor;
 }
 
 bool AccessManager::clearDescriptor(const NetworkAddress &address)
@@ -53,6 +68,8 @@ bool AccessManager::clearDescriptor(const NetworkAddress &address)
     auto it = this->descriptorsMap.find(address);
     if (it == this->descriptorsMap.end())
         return false;
+    unused_numbers.push_back(it->second);
+    std::push_heap(unused_numbers.begin(), unused_numbers.end(), std::greater<>());
     this->descriptorsMap.erase(it);
     return true;
 }
