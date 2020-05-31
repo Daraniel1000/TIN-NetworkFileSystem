@@ -102,12 +102,14 @@ int16_t nfsread(std::string& host, int16_t& fd)
 int16_t nfswrite(std::string& host, int16_t& fd)
 {
     std::string buf;
-    void *pBuf = &buf;
+
     int16_t count;
 
     std::cout << "Data to write:" << std::endl;
     std::getline(std::cin, buf);
 
+    char* byteArray = buf.data();
+    void *pBuf = byteArray;
     count = static_cast<int16_t>(buf.length());
 
     int16_t size = mynfs_write(host.c_str(), fd, pBuf, count);
