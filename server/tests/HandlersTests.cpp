@@ -11,6 +11,9 @@
 #include <application/mynfs/requests/UnlinkRequest.h>
 #include <application//mynfs/requests/WriteRequest.h>
 #include <zconf.h>
+#include <application/mynfs/replies/ReadReply.h>
+#include <iostream>
+#include <netinet/in.h>
 #include "../src/execution/handlers/OpenHandler.h"
 #include "../src/execution/handlers/CloseHandler.h"
 #include "../src/execution/handlers/ReadHandler.h"
@@ -66,13 +69,21 @@ TEST_CASE("Close unopened file", "[CloseHandler]")
 
 TEST_CASE("Read file", "[ReadHandler]")
 {
+    std::byte buff[138];
+    void* buf;
+    buf = buff;
     std::string path = "test";
-    DomainData replay;
+    DomainData replay(buf, 3);
     PlainError replayError;
     int fd = open(path.data(),  O_CREAT | O_RDONLY);
-    int count = 20;
+    int count = 3;
     ReadHandler handler(DomainData(ReadRequest(fd, count).serialize()), replay, replayError);
     handler.handle();
+    ReadReply read(replay, replayError);
+    auto b = read.getData().getData().size();
+    for(int i = 0; i < b; i++) {
+        std::cout << (char ) read.getData().getData()[i];
+    }
     CHECK(replayError.getErrorValue() == 0);
     close(fd);
     unlink(path.data());
@@ -139,7 +150,7 @@ TEST_CASE("Write on write only file", "[WriteHandler]")
     DomainData replay;
     PlainError replayError;
     int fd = open(path.data(), O_CREAT | O_WRONLY);
-    std::vector<std::byte> data = {std::byte(0x1), std::byte(0x2), std::byte(0x3)};
+    std::vector<std::byte> data = {std::byte(0x41), std::byte(0x42), std::byte(0x43)};
     PlainData writeData(data);
     int count = 3;
     WriteHandler handler(DomainData(WriteRequest(fd, writeData.getData().data(), writeData.getSize()).serialize()), replay, replayError);

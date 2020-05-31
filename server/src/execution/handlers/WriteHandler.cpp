@@ -23,7 +23,7 @@ void WriteHandler::handle()
     auto descriptor = request.getDescriptor();
 
     // do something with it here
-    int writeBytes = write(descriptor, writeData, sizeof(writeData));
+    int writeBytes = write(descriptor, writeData, request.getWriteData().getData().size());
 
     //create reply
     if(writeBytes <= 0) {

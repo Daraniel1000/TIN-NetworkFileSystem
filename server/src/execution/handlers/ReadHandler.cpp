@@ -22,7 +22,7 @@ void ReadHandler::handle()
     // get request data
     auto descriptor = request.getDescriptor();
     auto count = request.getCount();
-    char* buf = (char*)malloc(count);
+    auto* buf = (std::byte*)malloc(count);
 
     // do something with it here
     auto readBytes = read(descriptor, buf, count);

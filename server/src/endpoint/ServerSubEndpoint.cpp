@@ -6,6 +6,7 @@
 #include <addresses/address_error.h>
 #include <transport/timeout_error.h>
 #include <sstream>
+#include <application/mynfs/bad_argument_error.h>
 #include "ServerSubEndpoint.h"
 
 ServerSubEndpoint::ServerSubEndpoint(NetworkAddress clientAddress,
@@ -52,7 +53,7 @@ void ServerSubEndpoint::run()
             }
             catch (timeout_error &e) {
                 error = 6000;
-                std::cout << "Timeout error. " + std::string(e.what()) << std::endl;
+                std::cout << std::to_string(error) + " Timeout error. " + std::string(e.what()) << std::endl;
                 this->socket.send(clientAddress, replyDataMessage.serialize());
                 timeoutCount++;
             }
@@ -70,29 +71,28 @@ void ServerSubEndpoint::run()
     catch (timeout_error& e)
     {
         error = 6000;
-        std::cout <<"Timeout error. " + std::string(e.what()) << std::endl;
+        std::cout <<std::to_string(error) +" Timeout error. " + std::string(e.what()) << std::endl;
     }
     catch (address_error& e)
     {
         error = 1000 + 100*e.getMajorCode() + e.getMinorCode();
-        std::cout << "Bad host address. " + std::string(e.what()) << std::endl;
+        std::cout << std::to_string(error) +" Bad host address. " + std::string(e.what()) << std::endl;
+    }
+    catch (bad_argument_error& e)
+    {
+        error = 2000 + 100*e.getMajorCode() + e.getMinorCode();
+        std::cout << std::to_string(error) + " Bad request argument. " + std::string(e.what());
     }
     catch (socket_error& e)
     {
         error = 3000 + 100*e.getMajorCode() + e.getMinorCode();
-        std::cout <<"Network error. " + std::string(e.what()) << std::endl;
+        std::cout <<std::to_string(error) +" Network error. " + std::string(e.what()) << std::endl;
     }
     catch (std::exception& e)
     {
         error = 5000;
-        std::cout <<"Unknown error. " + std::string(e.what()) << std::endl;
+        std::cout <<std::to_string(error) +" Unknown error. " + std::string(e.what()) << std::endl;
     }
-    if(error != 0)
-    {
-        std::stringstream temp;
-        temp << error;
-        const char* errorArray = temp.str().c_str();
-        std::cout << errorArray;
-    }
+
 
 }
