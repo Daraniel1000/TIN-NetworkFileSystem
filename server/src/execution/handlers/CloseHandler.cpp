@@ -15,25 +15,26 @@ CloseHandler::CloseHandler(DomainData requestData, DomainData &replyData, PlainE
 
 void CloseHandler::handle()
 {
+    // create request
     CloseRequest request(this->requestData);
 
+    // get request data
     auto fd = request.getDescriptor();
 
+    // do something with it here
     int closeStatus = close(fd);
 
+    //create reply
+    int error = 0;
     if(closeStatus == -1) {
-        int error = errno;
+        error = errno;
         if(std::find(possibleErrors.begin(), possibleErrors.end(), error) == possibleErrors.end())
             error = -1;
-        CloseReply reply((CloseReplyError(error)));
-
-        this->replyData = reply.serialize();
-        this->replyError = reply.getError().serialize();
     }
-    else {
-        CloseReply reply((CloseReplyError(0)));
 
-        this->replyData = reply.serialize();
-        this->replyError = reply.getError().serialize();
-    }
+    CloseReply reply((CloseReplyError(error)));
+
+    this->replyData = reply.serialize();
+    this->replyError = reply.getError().serialize();
+
 }

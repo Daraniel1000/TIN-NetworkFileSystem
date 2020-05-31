@@ -28,11 +28,12 @@ void ReadHandler::handle()
     auto readBytes = read(descriptor, buf, count);
 
     //create reply
+    int error = 0;
     if(readBytes < 0) {
-        int error = errno;
+        error = errno;
         if(std::find(possibleErrors.begin(), possibleErrors.end(), error) == possibleErrors.end())
             error = -1;
-        ReadReply reply(buf, 0, ReadReplyError(errno));
+        ReadReply reply(buf, 0, ReadReplyError(error));
         // save reply and error
         this->replyData = reply.serialize();
         this->replyError = reply.getError().serialize();
@@ -45,6 +46,7 @@ void ReadHandler::handle()
         // save reply and error
         this->replyData = reply.serialize();
         this->replyError = reply.getError().serialize();
+        free(data_buf);
     }
     free(buf);
 }

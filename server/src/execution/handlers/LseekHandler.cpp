@@ -26,23 +26,18 @@ void LseekHandler::handle()
     // do something with it here
     auto result = lseek(descriptor, offset, whence);
 
+    int error = 0;
+
     //create reply
     if(result == -1) {
-        int error = errno;
+        error = errno;
         if(std::find(possibleErrors.begin(), possibleErrors.end(), error) == possibleErrors.end())
             error = -1;
-        LseekReply reply(result, LseekReplyError(error));
-
-        // save reply and error
-        this->replyData = reply.serialize();
-        this->replyError = reply.getError().serialize();
     }
-    else {
-        LseekReply reply(result, LseekReplyError(0));
+    LseekReply reply(result, LseekReplyError(error));
 
-        // save reply and error
-        this->replyData = reply.serialize();
-        this->replyError = reply.getError().serialize();
-    }
+    // save reply and error
+    this->replyData = reply.serialize();
+    this->replyError = reply.getError().serialize();
 
 }

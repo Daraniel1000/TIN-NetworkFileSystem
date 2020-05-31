@@ -26,21 +26,16 @@ void WriteHandler::handle()
     int writeBytes = write(descriptor, writeData, request.getWriteData().getData().size());
 
     //create reply
+    int error = 0;
     if(writeBytes <= 0) {
-        int error = errno;
-        if(std::find(possibleErrors.begin(), possibleErrors.end(), error) == possibleErrors.end())
+        error = errno;
+        if (std::find(possibleErrors.begin(), possibleErrors.end(), error) == possibleErrors.end())
             error = -1;
-        WriteReply reply(writeBytes, WriteReplyError(errno));
+    }
+    WriteReply reply(writeBytes, WriteReplyError(error));
 
         // save reply and error
-        this->replyData = reply.serialize();
-        this->replyError = reply.getError().serialize();
-    }
-    else {
-        WriteReply reply(writeBytes, WriteReplyError(0));
+    this->replyData = reply.serialize();
+    this->replyError = reply.getError().serialize();
 
-        // save reply and error
-        this->replyData = reply.serialize();
-        this->replyError = reply.getError().serialize();
-    }
 }

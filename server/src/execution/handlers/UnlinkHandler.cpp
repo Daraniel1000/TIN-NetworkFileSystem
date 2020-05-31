@@ -24,21 +24,16 @@ void UnlinkHandler::handle()
     int result = unlink(path);
 
     //create reply
+    int error = 0;
     if(result == -1) {
-        int error = errno;
-        if(std::find(possibleErrors.begin(), possibleErrors.end(), error) == possibleErrors.end())
+        error = errno;
+        if (std::find(possibleErrors.begin(), possibleErrors.end(), error) == possibleErrors.end())
             error = -1;
-        UnlinkReply reply((UnlinkReplyError(errno)));
-
-        // save reply and error
-        this->replyData = reply.serialize();
-        this->replyError = reply.getError().serialize();
     }
-    else {
-        UnlinkReply reply(UnlinkReplyError(0));
+    UnlinkReply reply((UnlinkReplyError(error)));
 
-        // save reply and error
-        this->replyData = reply.serialize();
-        this->replyError = reply.getError().serialize();
-    }
+    // save reply and error
+    this->replyData = reply.serialize();
+    this->replyError = reply.getError().serialize();
+
 }

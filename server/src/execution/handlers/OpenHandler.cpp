@@ -25,24 +25,20 @@ void OpenHandler::handle()
 
     // do something with it here
     int fd = open(path,oflag, 0777);
+
     //create reply
+    int error = 0;
     if(fd == -1) {
         int error = errno;
-        if(std::find(possibleErrors.begin(), possibleErrors.end(), error) == possibleErrors.end())
+        if (std::find(possibleErrors.begin(), possibleErrors.end(), error) == possibleErrors.end())
             error = -1;
-        OpenReply reply(fd, OpenReplyError(error));
-
-        // save reply and error
-        this->replyData = reply.serialize();
-        this->replyError = reply.getError().serialize();
     }
-    else {
-        OpenReply reply(fd, OpenReplyError(0));
+    OpenReply reply(fd, OpenReplyError(error));
 
-        // save reply and error
-        this->replyData = reply.serialize();
-        this->replyError = reply.getError().serialize();
-    }
+    // save reply and error
+    this->replyData = reply.serialize();
+    this->replyError = reply.getError().serialize();
+
 }
 
 OpenHandler::~OpenHandler() {
