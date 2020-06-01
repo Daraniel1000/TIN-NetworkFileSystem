@@ -15,7 +15,9 @@ public:
      * Returned pointer is std::unique_ptr so the object will be AUTOMATICALLY deleted when it goes out of scope
      * Parameters are simply passed to the handler
      */
-    virtual std::unique_ptr<Handler> create(DomainData requestData, DomainData& replyData, PlainError& replyError) const = 0;
+    virtual std::unique_ptr<Handler>
+    create(DomainData requestData, NetworkAddress requestAddress, DomainData &replyData, PlainError &replyError,
+           AccessManager &accessManager) const = 0;
 };
 
 

@@ -7,7 +7,9 @@
 class CloseHandler : public Handler
 {
 public:
-    CloseHandler(DomainData requestData, DomainData& replyData, PlainError& replyError);
+    CloseHandler(DomainData requestData, NetworkAddress requestAddress, DomainData &replyData, PlainError &replyError,
+                 AccessManager &accessManager);
+
     void handle() override;
 
 private:

@@ -7,7 +7,9 @@
 class ReadHandler : public Handler
 {
 public:
-    ReadHandler(DomainData requestData, DomainData& replyData, PlainError& replyError);
+    ReadHandler(DomainData requestData, NetworkAddress requestAddress, DomainData &replyData, PlainError &replyError,
+                AccessManager &accessManager);
+
     void handle() override;
 
 private:

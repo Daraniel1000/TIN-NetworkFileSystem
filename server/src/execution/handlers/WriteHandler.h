@@ -7,7 +7,9 @@
 class WriteHandler : public Handler
 {
 public:
-    WriteHandler(DomainData requestData, DomainData& replyData, PlainError& replyError);
+    WriteHandler(DomainData requestData, NetworkAddress requestAddress, DomainData &replyData, PlainError &replyError,
+                 AccessManager &accessManager);
+
     void handle() override;
 
 private:

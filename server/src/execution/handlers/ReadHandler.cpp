@@ -4,14 +4,19 @@
 #include <unistd.h>
 #include <cstring>
 #include <algorithm>
+#include <utility>
 #include "ReadHandler.h"
 
-ReadHandler::ReadHandler(DomainData requestData, DomainData &replyData, PlainError &replyError) : Handler(requestData,
-                                                                                                          replyData,
-                                                                                                          replyError)
+ReadHandler::ReadHandler(DomainData requestData, NetworkAddress requestAddress, DomainData &replyData,
+                         PlainError &replyError,
+                         AccessManager &accessManager) : Handler(std::move(requestData),
+                                                                 requestAddress,
+                                                                 replyData,
+                                                                 replyError,
+                                                                 accessManager)
 {
     int errorList[] = {EBADF, EAGAIN, EINVAL, EISDIR};
-    possibleErrors.assign(errorList, errorList+sizeof(errorList)/sizeof(int));
+    possibleErrors.assign(errorList, errorList + sizeof(errorList) / sizeof(int));
 }
 
 void ReadHandler::handle()
@@ -19,34 +24,35 @@ void ReadHandler::handle()
     // create request
     ReadRequest request(this->requestData);
 
-    // get request data
-    auto descriptor = request.getDescriptor();
-    auto count = request.getCount();
-    auto* buf = (std::byte*)malloc(count);
-
-    // do something with it here
-    auto readBytes = read(descriptor, buf, count);
-
-    //create reply
     int error = 0;
-    if(readBytes < 0) {
-        error = errno;
-        if(std::find(possibleErrors.begin(), possibleErrors.end(), error) == possibleErrors.end())
-            error = -1;
-        ReadReply reply(buf, 0, ReadReplyError(error));
-        // save reply and error
-        this->replyData = reply.serialize();
-        this->replyError = reply.getError().serialize();
-    }
-    else {
-        char* data_buf = (char*)malloc(readBytes);
-        memcpy(data_buf, buf, readBytes);
-        ReadReply reply(data_buf, readBytes, ReadReplyError(0));
+    auto readBytes = 0;
+    auto *buf = (std::byte *) malloc(request.getCount());
 
-        // save reply and error
-        this->replyData = reply.serialize();
-        this->replyError = reply.getError().serialize();
-        free(data_buf);
+    auto fd = this->accessManager.getSystemDescriptor(this->requestAddress.getAddress(),
+                                                      request.getDescriptor());
+
+    if (fd == -1)
+        error = EBADF;
+    else
+    {
+        auto count = request.getCount();
+
+        // do something with it here
+        readBytes = read(fd, buf, count);
+
+        //create reply
+        if (readBytes < 0)
+        {
+            error = errno;
+            if (std::find(possibleErrors.begin(), possibleErrors.end(), error) == possibleErrors.end())
+                error = -1;
+            readBytes = 0;
+        }
     }
+    ReadReply reply(buf, readBytes, ReadReplyError(error));
+
+    // save reply and error
+    this->replyData = reply.serialize();
+    this->replyError = reply.getError().serialize();
     free(buf);
 }

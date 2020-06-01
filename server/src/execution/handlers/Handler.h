@@ -5,29 +5,40 @@
 #include <cstdint>
 #include <session/DomainData.h>
 #include <condition_variable>
+#include <utility>
 #include <session/PlainError.h>
+#include "../../AccessManager.h"
 
 class Handler
 {
 protected:
     DomainData requestData;
+    NetworkAddress requestAddress;
     DomainData &replyData;
     PlainError &replyError;
+    AccessManager &accessManager;
 public:
     std::mutex m;
     std::condition_variable cv;
+
     /**
      * Construct handler
      * @param requestData data of request
      * @param replyData reference to reply data (it will be overridden)
      * @param replyError reference to reply error (it will be overridden)
+     * @param accessManager AccessManager object
      */
-    Handler(DomainData requestData, DomainData &replyData, PlainError &replyError) : requestData(requestData),
-                                                                                     replyData(replyData),
-                                                                                     replyError(replyError)
+    Handler(DomainData requestData, NetworkAddress requestAddress, DomainData &replyData, PlainError &replyError,
+            AccessManager &accessManager)
+            : requestData(std::move(requestData)),
+              requestAddress(requestAddress),
+              replyData(replyData),
+              replyError(replyError),
+              accessManager(accessManager)
     {}
 
-    virtual ~Handler() {};
+    virtual ~Handler()
+    {};
 
     /**
      * Main handler function, operate on request and fill reply (or error) according to handler logic

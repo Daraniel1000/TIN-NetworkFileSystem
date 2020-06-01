@@ -8,9 +8,11 @@
 class LseekHandlerFactory : public HandlerFactory
 {
 public:
-    std::unique_ptr<Handler> create(DomainData requestData, DomainData &replyData, PlainError& replyError) const override
+    std::unique_ptr<Handler>
+    create(DomainData requestData, NetworkAddress requestAddress, DomainData &replyData, PlainError &replyError,
+           AccessManager &accessManager) const override
     {
-        return std::make_unique<LseekHandler>(requestData, replyData, replyError);
+        return std::make_unique<LseekHandler>(requestData, requestAddress, replyData, replyError, accessManager);
     }
 };
 

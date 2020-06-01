@@ -2,13 +2,18 @@
 #include <addresses/EphemeralPort.h>
 #include <thread>
 #include <transport/read_interrupted_error.h>
+#include <session/messages/ConfirmMessage.h>
 #include "ServerEndpoint.h"
 #include "ServerSubEndpoint.h"
 #include "../execution/Executor/Executor.h"
 #include "../TerminalListener.h"
 
 
-ServerEndpoint::ServerEndpoint(Port port) : socket(port) {}
+ServerEndpoint::ServerEndpoint(Port port, const std::string &baseDir, const std::string &fsDir,
+                               const std::string &hostsFile) : socket(port),
+                                                               accessManager(baseDir,
+                                                                             fsDir, hostsFile)
+{}
 
 void ServerEndpoint::run()
 {
@@ -19,21 +24,32 @@ void ServerEndpoint::run()
     std::thread executorThread(&Executor::run, &executor);
 
     NetworkAddress source{};
-    ServerSubEndpoint* subEndpoint;
+    ServerSubEndpoint *subEndpoint;
 
-    while(!listener.serverStop.try_lock()) {
-        try {
+    while (!listener.serverStop.try_lock())
+    {
+        try
+        {
             RequestMessage request(socket.receive(source));
             std::cout << "New request from " << source.toString() << std::endl;
 
-            //run new thread here and go back to receiving on socket
-            subEndpoint = new ServerSubEndpoint(source, this->handlerFactoryPool,
-                                                this->messageQueue, this->counter);
-            counter.enter();
-            std::thread thread(&ServerSubEndpoint::run, subEndpoint);
-            thread.detach();
+            if (accessManager.isPermitted(source.getAddress()))
+            {
+
+                //run new thread here and go back to receiving on socket
+                subEndpoint = new ServerSubEndpoint(source, this->handlerFactoryPool,
+                                                    this->messageQueue, this->counter, this->accessManager);
+                counter.enter();
+                std::thread thread(&ServerSubEndpoint::run, subEndpoint);
+                thread.detach();
+            }
+            else
+            {
+                this->socket.send(source, ConfirmMessage(PlainError(-1)).serialize());
+            }
         }
-        catch (read_interrupted_error&) {}
+        catch (read_interrupted_error &)
+        {}
     }
     listener.serverStop.unlock();
     listenerThread.join();

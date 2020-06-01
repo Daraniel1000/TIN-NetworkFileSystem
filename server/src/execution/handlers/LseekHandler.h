@@ -7,8 +7,11 @@
 class LseekHandler : public Handler
 {
 public:
-    LseekHandler(DomainData requestData, DomainData& replyData, PlainError& replyError);
+    LseekHandler(DomainData requestData, NetworkAddress requestAddress, DomainData &replyData, PlainError &replyError,
+                 AccessManager &accessManager);
+
     void handle() override;
+
 private:
     std::vector<int> possibleErrors;
 };

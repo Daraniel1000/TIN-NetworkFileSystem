@@ -8,14 +8,16 @@
 #include "../execution/HandlerFactoryPool.h"
 #include "../SafeQueue.h"
 #include "../ThreadCounter.h"
+#include "../AccessManager.h"
 
 class ServerSubEndpoint
 {
     UDPSocket socket;
     NetworkAddress clientAddress;
-    const HandlerFactoryPool& handlerFactoryPool;
-    SafeQueue<Handler*>& messageQueue;
-    ThreadCounter& counter;
+    const HandlerFactoryPool &handlerFactoryPool;
+    SafeQueue<Handler *> &messageQueue;
+    ThreadCounter &counter;
+    AccessManager &accessManager;
 public:
     /**
      * Create server subendpoint (for further communication with the client)
@@ -23,8 +25,9 @@ public:
      * @param handlerFactoryPool handler factory passed from main server
      * @param port port to use
      */
-    ServerSubEndpoint(NetworkAddress clientAddress, const HandlerFactoryPool& handlerFactoryPool,
-            SafeQueue<Handler*>& queueRef, ThreadCounter& counterRef, Port port = EphemeralPort());
+    ServerSubEndpoint(NetworkAddress clientAddress, const HandlerFactoryPool &handlerFactoryPool,
+                      SafeQueue<Handler *> &queueRef, ThreadCounter &counterRef, AccessManager &accessManager,
+                      Port port = EphemeralPort());
 
     /**
      * Run subendpoint

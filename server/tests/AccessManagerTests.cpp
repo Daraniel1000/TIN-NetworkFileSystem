@@ -58,3 +58,15 @@ TEST_CASE("Access manager can't generate new descriptors twice", "[AccessManager
     CHECK(d1 == d2);
     CHECK(am.getSystemDescriptor(NetworkAddress("localhost"), d1) == 3);
 }
+
+TEST_CASE("Access manager check good path", "[AccessManager]")
+{
+    AccessManager am(".", "hosts.txt");
+    CHECK(am.isPathPermitted("dir/file.txt"));
+}
+
+TEST_CASE("Access manager check bad path", "[AccessManager]")
+{
+    AccessManager am(".", "hosts.txt");
+    CHECK(!am.isPathPermitted("./dir/../../../file.txt"));
+}

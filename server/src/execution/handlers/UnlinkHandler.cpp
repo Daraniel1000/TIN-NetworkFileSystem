@@ -3,32 +3,42 @@
 #include <application/mynfs/requests/UnlinkRequest.h>
 #include <unistd.h>
 #include <algorithm>
+#include <utility>
 #include "UnlinkHandler.h"
 
-UnlinkHandler::UnlinkHandler(DomainData requestData, DomainData &replyData, PlainError &replyError) : Handler(
-        requestData, replyData, replyError)
+UnlinkHandler::UnlinkHandler(DomainData requestData, NetworkAddress requestAddress, DomainData &replyData,
+                             PlainError &replyError,
+                             AccessManager &accessManager) : Handler(
+        std::move(requestData), requestAddress, replyData, replyError, accessManager)
 {
     int errorList[] = {EISDIR, EBUSY, ENAMETOOLONG, ENOENT, ENOTDIR};
-    possibleErrors.assign(errorList, errorList+sizeof(errorList)/sizeof(int));
+    possibleErrors.assign(errorList, errorList + sizeof(errorList) / sizeof(int));
 }
 
 void UnlinkHandler::handle()
 {
+    int error = 0;
     // create request
     UnlinkRequest request(this->requestData);
 
-    // get request data
-    const char* path = request.getPath().data();
+    if (!this->accessManager.isPathPermitted(request.getPath()))
+        error = EACCES;
+    else
+    {
+        // get request data
+        auto pathStr = (this->accessManager.getFsPath() + "/" + request.getPath());
+        const char *path = pathStr.data();
 
-    // do something with it here
-    int result = unlink(path);
+        // do something with it here
+        int result = unlink(path);
 
-    //create reply
-    int error = 0;
-    if(result == -1) {
-        error = errno;
-        if (std::find(possibleErrors.begin(), possibleErrors.end(), error) == possibleErrors.end())
-            error = -1;
+        //create reply
+        if (result == -1)
+        {
+            error = errno;
+            if (std::find(possibleErrors.begin(), possibleErrors.end(), error) == possibleErrors.end())
+                error = -1;
+        }
     }
     UnlinkReply reply((UnlinkReplyError(error)));
 

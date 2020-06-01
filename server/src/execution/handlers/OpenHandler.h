@@ -7,7 +7,9 @@
 class OpenHandler : public Handler
 {
 public:
-    OpenHandler(DomainData requestData, DomainData& replyData, PlainError& replyError);
+    OpenHandler(DomainData requestData, NetworkAddress requestAddress, DomainData &replyData, PlainError &replyError,
+                AccessManager &accessManager);
+
     void handle() override;
 
     virtual ~OpenHandler();

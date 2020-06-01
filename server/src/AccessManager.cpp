@@ -2,21 +2,22 @@
 #include "AccessManager.h"
 #include <addresses/IpAddress.h>
 #include <algorithm>
+#include <zconf.h>
+#include <cstring>
+#include <filesystem>
 
-const std::string AccessManager::DEFAULT_HOST_FILE = "hosts.txt";
-
-std::set<IpAddress> readPermittedHosts(const std::string& hostsPath)
+std::set<IpAddress> readPermittedHosts(const std::string &hostsPath)
 {
-    std::ifstream fileStream(hostsPath.c_str());
+    std::fstream fileStream(hostsPath.c_str(), std::fstream::in | std::fstream::app);
 
-    if(!fileStream)
+    if (!fileStream)
         throw std::runtime_error("Can't open hosts file at " + hostsPath);
 
     std::set<IpAddress> hosts;
     std::string str;
     while (std::getline(fileStream, str))
     {
-        if(!str.empty())
+        if (!str.empty())
             hosts.emplace(str.c_str());
     }
 
@@ -24,9 +25,19 @@ std::set<IpAddress> readPermittedHosts(const std::string& hostsPath)
     return hosts;
 }
 
-AccessManager::AccessManager(const std::string& baseDir, const std::string& hostsFile)
+AccessManager::AccessManager(const std::string &baseDir, const std::string &fsDir, const std::string &hostsFile)
+        : baseDir(baseDir), fsDir(fsDir)
 {
     auto fullHostsPath = baseDir + "/" + hostsFile;
+
+    try
+    {
+        std::filesystem::create_directories(this->getFsPath());
+    }
+    catch (std::exception& e)
+    {
+        throw std::runtime_error("Can't create mynfs directory at " + this->getFsPath());
+    }
 
     this->permittedHosts = readPermittedHosts(fullHostsPath);
 }
@@ -36,7 +47,7 @@ bool AccessManager::isPermitted(const IpAddress &address) const
     return this->permittedHosts.find(address) != this->permittedHosts.end();
 }
 
-int AccessManager::getSystemDescriptor(const NetworkAddress& address, int16_t appDescriptor) const
+int AccessManager::getSystemDescriptor(const IpAddress &address, int16_t appDescriptor) const
 {
     auto it = this->descriptorsMap.find(std::make_pair(address, appDescriptor));
     if (it == this->descriptorsMap.end())
@@ -44,12 +55,12 @@ int AccessManager::getSystemDescriptor(const NetworkAddress& address, int16_t ap
     return it->second;
 }
 
-int16_t AccessManager::generateAppDescriptor(const NetworkAddress& address, int systemDescriptor)
+int16_t AccessManager::generateAppDescriptor(const IpAddress &address, int systemDescriptor)
 {
     auto it = std::find_if(
             this->descriptorsMap.begin(),
             this->descriptorsMap.end(),
-            [&](const auto& kv) {return kv.first.first == address and kv.second == systemDescriptor; });
+            [&](const auto &kv) { return kv.first.first == address and kv.second == systemDescriptor; });
     if (it != this->descriptorsMap.end())
         return it->first.second;
 
@@ -66,7 +77,7 @@ int16_t AccessManager::generateAppDescriptor(const NetworkAddress& address, int 
     return appDescriptor;
 }
 
-bool AccessManager::clearAppDescriptor(const NetworkAddress& address, int appDescriptor)
+bool AccessManager::clearAppDescriptor(const IpAddress &address, int appDescriptor)
 {
     auto it = this->descriptorsMap.find(std::make_pair(address, appDescriptor));
     if (it == this->descriptorsMap.end())
@@ -75,4 +86,14 @@ bool AccessManager::clearAppDescriptor(const NetworkAddress& address, int appDes
     std::push_heap(unused_numbers.begin(), unused_numbers.end(), std::greater<>());
     this->descriptorsMap.erase(it);
     return true;
+}
+
+bool AccessManager::isPathPermitted(const std::string &path) const
+{
+    return (this->getFsPath() + "/" + path).find("..") == std::string::npos;
+}
+
+std::string AccessManager::getFsPath() const
+{
+    return baseDir + "/" + fsDir;
 }

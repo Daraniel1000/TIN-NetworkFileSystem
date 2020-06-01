@@ -3,35 +3,52 @@
 #include <application/mynfs/requests/OpenRequest.h>
 #include <fcntl.h>
 #include <algorithm>
+#include <utility>
 #include "OpenHandler.h"
 
-OpenHandler::OpenHandler(DomainData requestData, DomainData &replyData, PlainError &replyError) : Handler(requestData,
-                                                                                                       replyData,
-                                                                                                       replyError)
+OpenHandler::OpenHandler(DomainData requestData, NetworkAddress requestAddress, DomainData &replyData,
+                         PlainError &replyError,
+                         AccessManager &accessManager) : Handler(std::move(requestData),
+                                                                 requestAddress,
+                                                                 replyData,
+                                                                 replyError,
+                                                                 accessManager)
 {
     int errorList[] = {EACCES, EEXIST, ELOOP, ENAMETOOLONG, ENFILE, ENOENT, ENOSPC, ENOTDIR, EINVAL};
-    possibleErrors.assign(errorList, errorList+sizeof(errorList)/sizeof(int));
+    possibleErrors.assign(errorList, errorList + sizeof(errorList) / sizeof(int));
 }
 
 
 void OpenHandler::handle()
 {
+    int fd;
+    int error = 0;
     // create request
     OpenRequest request(this->requestData);
 
-    // get request data
-    const char* path = request.getPath().data();
-    auto oflag = request.getOflag();
+    if (!this->accessManager.isPathPermitted(request.getPath()))
+    {
+        fd = -1;
+        error = EACCES;
+    }
+    else
+    {
+        // get request data
+        auto pathStr = (this->accessManager.getFsPath() + "/" + request.getPath());
+        const char *path = pathStr.data();
+        auto oflag = request.getOflag();
 
-    // do something with it here
-    int fd = open(path,oflag, 0777);
+        // do something with it here
+        fd = open(path, oflag, 0777);
 
-    //create reply
-    int error = 0;
-    if(fd == -1) {
-        error = errno;
-        if (std::find(possibleErrors.begin(), possibleErrors.end(), error) == possibleErrors.end())
-            error = -1;
+        if (fd == -1)
+        {
+            error = errno;
+            if (std::find(possibleErrors.begin(), possibleErrors.end(), error) == possibleErrors.end())
+                error = -1;
+        }
+        else
+            fd = this->accessManager.generateAppDescriptor(this->requestAddress.getAddress(), fd);
     }
     OpenReply reply(fd, OpenReplyError(error));
 
@@ -41,7 +58,8 @@ void OpenHandler::handle()
 
 }
 
-OpenHandler::~OpenHandler() {
+OpenHandler::~OpenHandler()
+{
 
 }
 
