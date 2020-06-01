@@ -31,6 +31,7 @@ void ServerEndpoint::run()
         try
         {
             RequestMessage request(socket.receive(source));
+
             std::cout << "New request from " << source.toString() << std::endl;
 
             if (accessManager.isPermitted(source.getAddress()))
@@ -48,8 +49,13 @@ void ServerEndpoint::run()
                 this->socket.send(source, ConfirmMessage(PlainError(-1)).serialize());
             }
         }
-        catch (read_interrupted_error &)
-        {}
+        catch(std::logic_error& e){
+            std::cout << "8000 First received message is not a RequestMessage" << std::endl;
+        }
+        catch (read_interrupted_error&){}
+        catch (std::runtime_error &e) {
+            std::cout << "5000 " + std::string(e.what()) << std::endl;
+        }
     }
     listener.serverStop.unlock();
     listenerThread.join();
