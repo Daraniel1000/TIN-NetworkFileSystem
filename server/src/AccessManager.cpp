@@ -36,39 +36,42 @@ bool AccessManager::isPermitted(const IpAddress &address) const
     return this->permittedHosts.find(address) != this->permittedHosts.end();
 }
 
-int16_t AccessManager::getDescriptor(const NetworkAddress &address) const
+int AccessManager::getSystemDescriptor(const NetworkAddress& address, int16_t appDescriptor) const
 {
-    auto it = this->descriptorsMap.find(address);
+    auto it = this->descriptorsMap.find(std::make_pair(address, appDescriptor));
     if (it == this->descriptorsMap.end())
         return -1;
     return it->second;
 }
 
-int16_t AccessManager::generateDescriptor(const NetworkAddress &address)
+int16_t AccessManager::generateAppDescriptor(const NetworkAddress& address, int systemDescriptor)
 {
-    auto it = this->descriptorsMap.find(address);
+    auto it = std::find_if(
+            this->descriptorsMap.begin(),
+            this->descriptorsMap.end(),
+            [&](const auto& kv) {return kv.first.first == address and kv.second == systemDescriptor; });
     if (it != this->descriptorsMap.end())
-        return it->second;
+        return it->first.second;
 
-    int16_t descriptor;
+    int16_t appDescriptor;
     if (this->unused_numbers.empty())
-        descriptor = high_water_mark++;
+        appDescriptor = high_water_mark++;
     else
     {
         std::pop_heap(unused_numbers.begin(), unused_numbers.end(), std::greater<>());
-        descriptor = this->unused_numbers.back();
+        appDescriptor = this->unused_numbers.back();
         this->unused_numbers.pop_back();
     }
-    this->descriptorsMap.emplace(address, descriptor);
-    return descriptor;
+    this->descriptorsMap.emplace(std::make_pair(address, appDescriptor), systemDescriptor);
+    return appDescriptor;
 }
 
-bool AccessManager::clearDescriptor(const NetworkAddress &address)
+bool AccessManager::clearAppDescriptor(const NetworkAddress& address, int appDescriptor)
 {
-    auto it = this->descriptorsMap.find(address);
+    auto it = this->descriptorsMap.find(std::make_pair(address, appDescriptor));
     if (it == this->descriptorsMap.end())
         return false;
-    unused_numbers.push_back(it->second);
+    unused_numbers.push_back(appDescriptor);
     std::push_heap(unused_numbers.begin(), unused_numbers.end(), std::greater<>());
     this->descriptorsMap.erase(it);
     return true;

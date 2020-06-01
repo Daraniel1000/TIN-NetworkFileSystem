@@ -15,7 +15,7 @@ class AccessManager
     static const std::string DEFAULT_HOST_FILE;
 
     std::set<IpAddress> permittedHosts;
-    std::map<NetworkAddress, int16_t> descriptorsMap;
+    std::map<std::pair<NetworkAddress, int16_t>, int> descriptorsMap;
 
     int high_water_mark = 0;
     std::vector<int16_t> unused_numbers;
@@ -23,10 +23,10 @@ public:
     explicit AccessManager(const std::string& baseDir, const std::string& hostsFile = DEFAULT_HOST_FILE);
 
     bool isPermitted(const IpAddress& address) const;
-    int16_t getDescriptor(const NetworkAddress& address) const;
+    int getSystemDescriptor(const NetworkAddress& address, int16_t appDescriptor) const;
 
-    int16_t generateDescriptor(const NetworkAddress& address);
-    bool clearDescriptor(const NetworkAddress& address);
+    int16_t generateAppDescriptor(const NetworkAddress& address, int systemDescriptor);
+    bool clearAppDescriptor(const NetworkAddress& address, int appDescriptor);
 };
 
 
