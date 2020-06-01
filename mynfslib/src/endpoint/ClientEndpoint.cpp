@@ -19,6 +19,7 @@
 #include <addresses/address_error.h>
 #include <application/mynfs/bad_argument_error.h>
 #include <transport/socket_error.h>
+#include "../authentication_error.h"
 #include <cstring>
 #include "ClientEndpoint.h"
 
@@ -39,7 +40,11 @@ Rep ClientEndpoint::send(NetworkAddress recipient, const Req &request) const
     {
         try {
             ConfirmMessage requestConfirm(socket.receive(source, timeout));
-            confirmation = true;
+
+            if(requestConfirm.getError().getErrorValue() == -1)
+                throw authentication_error(1, 1,
+                        "Access denied - authentication failed");
+            else confirmation = true;
         }
         catch (timeout_error &e) {
             this->socket.send(recipient, RequestMessage().serialize());

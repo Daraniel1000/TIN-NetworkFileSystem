@@ -305,7 +305,7 @@ int main(int argc, char *argv[])
         else if (choice == "exit")
         {
             exit = true;
-            std::cout << "Goodbye!";
+            std::cout << "Goodbye!\n";
         }
 
         else std::cout << "Typo in command. Try again.\n";

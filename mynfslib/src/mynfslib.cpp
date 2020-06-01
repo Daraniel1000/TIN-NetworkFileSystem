@@ -18,6 +18,7 @@
 #include <application/mynfs/bad_argument_error.h>
 
 #include "endpoint/ClientEndpoint.h"
+#include "authentication_error.h"
 
 int mynfs_error = 0;
 std::string mynfs_error_message;
@@ -61,9 +62,14 @@ int16_t mynfs_open(char const *host, char const *path, uint8_t oflag)
         mynfs_error = 3000 + 100*e.getMajorCode() + e.getMinorCode();
         mynfs_error_message = "Network error. " + std::string(e.what());
     }
+    catch (authentication_error& e)
+    {
+        mynfs_error = 5000 + 100*e.getMajorCode() + e.getMinorCode();
+        mynfs_error_message = "Authentication error. " + std::string(e.what());
+    }
     catch (std::exception& e)
     {
-        mynfs_error = 5000;
+        mynfs_error = 6000;
         mynfs_error_message = "Unknown error. " + std::string(e.what());
     }
 
@@ -111,9 +117,14 @@ int16_t mynfs_read(char const *host, int16_t fd, void *buf, int16_t count)
         mynfs_error = 3000 + 100*e.getMajorCode() + e.getMinorCode();
         mynfs_error_message = "Network error. " + std::string(e.what());
     }
+    catch (authentication_error& e)
+    {
+        mynfs_error = 5000 + 100*e.getMajorCode() + e.getMinorCode();
+        mynfs_error_message = "Authentication error. " + std::string(e.what());
+    }
     catch (std::exception& e)
     {
-        mynfs_error = 5000;
+        mynfs_error = 6000;
         mynfs_error_message = "Unknown error. " + std::string(e.what());
     }
 
@@ -158,9 +169,14 @@ int16_t mynfs_write(char const *host, int16_t fd, void *buf, int16_t count)
         mynfs_error = 3000 + 100*e.getMajorCode() + e.getMinorCode();
         mynfs_error_message = "Network error. " + std::string(e.what());
     }
+    catch (authentication_error& e)
+    {
+        mynfs_error = 5000 + 100*e.getMajorCode() + e.getMinorCode();
+        mynfs_error_message = "Authentication error. " + std::string(e.what());
+    }
     catch (std::exception& e)
     {
-        mynfs_error = 5000;
+        mynfs_error = 6000;
         mynfs_error_message = "Unknown error. " + std::string(e.what());
     }
     return -1;
@@ -205,9 +221,14 @@ int32_t mynfs_lseek(char const *host, int16_t fd, int32_t offset, uint8_t whence
         mynfs_error = 3000 + 100*e.getMajorCode() + e.getMinorCode();
         mynfs_error_message = "Network error. " + std::string(e.what());
     }
+    catch (authentication_error& e)
+    {
+        mynfs_error = 5000 + 100*e.getMajorCode() + e.getMinorCode();
+        mynfs_error_message = "Authentication error. " + std::string(e.what());
+    }
     catch (std::exception& e)
     {
-        mynfs_error = 5000;
+        mynfs_error = 6000;
         mynfs_error_message = "Unknown error. " + std::string(e.what());
     }
 
@@ -252,9 +273,14 @@ int8_t mynfs_close(char const *host, int16_t fd)
         mynfs_error = 3000 + 100*e.getMajorCode() + e.getMinorCode();
         mynfs_error_message = "Network error. " + std::string(e.what());
     }
+    catch (authentication_error& e)
+    {
+        mynfs_error = 5000 + 100*e.getMajorCode() + e.getMinorCode();
+        mynfs_error_message = "Authentication error. " + std::string(e.what());
+    }
     catch (std::exception& e)
     {
-        mynfs_error = 5000;
+        mynfs_error = 6000;
         mynfs_error_message = "Unknown error. " + std::string(e.what());
     }
 
@@ -299,9 +325,14 @@ int8_t mynfs_unlink(char const *host, char const *path)
         mynfs_error = 3000 + 100*e.getMajorCode() + e.getMinorCode();
         mynfs_error_message = "Network error. " + std::string(e.what());
     }
+    catch (authentication_error& e)
+    {
+        mynfs_error = 5000 + 100*e.getMajorCode() + e.getMinorCode();
+        mynfs_error_message = "Authentication error. " + std::string(e.what());
+    }
     catch (std::exception& e)
     {
-        mynfs_error = 5000;
+        mynfs_error = 6000;
         mynfs_error_message = "Unknown error. " + std::string(e.what());
     }
 
