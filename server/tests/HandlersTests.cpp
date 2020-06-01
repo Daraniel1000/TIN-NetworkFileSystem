@@ -12,6 +12,7 @@
 #include <application/mynfs/replies/ReadReply.h>
 #include <iostream>
 #include <fstream>
+#include <application/mynfs/replies/OpenReply.h>
 #include "../src/execution/handlers/OpenHandler.h"
 #include "../src/execution/handlers/CloseHandler.h"
 #include "../src/execution/handlers/ReadHandler.h"
@@ -19,7 +20,7 @@
 #include "../src/execution/handlers/LseekHandler.h"
 #include "../src/execution/handlers/WriteHandler.h"
 
-AccessManager setupAccessManager(const std::string &baseDir = "./test",
+AccessManager setupAccessManager(const std::string &baseDir = "./testDir",
                                  const std::string &fsDir = "root",
                                  const std::string &hostsFile = "hosts.txt")
 {
@@ -27,6 +28,29 @@ AccessManager setupAccessManager(const std::string &baseDir = "./test",
     fileStream << "0.0.0.0" << std::endl;
     fileStream.close();
     return AccessManager(baseDir, fsDir, hostsFile);
+}
+
+int16_t createFile(const std::string &path, AccessManager &accessManager, int flags)
+{
+    DomainData reply;
+    PlainError replyError;
+    OpenHandler(DomainData(OpenRequest(path.data(), flags).serialize()),
+                NetworkAddress(),
+                reply,
+                replyError,
+                accessManager).handle();
+    return OpenReply(reply, replyError).getDescriptor();
+}
+
+void deleteFile(const std::string &path, AccessManager &accessManager)
+{
+    DomainData reply;
+    PlainError replyError;
+    UnlinkHandler(DomainData(UnlinkRequest(path.data()).serialize()),
+                  NetworkAddress(),
+                  reply,
+                  replyError,
+                  accessManager).handle();
 }
 
 TEST_CASE("Creating new file", "[OpenHandler]")
@@ -39,8 +63,9 @@ TEST_CASE("Creating new file", "[OpenHandler]")
                 NetworkAddress(),
                 replay,
                 replayError,
-                accessManager).handle(); //file will be created in server/bin
+                accessManager).handle();
     CHECK(replayError.getErrorValue() == 0);
+    deleteFile(path, accessManager);
 }
 
 TEST_CASE("File to open does not exist", "[OpenHandler]")
@@ -55,7 +80,6 @@ TEST_CASE("File to open does not exist", "[OpenHandler]")
                 replayError,
                 accessManager).handle();
     CHECK(replayError.getErrorValue() == ENOENT);
-
 }
 
 TEST_CASE("Close file", "[CloseHandler]")
@@ -64,15 +88,13 @@ TEST_CASE("Close file", "[CloseHandler]")
     DomainData replay;
     PlainError replayError;
     AccessManager accessManager = setupAccessManager();
-    int fd = open(path.data(), O_CREAT | O_RDONLY);
-    CloseHandler(DomainData(CloseRequest(accessManager.generateAppDescriptor(IpAddress(), fd)).serialize()),
+    CloseHandler(DomainData(CloseRequest(createFile(path, accessManager, O_CREAT | O_RDWR)).serialize()),
                  NetworkAddress(),
                  replay,
                  replayError,
                  accessManager).handle();
     CHECK(replayError.getErrorValue() == 0);
-    close(fd);
-    unlink(path.data());
+    deleteFile(path, accessManager);
 }
 
 TEST_CASE("Close unopened file", "[CloseHandler]")
@@ -98,9 +120,8 @@ TEST_CASE("Read file", "[ReadHandler]")
     DomainData replay(buf, 3);
     PlainError replayError;
     AccessManager accessManager = setupAccessManager();
-    int fd = open(path.data(), O_CREAT | O_RDONLY);
     int count = 3;
-    ReadHandler(DomainData(ReadRequest(accessManager.generateAppDescriptor(IpAddress(), fd), count).serialize()),
+    ReadHandler(DomainData(ReadRequest(createFile(path, accessManager, O_CREAT | O_RDWR), count).serialize()),
                 NetworkAddress(),
                 replay,
                 replayError,
@@ -112,8 +133,7 @@ TEST_CASE("Read file", "[ReadHandler]")
         std::cout << (char) read.getData().getData()[i];
     }
     CHECK(replayError.getErrorValue() == 0);
-    close(fd);
-    unlink(path.data());
+    deleteFile(path, accessManager);
 }
 
 TEST_CASE("Read unopened file", "[ReadHandler]")
@@ -138,18 +158,16 @@ TEST_CASE("Use lseek", "[LseekHandler]")
     DomainData replay;
     PlainError replayError;
     AccessManager accessManager = setupAccessManager();
-    int fd = open(path.data(), O_CREAT | O_RDONLY);
     int offset = 4;
     int whence = SEEK_SET;
     LseekHandler(
-            DomainData(LseekRequest(accessManager.generateAppDescriptor(IpAddress(), fd), offset, whence).serialize()),
+            DomainData(LseekRequest(createFile(path, accessManager, O_CREAT | O_RDWR), offset, whence).serialize()),
             NetworkAddress(),
             replay,
             replayError,
             accessManager).handle();
     CHECK(replayError.getErrorValue() == 0);
-    close(fd);
-    unlink(path.data());
+    deleteFile(path, accessManager);
 }
 
 TEST_CASE("Lseek on unopened file", "[LseekHandler]")
@@ -175,20 +193,17 @@ TEST_CASE("Write on read only file", "[WriteHandler]")
     DomainData replay;
     PlainError replayError;
     AccessManager accessManager = setupAccessManager();
-    int fd = open(path.data(), O_CREAT | O_RDONLY);
     std::vector<std::byte> data = {std::byte(0x1), std::byte(0x2), std::byte(0x3)};
     PlainData writeData(data);
-    int count = 3;
     WriteHandler(DomainData(
-            WriteRequest(accessManager.generateAppDescriptor(IpAddress(), fd), writeData.getData().data(),
+            WriteRequest(createFile(path, accessManager, O_CREAT | O_RDONLY), writeData.getData().data(),
                          writeData.getSize()).serialize()),
                  NetworkAddress(),
                  replay,
                  replayError,
                  accessManager).handle();
     CHECK(replayError.getErrorValue() == EBADF);
-    close(fd);
-    unlink(path.data());
+    deleteFile(path, accessManager);
 }
 
 TEST_CASE("Write on write only file", "[WriteHandler]")
@@ -197,20 +212,17 @@ TEST_CASE("Write on write only file", "[WriteHandler]")
     DomainData replay;
     PlainError replayError;
     AccessManager accessManager = setupAccessManager();
-    int fd = open(path.data(), O_CREAT | O_WRONLY);
     std::vector<std::byte> data = {std::byte(0x41), std::byte(0x42), std::byte(0x43)};
     PlainData writeData(data);
-    int count = 3;
     WriteHandler(DomainData(
-            WriteRequest(accessManager.generateAppDescriptor(IpAddress(), fd), writeData.getData().data(),
+            WriteRequest(createFile(path, accessManager, O_CREAT | O_WRONLY), writeData.getData().data(),
                          writeData.getSize()).serialize()),
                  NetworkAddress(),
                  replay,
                  replayError,
                  accessManager).handle();
     CHECK(replayError.getErrorValue() == 0);
-    close(fd);
-    unlink(path.data());
+    deleteFile(path, accessManager);
 }
 
 TEST_CASE("Unlink on directory path", "[UnlinkHandler]")
@@ -233,12 +245,11 @@ TEST_CASE("Unlink file", "[UnlinkHandler]")
     DomainData replay;
     PlainError replayError;
     AccessManager accessManager = setupAccessManager();
-    int fd = open(path.data(), O_CREAT | O_WRONLY);
+    createFile(path, accessManager, O_CREAT);
     UnlinkHandler(DomainData(UnlinkRequest(path.data()).serialize()),
                   NetworkAddress(),
                   replay,
                   replayError,
                   accessManager).handle();
     CHECK(replayError.getErrorValue() == 0);
-    close(fd);
 }

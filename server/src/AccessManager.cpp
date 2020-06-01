@@ -2,6 +2,7 @@
 #include "AccessManager.h"
 #include <addresses/IpAddress.h>
 #include <algorithm>
+#include <sys/stat.h>
 
 std::set<IpAddress> readPermittedHosts(const std::string &hostsPath)
 {
@@ -26,6 +27,10 @@ AccessManager::AccessManager(const std::string &baseDir, const std::string &fsDi
         : baseDir(baseDir), fsDir(fsDir)
 {
     auto fullHostsPath = baseDir + "/" + hostsFile;
+
+    mkdir(baseDir.c_str(), 0777);
+    std::string fsPath = this->getFsPath();
+    mkdir(fsPath.c_str(), 0777);
 
     this->permittedHosts = readPermittedHosts(fullHostsPath);
 }
