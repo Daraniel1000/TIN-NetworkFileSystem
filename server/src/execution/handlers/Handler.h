@@ -17,6 +17,7 @@ protected:
     DomainData &replyData;
     PlainError &replyError;
     AccessManager &accessManager;
+    bool wasHandled = false;
 public:
     std::mutex m;
     std::condition_variable cv;
@@ -48,12 +49,13 @@ public:
     void waitForCompletion()
     {
         std::unique_lock<std::mutex> lk(this->m);
-        this->cv.wait(lk);   //wait_for żeby ustawić timeout wykonania
+        if(!wasHandled) this->cv.wait(lk);   //wait_for żeby ustawić timeout wykonania
     }
 
     void signalCompletion()
     {
         std::lock_guard<std::mutex> lk(this->m);
+        wasHandled = true;
         this->cv.notify_all();
     }
 };
