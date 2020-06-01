@@ -65,7 +65,7 @@ int16_t nfsopen(std::string &host, std::vector<int16_t> &openedDescriptors)
         }
         else
         {
-            std::cout << "Typo in oflags. Function aborted." << std::endl;
+            std::cout << "Unknown flag. Function aborted." << std::endl;
             return -1;
         }
     }
@@ -211,7 +211,7 @@ int32_t nfslseek(std::string &host, std::vector<int16_t> &openedDescriptors)
     }
     else
     {
-        std::cout << "Typo in whence. Function aborted." << std::endl;
+        std::cout << "Wrong whence. Function aborted." << std::endl;
         return -1;
     }
 
@@ -288,7 +288,9 @@ int main(int argc, char *argv[])
     std::getline(std::cin, host);
     while (!exit)
     {
-        std::cout << "Type command to run: open, read, write, lseek, close, unlink, exit\n";
+        mynfs_error = 0;
+        mynfs_error_message.clear();
+        std::cout << "Available commands to run: open, read, write, lseek, close, unlink, exit\n";
         std::getline(std::cin, choice);
         if (choice == "open") nfsopen(host, openedDescriptors);
 
@@ -308,7 +310,7 @@ int main(int argc, char *argv[])
             std::cout << "Goodbye!\n";
         }
 
-        else std::cout << "Typo in command. Try again.\n";
+        else std::cout << "Unknown command. Try again.\n";
     }
     return 0;
 }
