@@ -78,7 +78,7 @@ void ServerSubEndpoint::run()
 
                     DataMessage repeatedData(data);
                     this->socket.send(clientAddress, replyDataMessage.serialize());
-                    timeoutCount++;
+                    timeoutCount = 0;
                     std::cout << "Reply resend." << std::endl;
                 }
                 catch (socket_error &e)
