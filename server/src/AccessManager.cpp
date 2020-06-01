@@ -2,9 +2,6 @@
 #include "AccessManager.h"
 #include <addresses/IpAddress.h>
 #include <algorithm>
-#include <fcntl.h>
-#include <cstring>
-#include <filesystem>
 
 std::set<IpAddress> readPermittedHosts(const std::string &hostsPath)
 {
@@ -29,15 +26,6 @@ AccessManager::AccessManager(const std::string &baseDir, const std::string &fsDi
         : baseDir(baseDir), fsDir(fsDir)
 {
     auto fullHostsPath = baseDir + "/" + hostsFile;
-
-    try
-    {
-        std::filesystem::create_directories(this->getFsPath());
-    }
-    catch (std::exception& e)
-    {
-        throw std::runtime_error("Can't create mynfs directory at " + this->getFsPath());
-    }
 
     this->permittedHosts = readPermittedHosts(fullHostsPath);
 }
