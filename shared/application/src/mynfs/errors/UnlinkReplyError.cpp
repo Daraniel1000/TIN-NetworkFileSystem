@@ -3,6 +3,7 @@
 const std::unordered_map<int8_t, std::string> UnlinkReplyError::stringMap = {
         {0, "Success"},
         {99, "Internal server error"},
+        {EACCES, "Permission denied"},
         {EISDIR, "Path refers to directory"},
         {EBUSY, "File can not be unlinked because it is being used"},
         {ENAMETOOLONG, "Pathname was too long"},

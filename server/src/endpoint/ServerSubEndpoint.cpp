@@ -78,7 +78,7 @@ void ServerSubEndpoint::run()
 
                     DataMessage repeatedData(data);
                     this->socket.send(clientAddress, replyDataMessage.serialize());
-                    timeoutCount++;
+                    timeoutCount = 0;
                     std::cout << "Reply resend." << std::endl;
                 }
                 catch (socket_error &e)
@@ -101,7 +101,7 @@ void ServerSubEndpoint::run()
     catch (std::out_of_range &e)
     {
         error = 7000;
-        std::cout << "Unknown request type" << std::endl;
+        std::cout << std::to_string(error) + " Unknown request type." << std::endl;
         this->socket.send(clientAddress, DataMessage(0, DomainData(), PlainError(-1)).serialize());
     }
     catch (timeout_error &e)
