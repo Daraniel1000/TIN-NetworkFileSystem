@@ -41,12 +41,14 @@ Rep ClientEndpoint::send(NetworkAddress recipient, const Req &request) const
                 confirmation = true;
             }
             catch (timeout_error &e) {
-                mynfs_error = 6000;
-                std::cout << "Timeout error: " + std::string(e.what()) << std::endl;
                 this->socket.send(recipient, RequestMessage().serialize());
                 timeoutCount++;
             }
         }
+
+        if(timeoutCount == maxApproach && !confirmation)
+            throw socket_error(4, errno,
+                    "Receiving data from server failed.");
 
         timeoutCount = 0;
         socket.send(source, DataMessage(request.getType(), request.serialize()).serialize());
@@ -67,7 +69,7 @@ Rep ClientEndpoint::send(NetworkAddress recipient, const Req &request) const
     catch (timeout_error& e)
     {
         throw socket_error(4, errno,
-                           "Receiving failed.");
+                           "Receiving data from server failed.");
     }
     catch (address_error& e)
     {
@@ -85,9 +87,6 @@ Rep ClientEndpoint::send(NetworkAddress recipient, const Req &request) const
     {
         throw  e;
     }
-
-    throw socket_error(4, errno,
-                       "Receiving failed.");
 
 }
 
