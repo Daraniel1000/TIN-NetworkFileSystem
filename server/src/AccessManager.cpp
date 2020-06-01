@@ -23,14 +23,33 @@ std::set<IpAddress> readPermittedHosts(const std::string &hostsPath)
     return hosts;
 }
 
+bool makeDirectory(const std::string &dirPath)
+{
+    std::string dir;
+    std::string delimiter = "/";
+
+    size_t last = 0;
+    size_t next;
+    while ((next = dirPath.find(delimiter, last)) != std::string::npos)
+    {
+        dir += dirPath.substr(last, next - last);
+        mkdir(dir.c_str(), 0777);
+        dir += "/";
+        last = next + 1;
+    }
+
+    dir += dirPath.substr(last, next - last);
+    mkdir(dir.c_str(), 0777);
+
+    return true;
+}
+
 AccessManager::AccessManager(const std::string &baseDir, const std::string &fsDir, const std::string &hostsFile)
         : baseDir(baseDir), fsDir(fsDir)
 {
     auto fullHostsPath = baseDir + "/" + hostsFile;
 
-    mkdir(baseDir.c_str(), 0777);
-    std::string fsPath = this->getFsPath();
-    mkdir(fsPath.c_str(), 0777);
+    makeDirectory(this->getFsPath());
 
     this->permittedHosts = readPermittedHosts(fullHostsPath);
 }
