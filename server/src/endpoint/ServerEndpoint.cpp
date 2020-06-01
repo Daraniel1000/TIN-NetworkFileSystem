@@ -20,6 +20,7 @@ void ServerEndpoint::run()
     Executor executor(messageQueue);
     TerminalListener listener(socket);
     executor.serverStop.lock();
+    listener.serverStop.lock();
     std::thread listenerThread(&TerminalListener::run, &listener);
     std::thread executorThread(&Executor::run, &executor);
 
