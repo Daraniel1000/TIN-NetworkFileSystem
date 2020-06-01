@@ -29,65 +29,46 @@ Rep ClientEndpoint::send(NetworkAddress recipient, const Req &request) const
 {
     int timeoutCount = 0;
     const int maxApproach = 5;
+    const int timeout = 5;
     bool confirmation = false;
 
-    try {
-        socket.send(recipient, RequestMessage().serialize());
-        NetworkAddress source{};
+    socket.send(recipient, RequestMessage().serialize());
+    NetworkAddress source{};
 
-        while (timeoutCount < maxApproach && !confirmation) {
-            try {
-                ConfirmMessage requestConfirm(socket.receive(source, 5));
-                confirmation = true;
-            }
-            catch (timeout_error &e) {
-                this->socket.send(recipient, RequestMessage().serialize());
-                timeoutCount++;
-            }
+    while (timeoutCount < maxApproach && !confirmation)
+    {
+        try {
+            ConfirmMessage requestConfirm(socket.receive(source, timeout));
+            confirmation = true;
         }
-
-        if(timeoutCount == maxApproach && !confirmation)
-            throw socket_error(4, errno,
-                    "Receiving data from server failed.");
-
-        timeoutCount = 0;
-        socket.send(source, DataMessage(request.getType(), request.serialize()).serialize());
-
-        while (timeoutCount < maxApproach ) {
-            try {
-                DataMessage replyData(socket.receive(source, 5));
-                socket.send(source, ConfirmMessage().serialize());
-                return Rep(replyData.getData(), replyData.getError());
-            }
-            catch (timeout_error &e) {
-                socket.send(source, DataMessage(request.getType(), request.serialize()).serialize());
-                timeoutCount++;
-            }
+        catch (timeout_error &e) {
+            this->socket.send(recipient, RequestMessage().serialize());
+            timeoutCount++;
         }
-
-    }
-    catch (timeout_error& e)
-    {
-        throw socket_error(4, errno,
-                           "Receiving data from server failed.");
-    }
-    catch (address_error& e)
-    {
-       throw e;
-    }
-    catch (bad_argument_error& e)
-    {
-        throw e;
-    }
-    catch (socket_error& e)
-    {
-        throw e;
-    }
-    catch (std::exception& e)
-    {
-        throw  e;
     }
 
+    if(timeoutCount == maxApproach && !confirmation)
+        throw socket_error(4, 1,
+                "Host unreachable");
+
+    timeoutCount = 0;
+    socket.send(source, DataMessage(request.getType(), request.serialize()).serialize());
+
+    while (timeoutCount < maxApproach)
+    {
+        try {
+            DataMessage replyData(socket.receive(source, timeout));
+            socket.send(source, ConfirmMessage().serialize());
+            return Rep(replyData.getData(), replyData.getError());
+        }
+        catch (timeout_error &e) {
+            socket.send(source, DataMessage(request.getType(), request.serialize()).serialize());
+            timeoutCount++;
+        }
+    }
+
+    throw socket_error(4, 1,
+            "Host unreachable");
 }
 
 template OpenReply ClientEndpoint::send<OpenRequest, OpenReply>(NetworkAddress, const OpenRequest&) const;
