@@ -5,7 +5,7 @@
 #include <condition_variable>
 
 template<class Type>
-class SafeQueue : private std::queue<Type>      //TODO przełożyć implementację fcji na zewnątrz jak będzie mi się chciało
+class SafeQueue : private std::queue<Type>
 {
     std::mutex mutex;
     std::condition_variable isEmpty;
