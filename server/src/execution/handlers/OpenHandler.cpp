@@ -65,7 +65,7 @@ void OpenHandler::handle()
         auto oflag = request.getOflag();
 
         // do something with it here
-        fd = open(path, oflag, 0777);
+        fd = open(path, oflag, 0666);
 
         if (fd == -1)
         {
