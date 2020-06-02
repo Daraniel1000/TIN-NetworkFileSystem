@@ -10,6 +10,6 @@ add_executable(server_tests TestsMain.cpp
                             ../src/AccessManager.cpp
                             ../src/execution/Executor/Executor.cpp
                             SafeQueueTests.cpp
-                            ExecutorTests.cpp)
+        )
 find_package(Threads)
 target_link_libraries(server_tests unit_tests application addresses session transport Threads::Threads)
