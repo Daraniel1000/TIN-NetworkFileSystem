@@ -18,6 +18,27 @@ OpenHandler::OpenHandler(DomainData requestData, NetworkAddress requestAddress, 
     possibleErrors.assign(errorList, errorList + sizeof(errorList) / sizeof(int));
 }
 
+int getAccessMode(uint16_t oflag)
+{
+    return oflag & O_ACCMODE;
+}
+
+bool isAccessModePermitted(const AccessManager& accessManager, const IpAddress& address, uint16_t oflag)
+{
+    auto accessMode = getAccessMode(oflag);
+
+    switch (accessMode)
+    {
+        case O_RDONLY:
+            return accessManager.hasReadRight(address);
+        case O_WRONLY:
+            return accessManager.hasWriteRight(address);
+        case O_RDWR:
+            return accessManager.hasReadWriteRight(address);
+        default:
+            return false;
+    }
+}
 
 void OpenHandler::handle()
 {
@@ -27,6 +48,11 @@ void OpenHandler::handle()
     OpenRequest request(this->requestData);
 
     if (!this->accessManager.isPathPermitted(request.getPath()))
+    {
+        fd = -1;
+        error = EACCES;
+    }
+    else if(!isAccessModePermitted(this->accessManager, this->requestAddress.getAddress(), request.getOflag()))
     {
         fd = -1;
         error = EACCES;

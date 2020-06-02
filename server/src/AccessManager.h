@@ -15,7 +15,7 @@ class AccessManager
     std::string baseDir;
     std::string fsDir;
 
-    std::set<IpAddress> permittedHosts;
+    std::map<IpAddress, std::string> permittedHosts;
     std::map<std::pair<IpAddress, int16_t>, int> descriptorsMap;
 
     int high_water_mark = 0;
@@ -25,6 +25,10 @@ public:
                            const std::string &hostsFile);
 
     bool isPermitted(const IpAddress &address) const;
+
+    bool hasReadRight(const IpAddress& address) const;
+    bool hasWriteRight(const IpAddress& address) const;
+    bool hasReadWriteRight(const IpAddress& address) const;
 
     int getSystemDescriptor(const IpAddress &address, int16_t appDescriptor) const;
 

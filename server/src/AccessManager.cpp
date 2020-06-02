@@ -3,20 +3,24 @@
 #include <addresses/IpAddress.h>
 #include <algorithm>
 #include <sys/stat.h>
+#include <iostream>
 
-std::set<IpAddress> readPermittedHosts(const std::string &hostsPath)
+std::map<IpAddress, std::string> readPermittedHosts(const std::string &hostsPath)
 {
     std::fstream fileStream(hostsPath.c_str(), std::fstream::in | std::fstream::app);
 
     if (!fileStream)
         throw std::runtime_error("Can't open hosts file at " + hostsPath);
 
-    std::set<IpAddress> hosts;
+    std::map<IpAddress, std::string> hosts;
     std::string str;
     while (std::getline(fileStream, str))
     {
-        if (!str.empty())
-            hosts.emplace(str.c_str());
+        auto pos = str.find(' ', 0);
+        auto host = str.substr(0, pos);
+        auto right = str.substr(pos+1);
+        if (!host.empty() && !right.empty())
+            hosts.emplace(host.c_str(), right);
     }
 
     fileStream.close();
@@ -58,6 +62,34 @@ bool AccessManager::isPermitted(const IpAddress &address) const
 {
     return this->permittedHosts.find(address) != this->permittedHosts.end();
 }
+
+bool AccessManager::hasReadRight(const IpAddress &address) const
+{
+    auto right = this->permittedHosts.find(address);
+    if(right == this->permittedHosts.end())
+        return false;
+
+    return right->second == "R" || right->second == "RW";
+}
+
+bool AccessManager::hasWriteRight(const IpAddress &address) const
+{
+    auto right = this->permittedHosts.find(address);
+    if(right == this->permittedHosts.end())
+        return false;
+
+    return right->second == "W" || right->second == "RW";
+}
+
+bool AccessManager::hasReadWriteRight(const IpAddress &address) const
+{
+    auto right = this->permittedHosts.find(address);
+    if(right == this->permittedHosts.end())
+        return false;
+
+    return right->second == "RW";
+}
+
 
 int AccessManager::getSystemDescriptor(const IpAddress &address, int16_t appDescriptor) const
 {
