@@ -27,7 +27,7 @@ Pliki wykonywalne są umieszczone bezpośrednio w katalogach projektu, np. ```se
 | :heavy_check_mark: | obsługa gniazda (czyli kod Socket) | :skull: :skull: | Sebastian |
 | :heavy_check_mark: | implementacja handlerów czyli wykonanie żądań po stronie serwera | :skull: :skull: | Gosia |
 | :heavy_check_mark: | obsługa błędów po stronie serwera, timeouty, ponowne wysyłanie | :skull: :skull: | Gosia |
-| :hreavy_check_mark: | sprawdzanie praw dostępu klientów, nadawanie naszych deskryptorów | :skull: | Sebastian |
+| :heavy_check_mark: | sprawdzanie praw dostępu klientów, nadawanie naszych deskryptorów | :skull: | Sebastian |
 | :heavy_check_mark: | kolejka handlerów i wątek wykonujący | :skull: :skull: :skull: | Maciek |
 | :heavy_check_mark: | wrzucanie SubEndpointów na nowe wątki | :skull: | Maciek |
 | :heavy_check_mark: | możliwość wyłączenia serwera i wyczyszczenia wszystkich zasobów (co może być upierdliwe, bo wątki mogą być zablokowane na czymś) | :skull: :skull: :skull: | Maciek |
