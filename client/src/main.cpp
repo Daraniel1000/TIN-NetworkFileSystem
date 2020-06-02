@@ -74,7 +74,7 @@ int16_t nfsopen(std::string &host, std::vector<int16_t> &openedDescriptors)
 
     if (mynfs_error != 0)
     {
-        std::cout << "Error: " << mynfs_error_message << std::endl;
+        std::cout << "Error " << mynfs_error << ": " << mynfs_error_message << std::endl;
         return -1;
     }
 
@@ -113,7 +113,7 @@ int16_t nfsread(std::string &host, std::vector<int16_t> &openedDescriptors)
 
     if (mynfs_error != 0)
     {
-        std::cout << "Error: " << mynfs_error_message << std::endl;
+        std::cout << "Error " << mynfs_error << ": " << mynfs_error_message << std::endl;
         return -1;
     }
 
@@ -162,7 +162,7 @@ int16_t nfswrite(std::string &host, std::vector<int16_t> &openedDescriptors)
     int16_t size = mynfs_write(host.c_str(), fd, pBuf, count);
     if (mynfs_error != 0)
     {
-        std::cout << "Error: " << mynfs_error_message << std::endl;
+        std::cout << "Error " << mynfs_error << ": " << mynfs_error_message << std::endl;
         return -1;
     }
 
@@ -219,7 +219,7 @@ int32_t nfslseek(std::string &host, std::vector<int16_t> &openedDescriptors)
 
     if (mynfs_error != 0)
     {
-        std::cout << "Error: " << mynfs_error_message << std::endl;
+        std::cout << "Error " << mynfs_error << ": " << mynfs_error_message << std::endl;
         return -1;
     }
 
@@ -247,7 +247,7 @@ int8_t nfsclose(std::string &host, std::vector<int16_t> &openedDescriptors)
 
     if (mynfs_error != 0)
     {
-        std::cout << "Error: " << mynfs_error_message << std::endl;
+        std::cout << "Error " << mynfs_error << ": " << mynfs_error_message << std::endl;
         return -1;
     }
 
@@ -269,7 +269,7 @@ int8_t nfsunlink(std::string &host)
 
     if (mynfs_error != 0)
     {
-        std::cout << "Error: " << mynfs_error_message << std::endl;
+        std::cout << "Error " << mynfs_error << ": " << mynfs_error_message << std::endl;
         return -1;
     }
 
@@ -290,7 +290,7 @@ int main(int argc, char *argv[])
     {
         mynfs_error = 0;
         mynfs_error_message.clear();
-        std::cout << "Available commands to run: open, read, write, lseek, close, unlink, exit\n";
+        std::cout << "Available commands to run: open, read, write, lseek, close, unlink, exit" << std::endl;
         std::getline(std::cin, choice);
         if (choice == "open") nfsopen(host, openedDescriptors);
 
