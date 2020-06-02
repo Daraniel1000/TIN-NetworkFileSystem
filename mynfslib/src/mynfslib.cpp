@@ -50,12 +50,12 @@ int16_t mynfs_open(char const *host, char const *path, uint8_t oflag)
     catch (address_error& e)
     {
         mynfs_error = 1000 + 100*e.getMajorCode() + e.getMinorCode();
-        mynfs_error_message = "Bad host address. " + std::string(e.what());
+        mynfs_error_message = "Address error. " + std::string(e.what());
     }
     catch (bad_argument_error& e)
     {
         mynfs_error = 2000 + 100*e.getMajorCode() + e.getMinorCode();
-        mynfs_error_message = "Bad request argument. " + std::string(e.what());
+        mynfs_error_message = "Bad argument error. " + std::string(e.what());
     }
     catch (socket_error& e)
     {
@@ -105,12 +105,12 @@ int16_t mynfs_read(char const *host, int16_t fd, void *buf, int16_t count)
     catch (address_error& e)
     {
         mynfs_error = 1000 + 100*e.getMajorCode() + e.getMinorCode();
-        mynfs_error_message = "Bad host address. " + std::string(e.what());
+        mynfs_error_message = "Address error. " + std::string(e.what());
     }
     catch (bad_argument_error& e)
     {
         mynfs_error = 2000 + 100*e.getMajorCode() + e.getMinorCode();
-        mynfs_error_message = "Bad request argument. " + std::string(e.what());
+        mynfs_error_message = "Bad argument error. " + std::string(e.what());
     }
     catch (socket_error& e)
     {
@@ -157,12 +157,12 @@ int16_t mynfs_write(char const *host, int16_t fd, void *buf, int16_t count)
     catch (address_error& e)
     {
         mynfs_error = 1000 + 100*e.getMajorCode() + e.getMinorCode();
-        mynfs_error_message = "Bad host address. " + std::string(e.what());
+        mynfs_error_message = "Address error. " + std::string(e.what());
     }
     catch (bad_argument_error& e)
     {
         mynfs_error = 2000 + 100*e.getMajorCode() + e.getMinorCode();
-        mynfs_error_message = "Bad request argument. " + std::string(e.what());
+        mynfs_error_message = "Bad argument error. " + std::string(e.what());
     }
     catch (socket_error& e)
     {
@@ -209,12 +209,12 @@ int32_t mynfs_lseek(char const *host, int16_t fd, int32_t offset, uint8_t whence
     catch (address_error& e)
     {
         mynfs_error = 1000 + 100*e.getMajorCode() + e.getMinorCode();
-        mynfs_error_message = "Bad host address. " + std::string(e.what());
+        mynfs_error_message = "Address error. " + std::string(e.what());
     }
     catch (bad_argument_error& e)
     {
         mynfs_error = 2000 + 100*e.getMajorCode() + e.getMinorCode();
-        mynfs_error_message = "Bad request argument. " + std::string(e.what());
+        mynfs_error_message = "Bad argument error. " + std::string(e.what());
     }
     catch (socket_error& e)
     {
@@ -261,12 +261,12 @@ int8_t mynfs_close(char const *host, int16_t fd)
     catch (address_error& e)
     {
         mynfs_error = 1000 + 100*e.getMajorCode() + e.getMinorCode();
-        mynfs_error_message = "Bad host address. " + std::string(e.what());
+        mynfs_error_message = "Address error. " + std::string(e.what());
     }
     catch (bad_argument_error& e)
     {
         mynfs_error = 2000 + 100*e.getMajorCode() + e.getMinorCode();
-        mynfs_error_message = "Bad request argument. " + std::string(e.what());
+        mynfs_error_message = "Bad argument error. " + std::string(e.what());
     }
     catch (socket_error& e)
     {
@@ -313,12 +313,12 @@ int8_t mynfs_unlink(char const *host, char const *path)
     catch (address_error& e)
     {
         mynfs_error = 1000 + 100*e.getMajorCode() + e.getMinorCode();
-        mynfs_error_message = "Bad host address. " + std::string(e.what());
+        mynfs_error_message = "Address error. " + std::string(e.what());
     }
     catch (bad_argument_error& e)
     {
         mynfs_error = 2000 + 100*e.getMajorCode() + e.getMinorCode();
-        mynfs_error_message = "Bad request argument. " + std::string(e.what());
+        mynfs_error_message = "Bad argument error. " + std::string(e.what());
     }
     catch (socket_error& e)
     {
