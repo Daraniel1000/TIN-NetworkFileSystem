@@ -26,11 +26,13 @@ ServerSubEndpoint::ServerSubEndpoint(NetworkAddress clientAddress,
 void ServerSubEndpoint::run()
 {
     int error = 0;
+    const int maxApproach = 5;
+    const int timeout = 5;
     try
     {
         this->socket.send(clientAddress, ConfirmMessage().serialize());
 
-        DataMessage requestDataMessage(this->socket.receive(clientAddress, 5));
+        DataMessage requestDataMessage(this->socket.receive(clientAddress, timeout));
 
         const HandlerFactory &handlerFactory = handlerFactoryPool.getHandlerFactory(requestDataMessage.getType());
 
@@ -48,15 +50,15 @@ void ServerSubEndpoint::run()
 
         this->socket.send(clientAddress, replyDataMessage.serialize());
         int timeoutCount = 0;
-        int confirmation = 0;
+        bool confirmation = false;
         PlainData data;
-        while (timeoutCount < 5 && confirmation == 0)
+        while (timeoutCount < maxApproach && !confirmation)
         {
             try
             {
-                data = this->socket.receive(clientAddress, 5);
+                data = this->socket.receive(clientAddress, timeout);
                 ConfirmMessage confirm(data);
-                confirmation = 1;
+                confirmation = true;
             }
             catch (timeout_error &e)
             {
@@ -89,7 +91,7 @@ void ServerSubEndpoint::run()
                 }
             }
         }
-        if (confirmation == 1)
+        if (confirmation)
             std::cout << "Request " << std::to_string(requestDataMessage.getType()) << " from "
                       << clientAddress.toString()
                       << " completed." << std::endl;
