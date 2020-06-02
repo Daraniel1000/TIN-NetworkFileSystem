@@ -3,9 +3,16 @@
 
 int main()
 {
-    ServerEndpoint server((Port()), ".", "root", "hosts.txt");
-    std::cout << "Running server at " << server.getAddress().toString() << std::endl;
-    server.run();
+    try
+    {
+        ServerEndpoint server((Port()), ".", "root", "hosts.txt");
+        std::cout << "Running server at " << server.getAddress().toString() << std::endl;
+        server.run();
+    }
+    catch (std::exception& e)
+    {
+        std::cout << "Unexpected exception. " + std::string(e.what()) << std::endl;
+    }
 
     return 0;
 }
