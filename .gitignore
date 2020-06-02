@@ -40,3 +40,7 @@ server/bin/
 client/bin/
 
 mynfslib/lib/
+
+hosts.txt
+
+root/
