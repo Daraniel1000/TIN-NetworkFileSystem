@@ -284,7 +284,7 @@ int main(int argc, char *argv[])
     std::vector<int16_t> openedDescriptors;
     bool exit = false;
     std::cout << "Welcome to MyNFS!\n";
-    std::cout << "Host address:" << std::endl;
+    std::cout << "Server address (IP:port):" << std::endl;
     std::getline(std::cin, host);
     while (!exit)
     {
