@@ -11,10 +11,5 @@ void Executor::run()
             messageQueue.popSafe();
         }
     }
-    /*while(!messageQueue.emptySafe())
-    {
-        messageQueue.frontSafe()->fail();
-        messageQueue.popSafe();
-    }*/
     serverStop.unlock();
 }
