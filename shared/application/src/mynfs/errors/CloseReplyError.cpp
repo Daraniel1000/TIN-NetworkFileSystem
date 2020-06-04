@@ -3,7 +3,7 @@
 const std::unordered_map<int8_t, std::string> CloseReplyError::stringMap = {
         {0, "Success"},
         {99, "Internal server error"},
-        {EBADF, "Not valid descriptor"}//TODO
+        {EBADF, "Not valid descriptor"}
 };
 
 CloseReplyError::CloseReplyError(int8_t errorValue) : MyNFSError(errorValue)

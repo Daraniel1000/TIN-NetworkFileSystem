@@ -6,7 +6,7 @@ const std::unordered_map<int8_t, std::string> WriteReplyError::stringMap = {
         {EBADF, "Not valid descriptor or not open for writing"},
         {EAGAIN, "File marked as nonblocking and write would block it"},
         {EFBIG, "Write at the position past the maximum allowed offset"},
-        {EINVAL, "File descriptor is attached to an object which is unsuitable for writing"}//TODO
+        {EINVAL, "File descriptor is attached to an object which is unsuitable for writing"}
 };
 
 WriteReplyError::WriteReplyError(int8_t errorValue) : MyNFSError(errorValue)

@@ -11,7 +11,7 @@ const std::unordered_map<int8_t, std::string> OpenReplyError::stringMap = {
         {ENOENT, "File does not exist"},
         {ENOSPC, "A file can not be created in specify localization and O_CREAT is set"},
         {ENOTDIR, "A component of the path prefix is not a directory"},
-        {EINVAL, "The value of the flag argument is not valid"}//TODO
+        {EINVAL, "The value of the flag argument is not valid"}
 };
 
 OpenReplyError::OpenReplyError(int8_t errorValue) : MyNFSError(errorValue)

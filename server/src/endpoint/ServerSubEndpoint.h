@@ -34,9 +34,6 @@ public:
      */
     void run();
 
-    /**
-     * TODO: stop the subendpoint somehow
-     */
 };
 
 

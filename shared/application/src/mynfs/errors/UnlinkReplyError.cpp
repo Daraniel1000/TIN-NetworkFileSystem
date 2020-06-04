@@ -8,7 +8,7 @@ const std::unordered_map<int8_t, std::string> UnlinkReplyError::stringMap = {
         {EBUSY, "File can not be unlinked because it is being used"},
         {ENAMETOOLONG, "Pathname was too long"},
         {ENOENT, "A component im pathname does not exist"},
-        {ENOTDIR, "A component used as a directory in pathname is not a directory"}//TODO
+        {ENOTDIR, "A component used as a directory in pathname is not a directory"}
 };
 
 UnlinkReplyError::UnlinkReplyError(int8_t errorValue) : MyNFSError(errorValue)
