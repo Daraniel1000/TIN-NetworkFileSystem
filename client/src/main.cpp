@@ -197,12 +197,12 @@ int32_t nfslseek(std::string &host, std::vector<int16_t> &openedDescriptors)
     flags["SEEK_CUR"] = 1;
     flags["SEEK_END"] = 2;
 
-    std::cout << "Offset:" << std::endl;
-    std::getline(std::cin, soffset);
-    offset = static_cast<int32_t>(std::stoi(soffset));
     std::cout << "Whence:" << std::endl;
     std::cout << "Possible values: SEEK_SET | SEEK_CUR | SEEK_END" << std::endl;
     std::getline(std::cin, swhence);
+    std::cout << "Offset:" << std::endl;
+    std::getline(std::cin, soffset);
+    offset = static_cast<int32_t>(std::stoi(soffset));
 
     it = flags.find(swhence);
     if (it != flags.end())
