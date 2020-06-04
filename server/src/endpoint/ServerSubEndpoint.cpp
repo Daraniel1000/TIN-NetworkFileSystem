@@ -44,7 +44,7 @@ void ServerSubEndpoint::run()
 
         //add handler to queue and wait for handling
         messageQueue.pushSafe(handler.get());
-        handler->waitForCompletion(); //wait_for żeby ustawić timeout wykonania
+        handler->waitForCompletion();
 
         DataMessage replyDataMessage(requestDataMessage.getType(), replyData, replyError);
 
