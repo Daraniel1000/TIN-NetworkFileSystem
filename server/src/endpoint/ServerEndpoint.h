@@ -30,10 +30,6 @@ public:
     void run();
 
     const NetworkAddress &getAddress() const;
-
-    /**
-     * TODO: stop the server somehow
-     */
 };
 
 
