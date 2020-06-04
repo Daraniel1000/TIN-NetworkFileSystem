@@ -17,7 +17,6 @@ public:
     }
 
     void run(){
-	//serverStop.lock();
         std::cout << "Press any key to stop the server..." << std::endl;
         std::cin.get();
         serverStop.unlock();
